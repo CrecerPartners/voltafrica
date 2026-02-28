@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Share2, Copy, MessageCircle } from "lucide-react";
-import { shareToWhatsApp, shareToTwitter, shareToTelegram, shareToFacebook, copyToClipboard } from "@/lib/shareUtils";
+import { shareToWhatsApp, shareToTwitter, shareToTelegram, shareToTikTok, shareToSnapchat, copyToClipboard } from "@/lib/shareUtils";
 
 interface SharePopoverProps {
   text: string;
@@ -14,7 +14,8 @@ export function SharePopover({ text, url, triggerClassName }: SharePopoverProps)
     { icon: MessageCircle, label: "WhatsApp", action: () => shareToWhatsApp(text), color: "text-green-500" },
     { icon: () => <span className="text-sm font-bold">𝕏</span>, label: "Twitter/X", action: () => shareToTwitter(text, url), color: "text-foreground" },
     { icon: () => <span className="text-sm font-bold">T</span>, label: "Telegram", action: () => shareToTelegram(text, url), color: "text-blue-400" },
-    { icon: () => <span className="text-sm font-bold">f</span>, label: "Facebook", action: () => shareToFacebook(url), color: "text-blue-600" },
+    { icon: () => <span className="text-sm font-bold">tk</span>, label: "TikTok", action: () => shareToTikTok(text), color: "text-foreground" },
+    { icon: () => <span className="text-sm font-bold">👻</span>, label: "Snapchat", action: () => shareToSnapchat(url), color: "text-yellow-400" },
     { icon: Copy, label: "Copy", action: () => copyToClipboard(text, "Content"), color: "text-muted-foreground" },
   ];
 

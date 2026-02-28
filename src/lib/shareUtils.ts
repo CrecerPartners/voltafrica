@@ -35,8 +35,14 @@ export function shareToTelegram(text: string, url?: string) {
   window.open(`https://t.me/share/url?url=${encodeURIComponent(url || "")}&text=${encodeURIComponent(fullText)}`, "_blank");
 }
 
-export function shareToFacebook(url: string) {
-  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+export function shareToTikTok(text: string) {
+  // TikTok doesn't have a direct share URL; open the app/site with copied text
+  navigator.clipboard.writeText(text);
+  window.open("https://www.tiktok.com/upload", "_blank");
+}
+
+export function shareToSnapchat(url: string) {
+  window.open(`https://www.snapchat.com/scan?attachmentUrl=${encodeURIComponent(url)}`, "_blank");
 }
 
 export async function copyToClipboard(text: string, label: string) {
