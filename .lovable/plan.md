@@ -1,48 +1,51 @@
 
 
-# Light Theme Default + Dark Mode Toggle
+# Make Volt Dashboard Fully Mobile Responsive
 
 ## Overview
-Switch the default theme from dark to a clean white/light theme, and add a toggle button so users can switch to dark mode. Uses `next-themes` (already installed) for theme management.
+Audit and fix all pages so they adapt smoothly from mobile (320px+) to tablet (768px) to desktop (1024px+). The layout already has some responsive basics, but several areas need attention.
 
-## Changes
+## Changes by File
 
-### 1. Add light theme CSS variables to `src/index.css`
-- Make `:root` contain **light theme** values (white backgrounds, dark text, light borders)
-- Move current dark values into a `.dark` class selector
-- Keep the blue accent (#2196F3) consistent across both themes
+### 1. `src/pages/Sales.tsx`
+- Change summary stats from `grid-cols-3` to `grid-cols-1 sm:grid-cols-3` so they stack on mobile
+- Wrap the sales table in a horizontal scroll container (`overflow-x-auto`) for small screens
+- Make filter buttons wrap more gracefully -- remove the vertical border divider on mobile, use `flex-wrap gap-2`
+- Reduce stat card text size on mobile (`text-xl sm:text-2xl`)
 
-### 2. Create a Theme Provider (`src/components/ThemeProvider.tsx`)
-- Wrap the app with `next-themes` `ThemeProvider` with `defaultTheme="light"`
-- Stores preference in localStorage
+### 2. `src/pages/Referrals.tsx`
+- Change stats grid from `grid-cols-3` to `grid-cols-1 sm:grid-cols-3`
+- Reduce referral code text from `text-3xl md:text-4xl` to `text-2xl sm:text-3xl md:text-4xl`
+- Stack referral list items vertically on small screens (name on top, badge/earnings below)
+- Reduce stat values text size on mobile
 
-### 3. Create a Theme Toggle component (`src/components/ThemeToggle.tsx`)
-- Sun/Moon icon button using `next-themes`' `useTheme()` hook
-- Clicking toggles between light and dark
+### 3. `src/pages/WalletPage.tsx`
+- Reduce balance text from `text-3xl` to `text-2xl sm:text-3xl`
+- Make transaction rows stack description and amount more cleanly on tiny screens
+- Make tab triggers scrollable horizontally on mobile with `overflow-x-auto`
 
-### 4. Add the toggle to the top bar in `DashboardLayout.tsx`
-- Place the theme toggle next to the notification bell
+### 4. `src/pages/Dashboard.tsx`
+- Reduce chart height on mobile (`h-[180px] sm:h-[220px]`)
+- Make chart tooltip and grid colors theme-aware using CSS variables instead of hardcoded dark HSL values
+- Ensure activity items don't overflow on small screens
 
-### 5. Add toggle to Login page header
-- Small toggle in the top-right corner of the login screen
+### 5. `src/pages/Leaderboard.tsx`
+- Leaderboard entries: reduce padding and text on mobile
+- Make tier progress card responsive with smaller text on mobile
 
-### 6. Update `tailwind.config.ts`
-- Change `darkMode` from `["class"]` to `["class"]` (already set -- no change needed)
+### 6. `src/pages/Profile.tsx`
+- Avatar card: stack avatar and info vertically on mobile (`flex-col sm:flex-row`)
+- Already mostly responsive, minor text size tweaks
 
-### 7. Update hardcoded dark styles
-- Review pages for any hardcoded dark-specific classes (e.g., `bg-secondary` on inputs in Login) and ensure they work in both themes
+### 7. `src/pages/Login.tsx`
+- Already well-centered and responsive -- no changes needed
 
-## Light Theme Color Palette
-| Token | Light Value |
-|-------|------------|
-| background | 0 0% 100% (white) |
-| foreground | 0 0% 9% (near-black) |
-| card | 0 0% 98% |
-| border | 0 0% 90% |
-| muted | 0 0% 96% |
-| muted-foreground | 0 0% 45% |
-| secondary | 0 0% 96% |
-| sidebar-background | 0 0% 97% |
-| sidebar-border | 0 0% 90% |
+### 8. `src/components/DashboardLayout.tsx`
+- Add `gap-2` between header items on mobile for tighter spacing
+- Already handles sidebar well via the sidebar component
 
-The primary blue (#2196F3) stays the same in both themes.
+### 9. `src/components/AppSidebar.tsx`
+- Already uses `collapsible="icon"` and mobile sheet -- no changes needed
+
+## Summary
+Mostly small tweaks: responsive grid breakpoints, text size scaling, horizontal scroll for tables, and stacking layouts on narrow screens. No structural changes needed.
