@@ -11,47 +11,91 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { products, formatNaira, Transaction } from "@/data/mockData";
-import { Upload, Calculator } from "lucide-react";
+import { useProducts } from "@/hooks/useProducts";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { formatNaira } from "@/lib/utils";
+import { Upload, Calculator, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ManualSaleDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (transaction: Transaction) => void;
 }
 
-export function ManualSaleDialog({ open, onOpenChange, onSubmit }: ManualSaleDialogProps) {
+export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) {
+  const { data: products = [] } = useProducts();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [productId, setProductId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [customer, setCustomer] = useState("");
   const [notes, setNotes] = useState("");
   const [proofFile, setProofFile] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const selectedProduct = products.find((p) => p.id === productId);
   const commission = selectedProduct
     ? quantity * selectedProduct.price * (selectedProduct.commissionRate / 100)
     : 0;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!productId) return toast.error("Select a product");
     if (!customer.trim()) return toast.error("Enter customer name");
     if (!proofFile) return toast.error("Upload proof of sale");
+    if (!user) return toast.error("Not authenticated");
 
-    const tx: Transaction = {
-      id: `manual_${Date.now()}`,
-      date: new Date().toISOString().split("T")[0],
-      type: "manual_sale",
-      description: `${selectedProduct!.name} x${quantity} — ${customer}`,
-      amount: commission,
-      status: "pending",
-      proofFileName: proofFile.name,
-    };
+    setSubmitting(true);
+    try {
+      // Upload proof file
+      const fileName = `${user.id}/${Date.now()}_${proofFile.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("sale-proofs")
+        .upload(fileName, proofFile);
+      if (uploadError) throw uploadError;
 
-    onSubmit(tx);
-    toast.success("Sale logged! It'll appear as pending until reviewed.");
-    resetForm();
-    onOpenChange(false);
+      // Insert sale
+      const { error: saleError } = await supabase
+        .from("sales" as any)
+        .insert({
+          user_id: user.id,
+          product_id: productId,
+          date: new Date().toISOString().split("T")[0],
+          customer,
+          quantity,
+          amount: selectedProduct!.price * quantity,
+          commission,
+          status: "pending",
+          proof_file_url: fileName,
+          notes,
+        } as any);
+      if (saleError) throw saleError;
+
+      // Insert transaction
+      const { error: txError } = await supabase
+        .from("transactions" as any)
+        .insert({
+          user_id: user.id,
+          date: new Date().toISOString().split("T")[0],
+          type: "manual_sale",
+          description: `${selectedProduct!.name} x${quantity} — ${customer}`,
+          amount: commission,
+          status: "pending",
+          proof_file_name: proofFile.name,
+        } as any);
+      if (txError) throw txError;
+
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      toast.success("Sale logged! It'll appear as pending until reviewed.");
+      resetForm();
+      onOpenChange(false);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to submit sale");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -109,7 +153,6 @@ export function ManualSaleDialog({ open, onOpenChange, onSubmit }: ManualSaleDia
             </div>
           </div>
 
-          {/* Proof Upload */}
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">Proof of Sale</label>
             <div className="flex items-center gap-3">
@@ -142,7 +185,6 @@ export function ManualSaleDialog({ open, onOpenChange, onSubmit }: ManualSaleDia
             />
           </div>
 
-          {/* Commission Preview */}
           {selectedProduct && (
             <div className="rounded-lg bg-secondary p-3 flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -156,7 +198,9 @@ export function ManualSaleDialog({ open, onOpenChange, onSubmit }: ManualSaleDia
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button className="volt-gradient" onClick={handleSubmit}>Submit Sale</Button>
+          <Button className="volt-gradient" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Submitting...</> : "Submit Sale"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

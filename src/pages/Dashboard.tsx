@@ -1,12 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  currentUser,
-  dashboardStats,
-  earningsData,
-  recentActivity,
-  formatNaira,
-} from "@/data/mockData";
+import { formatNaira } from "@/lib/utils";
+import { useProfile } from "@/hooks/useProfile";
+import { useTransactions } from "@/hooks/useTransactions";
+import { useSales } from "@/hooks/useSales";
+import { useReferrals } from "@/hooks/useReferrals";
 import {
   TrendingUp,
   Clock,
@@ -27,33 +25,76 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useMemo } from "react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { data: profile } = useProfile();
+  const { data: transactions } = useTransactions();
+  const { data: sales } = useSales();
+  const { data: referrals } = useReferrals();
+
+  const dashboardStats = useMemo(() => {
+    if (!transactions) return { totalEarnings: 0, pendingPayout: 0, totalSales: 0, referralCount: 0, weeklyGrowth: 0 };
+    const totalEarnings = transactions.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+    const pendingPayout = transactions.filter(t => t.status === "pending" && t.amount > 0).reduce((s, t) => s + t.amount, 0);
+    return {
+      totalEarnings,
+      pendingPayout,
+      totalSales: sales?.length || 0,
+      referralCount: referrals?.length || 0,
+      weeklyGrowth: 0,
+    };
+  }, [transactions, sales, referrals]);
+
+  const recentActivity = useMemo(() => {
+    if (!transactions) return [];
+    return transactions.slice(0, 5).map(t => ({
+      id: t.id,
+      description: t.description,
+      amount: t.amount,
+      date: t.date,
+    }));
+  }, [transactions]);
+
+  // Simple weekly data from transactions
+  const earningsData = useMemo(() => {
+    if (!transactions) return [];
+    const weeks: Record<string, number> = {};
+    transactions.filter(t => t.amount > 0).forEach(t => {
+      const d = new Date(t.date);
+      const weekNum = Math.ceil(d.getDate() / 7);
+      const key = `W${weekNum}`;
+      weeks[key] = (weeks[key] || 0) + t.amount;
+    });
+    return Object.entries(weeks).map(([week, earnings]) => ({ week, earnings })).slice(0, 8);
+  }, [transactions]);
+
+  const firstName = profile?.name?.split(" ")[0] || "there";
 
   const stats = [
-    { label: "Total Earnings", value: formatNaira(dashboardStats.totalEarnings), icon: TrendingUp, trend: `+${dashboardStats.weeklyGrowth}%` },
+    { label: "Total Earnings", value: formatNaira(dashboardStats.totalEarnings), icon: TrendingUp, trend: dashboardStats.weeklyGrowth > 0 ? `+${dashboardStats.weeklyGrowth}%` : undefined },
     { label: "Pending Payout", value: formatNaira(dashboardStats.pendingPayout), icon: Clock },
     { label: "Total Sales", value: dashboardStats.totalSales.toString(), icon: ShoppingCart },
     { label: "Referrals", value: dashboardStats.referralCount.toString(), icon: Users },
   ];
 
   const copyReferralCode = () => {
-    navigator.clipboard.writeText(currentUser.referralCode);
-    toast.success("Referral code copied!");
+    if (profile?.referral_code) {
+      navigator.clipboard.writeText(profile.referral_code);
+      toast.success("Referral code copied!");
+    }
   };
 
   return (
     <div className="space-y-6 max-w-7xl">
-      {/* Welcome */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold font-display">
-          Welcome back, {currentUser.name.split(" ")[0]} 👋
+          Welcome back, {firstName} 👋
         </h1>
         <p className="text-muted-foreground mt-1">Here's how you're doing this week</p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {stats.map((stat) => (
           <Card key={stat.label} className="border-border/50">
@@ -71,9 +112,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Chart + Activity */}
       <div className="grid lg:grid-cols-5 gap-4">
-        {/* Earnings Chart */}
         <Card className="lg:col-span-3 border-border/50">
           <CardContent className="p-4 md:p-6">
             <h3 className="text-sm font-semibold mb-4">Earnings Trend</h3>
@@ -101,18 +140,22 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
         <Card className="lg:col-span-2 border-border/50">
           <CardContent className="p-4 md:p-6">
             <h3 className="text-sm font-semibold mb-4">Recent Activity</h3>
             <div className="space-y-3">
-              {recentActivity.slice(0, 5).map((item) => (
+              {recentActivity.length === 0 && (
+                <p className="text-sm text-muted-foreground">No activity yet. Start selling!</p>
+              )}
+              {recentActivity.map((item) => (
                 <div key={item.id} className="flex items-center justify-between text-sm">
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{item.description}</p>
                     <p className="text-xs text-muted-foreground">{item.date}</p>
                   </div>
-                  <span className="text-success font-semibold ml-2">+{formatNaira(item.amount)}</span>
+                  <span className={`font-semibold ml-2 ${item.amount > 0 ? "text-success" : "text-destructive"}`}>
+                    {item.amount > 0 ? "+" : "-"}{formatNaira(item.amount)}
+                  </span>
                 </div>
               ))}
             </div>
@@ -120,13 +163,12 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Button onClick={copyReferralCode} variant="outline" className="h-auto py-3 justify-start gap-3">
           <Copy className="h-4 w-4 text-primary" />
           <div className="text-left">
             <p className="font-medium text-sm">Copy Referral Code</p>
-            <p className="text-xs text-muted-foreground">{currentUser.referralCode}</p>
+            <p className="text-xs text-muted-foreground">{profile?.referral_code || "..."}</p>
           </div>
         </Button>
         <Button onClick={() => navigate("/marketplace")} variant="outline" className="h-auto py-3 justify-start gap-3">

@@ -1,24 +1,56 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { currentUser } from "@/data/mockData";
-import { User, Building, Phone, CreditCard, Save } from "lucide-react";
+import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/contexts/AuthContext";
+import { User, Building, Phone, CreditCard, Save, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const Profile = () => {
+  const { data: profile, isLoading } = useProfile();
+  const updateProfile = useUpdateProfile();
+  const { user } = useAuth();
+
   const [form, setForm] = useState({
-    name: currentUser.name,
-    email: currentUser.email,
-    university: currentUser.university,
-    whatsapp: currentUser.whatsapp,
-    bankName: currentUser.bankName,
-    accountNumber: currentUser.accountNumber,
+    name: "",
+    email: "",
+    university: "",
+    whatsapp: "",
+    bank_name: "",
+    account_number: "",
   });
 
-  const handleSave = () => {
-    toast.success("Profile updated successfully!");
+  const [initialized, setInitialized] = useState(false);
+
+  if (profile && !initialized) {
+    setForm({
+      name: profile.name || "",
+      email: profile.email || "",
+      university: profile.university || "",
+      whatsapp: profile.whatsapp || "",
+      bank_name: profile.bank_name || "",
+      account_number: profile.account_number || "",
+    });
+    setInitialized(true);
+  }
+
+  const handleSave = async () => {
+    try {
+      await updateProfile.mutateAsync(form);
+      toast.success("Profile updated successfully!");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update profile");
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   const Field = ({ label, icon: Icon, name, type = "text" }: { label: string; icon: any; name: keyof typeof form; type?: string }) => (
     <div className="space-y-2">
@@ -34,6 +66,8 @@ const Profile = () => {
     </div>
   );
 
+  const initials = (profile?.name || "").split(" ").map(n => n[0]).join("").toUpperCase() || "?";
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
@@ -41,26 +75,22 @@ const Profile = () => {
         <p className="text-muted-foreground mt-1">Manage your account details</p>
       </div>
 
-      {/* Avatar */}
       <Card className="border-border/50">
         <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
           <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center text-2xl font-bold font-display text-primary">
-            {currentUser.name.split(" ").map(n => n[0]).join("")}
+            {initials}
           </div>
           <div>
-            <p className="font-semibold text-lg">{currentUser.name}</p>
-            <p className="text-sm text-muted-foreground">{currentUser.university}</p>
-            <p className="text-xs text-primary font-medium mt-1">Tier: {currentUser.tier} · Joined {currentUser.joinedDate}</p>
+            <p className="font-semibold text-lg">{profile?.name || "—"}</p>
+            <p className="text-sm text-muted-foreground">{profile?.university || "—"}</p>
+            <p className="text-xs text-primary font-medium mt-1">Tier: {profile?.tier || "Bronze"}</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Personal Info */}
       <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-base font-display">Personal Information</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-6 space-y-4">
+          <h3 className="text-base font-display font-semibold">Personal Information</h3>
           <Field label="Full Name" icon={User} name="name" />
           <Field label="Email" icon={User} name="email" type="email" />
           <Field label="University" icon={Building} name="university" />
@@ -68,19 +98,16 @@ const Profile = () => {
         </CardContent>
       </Card>
 
-      {/* Bank Details */}
       <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="text-base font-display">Payout Details</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Field label="Bank Name" icon={CreditCard} name="bankName" />
-          <Field label="Account Number" icon={CreditCard} name="accountNumber" />
+        <CardContent className="p-6 space-y-4">
+          <h3 className="text-base font-display font-semibold">Payout Details</h3>
+          <Field label="Bank Name" icon={CreditCard} name="bank_name" />
+          <Field label="Account Number" icon={CreditCard} name="account_number" />
         </CardContent>
       </Card>
 
-      <Button onClick={handleSave} className="volt-gradient w-full sm:w-auto">
-        <Save className="h-4 w-4 mr-2" /> Save Changes
+      <Button onClick={handleSave} className="volt-gradient w-full sm:w-auto" disabled={updateProfile.isPending}>
+        <Save className="h-4 w-4 mr-2" /> {updateProfile.isPending ? "Saving..." : "Save Changes"}
       </Button>
     </div>
   );

@@ -5,16 +5,42 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Zap, Gift } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [university, setUniversity] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { signUp, signIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setLoading(true);
+
+    try {
+      if (isSignup) {
+        const { error } = await signUp(email, password, name, university);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          toast.success("Account created! Check your email to verify.");
+        }
+      } else {
+        const { error } = await signIn(email, password);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          navigate("/dashboard");
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -22,7 +48,6 @@ const Login = () => {
       <div className="absolute top-4 right-4 z-20">
         <ThemeToggle />
       </div>
-      {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
       </div>
@@ -56,7 +81,12 @@ const Login = () => {
             {isSignup && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Full Name</label>
-                <Input placeholder="Chidera Okafor" className="bg-secondary border-border" />
+                <Input
+                  placeholder="Chidera Okafor"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-secondary border-border"
+                />
               </div>
             )}
             <div className="space-y-2">
@@ -67,6 +97,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-secondary border-border"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -77,16 +108,23 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-secondary border-border"
+                required
+                minLength={6}
               />
             </div>
             {isSignup && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">University</label>
-                <Input placeholder="University of Lagos" className="bg-secondary border-border" />
+                <Input
+                  placeholder="University of Lagos"
+                  value={university}
+                  onChange={(e) => setUniversity(e.target.value)}
+                  className="bg-secondary border-border"
+                />
               </div>
             )}
-            <Button type="submit" className="w-full volt-gradient font-semibold">
-              {isSignup ? "Create Account" : "Sign In"}
+            <Button type="submit" className="w-full volt-gradient font-semibold" disabled={loading}>
+              {loading ? "Please wait..." : isSignup ? "Create Account" : "Sign In"}
             </Button>
           </form>
           <div className="mt-6 text-center text-sm text-muted-foreground">
