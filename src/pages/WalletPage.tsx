@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { walletSummary, transactions, formatNaira } from "@/data/mockData";
-import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign } from "lucide-react";
+import { walletSummary, transactions as initialTransactions, formatNaira, Transaction } from "@/data/mockData";
+import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, PlusCircle } from "lucide-react";
 import { toast } from "sonner";
+import { ManualSaleDialog } from "@/components/ManualSaleDialog";
 
 const typeLabels: Record<string, string> = {
   commission: "Commission",
@@ -12,14 +14,29 @@ const typeLabels: Record<string, string> = {
   signup_bonus: "Signup Bonus",
   performance_bonus: "Performance Bonus",
   payout: "Payout",
+  manual_sale: "Manual Sale",
 };
 
 const WalletPage = () => {
+  const [manualSaleOpen, setManualSaleOpen] = useState(false);
+  const [manualTransactions, setManualTransactions] = useState<Transaction[]>([]);
+
+  const allTransactions = [...manualTransactions, ...initialTransactions];
+
+  const handleManualSale = (tx: Transaction) => {
+    setManualTransactions((prev) => [tx, ...prev]);
+  };
+
   return (
     <div className="space-y-6 max-w-5xl">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold font-display">Wallet & Earnings</h1>
-        <p className="text-muted-foreground mt-1">Track your earnings and payouts</p>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold font-display">Wallet & Earnings</h1>
+          <p className="text-muted-foreground mt-1">Track your earnings and payouts</p>
+        </div>
+        <Button className="volt-gradient" onClick={() => setManualSaleOpen(true)}>
+          <PlusCircle className="h-4 w-4 mr-2" /> Log a Sale
+        </Button>
       </div>
 
       {/* Balance Cards */}
@@ -65,13 +82,14 @@ const WalletPage = () => {
             <TabsList className="bg-secondary mb-4 overflow-x-auto w-full justify-start">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="commission">Commissions</TabsTrigger>
+              <TabsTrigger value="manual_sale">Manual Sales</TabsTrigger>
               <TabsTrigger value="referral_bonus">Referral</TabsTrigger>
               <TabsTrigger value="payout">Payouts</TabsTrigger>
             </TabsList>
 
-            {["all", "commission", "referral_bonus", "payout"].map((tab) => (
+            {["all", "commission", "manual_sale", "referral_bonus", "payout"].map((tab) => (
               <TabsContent key={tab} value={tab} className="space-y-2">
-                {transactions
+                {allTransactions
                   .filter((t) => tab === "all" || t.type === tab)
                   .map((t) => (
                     <div key={t.id} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
@@ -81,7 +99,12 @@ const WalletPage = () => {
                         </div>
                         <div>
                           <p className="text-sm font-medium">{t.description}</p>
-                          <p className="text-xs text-muted-foreground">{typeLabels[t.type]} · {t.date}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-xs text-muted-foreground">{typeLabels[t.type]} · {t.date}</p>
+                            {t.proofFileName && (
+                              <Badge variant="outline" className="text-[10px] text-primary border-primary/20">📎 {t.proofFileName}</Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="text-right">
@@ -99,6 +122,8 @@ const WalletPage = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      <ManualSaleDialog open={manualSaleOpen} onOpenChange={setManualSaleOpen} onSubmit={handleManualSale} />
     </div>
   );
 };

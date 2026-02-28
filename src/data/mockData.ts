@@ -45,6 +45,13 @@ export const recentActivity = [
 
 export type ProductCategory = "physical" | "digital" | "fintech" | "events";
 
+export interface ProductAssets {
+  images: string[];
+  whatsappMessage: string;
+  instagramCaption: string;
+  sellingTips: string[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -54,32 +61,34 @@ export interface Product {
   price: number;
   image: string;
   description: string;
+  assets: ProductAssets;
 }
 
 export const products: Product[] = [
-  { id: "p1", name: "Wireless Earbuds Pro", brand: "TechZone", category: "physical", commissionRate: 15, price: 12000, image: "🎧", description: "Premium wireless earbuds with noise cancellation" },
-  { id: "p2", name: "Smart Watch Lite", brand: "TechZone", category: "physical", commissionRate: 12, price: 25000, image: "⌚", description: "Affordable smartwatch with fitness tracking" },
-  { id: "p3", name: "Campus Hoodie", brand: "UniWear", category: "physical", commissionRate: 20, price: 8500, image: "👕", description: "Premium quality campus branded hoodie" },
-  { id: "p4", name: "LED Desk Lamp", brand: "BrightLife", category: "physical", commissionRate: 18, price: 5500, image: "💡", description: "USB rechargeable study lamp" },
-  { id: "p5", name: "MTN 2GB Data Bundle", brand: "MTN", category: "digital", commissionRate: 8, price: 1200, image: "📱", description: "30-day data plan" },
-  { id: "p6", name: "Spotify Premium 3mo", brand: "Spotify", category: "digital", commissionRate: 25, price: 4500, image: "🎵", description: "3-month premium subscription" },
-  { id: "p7", name: "Coursera Plus Annual", brand: "Coursera", category: "digital", commissionRate: 30, price: 35000, image: "📚", description: "Unlimited access to 7,000+ courses" },
-  { id: "p8", name: "Netflix Student Plan", brand: "Netflix", category: "digital", commissionRate: 10, price: 2900, image: "🎬", description: "Monthly student subscription" },
-  { id: "p9", name: "PiggyVest Signup", brand: "PiggyVest", category: "fintech", commissionRate: 20, price: 0, image: "🐷", description: "Free signup — earn on each new user" },
-  { id: "p10", name: "Kuda Bank Account", brand: "Kuda", category: "fintech", commissionRate: 15, price: 0, image: "🏦", description: "Free digital bank account signup" },
-  { id: "p11", name: "Cowrywise Investment", brand: "Cowrywise", category: "fintech", commissionRate: 22, price: 0, image: "📈", description: "Investment platform signup" },
-  { id: "p12", name: "Campus Connect 2026", brand: "Volt Events", category: "events", commissionRate: 10, price: 3000, image: "🎉", description: "Biggest campus networking event" },
-  { id: "p13", name: "Tech Career Fair", brand: "Volt Events", category: "events", commissionRate: 12, price: 2000, image: "💼", description: "Connect with top tech companies" },
-  { id: "p14", name: "Music Festival Pass", brand: "CampusFest", category: "events", commissionRate: 8, price: 5000, image: "🎤", description: "All-access weekend music festival" },
+  { id: "p1", name: "Wireless Earbuds Pro", brand: "TechZone", category: "physical", commissionRate: 15, price: 12000, image: "🎧", description: "Premium wireless earbuds with noise cancellation", assets: { images: ["https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=400", "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400"], whatsappMessage: "🎧 Check out these Wireless Earbuds Pro! Premium noise cancellation at just ₦12,000. Order now 👉", instagramCaption: "🎧 Level up your audio game! Wireless Earbuds Pro with noise cancellation. Link in bio! #TechDeals #CampusLife", sellingTips: ["Highlight the noise cancellation for studying in noisy dorms", "Compare favorably to AirPods at a fraction of the price", "Offer to demo them — sound quality sells itself"] } },
+  { id: "p2", name: "Smart Watch Lite", brand: "TechZone", category: "physical", commissionRate: 12, price: 25000, image: "⌚", description: "Affordable smartwatch with fitness tracking", assets: { images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400", "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=400"], whatsappMessage: "⌚ Smart Watch Lite — fitness tracking, notifications & more for just ₦25,000! DM to order 🔥", instagramCaption: "⌚ Stay connected & fit with the Smart Watch Lite! ₦25,000 only. #SmartWatch #FitnessTech", sellingTips: ["Focus on fitness tracking — very popular with students", "Show off notification mirroring feature", "Great gift idea for birthdays"] } },
+  { id: "p3", name: "Campus Hoodie", brand: "UniWear", category: "physical", commissionRate: 20, price: 8500, image: "👕", description: "Premium quality campus branded hoodie", assets: { images: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400", "https://images.unsplash.com/photo-1578768079470-f851e00fbe8b?w=400"], whatsappMessage: "👕 Rep your campus in style! Premium Campus Hoodie for just ₦8,500. Limited stock! 🔥", instagramCaption: "👕 Campus drip alert! Premium quality hoodie at ₦8,500. Don't sleep on this 🔥 #CampusFashion #UniWear", sellingTips: ["Show it being worn — lifestyle selling works best", "Emphasize limited stock to create urgency", "Great for group orders with friends"] } },
+  { id: "p4", name: "LED Desk Lamp", brand: "BrightLife", category: "physical", commissionRate: 18, price: 5500, image: "💡", description: "USB rechargeable study lamp", assets: { images: ["https://images.unsplash.com/photo-1507473885765-e6ed057ab6fe?w=400", "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400"], whatsappMessage: "💡 Study smarter with this USB rechargeable LED Desk Lamp! Only ₦5,500. Perfect for late-night reading 📚", instagramCaption: "💡 Late night study sessions just got better! USB LED Desk Lamp ₦5,500 #StudyEssentials #CampusLife", sellingTips: ["Perfect for exam season — time your promotions", "Highlight USB rechargeable — no NEPA needed", "Bundle suggestion: pair with earbuds for a study kit"] } },
+  { id: "p5", name: "MTN 2GB Data Bundle", brand: "MTN", category: "digital", commissionRate: 8, price: 1200, image: "📱", description: "30-day data plan", assets: { images: [], whatsappMessage: "📱 Get 2GB MTN Data for 30 days at ₦1,200! Stay connected 🌐 Click my link to buy 👇", instagramCaption: "📱 Never run out of data! 2GB MTN bundle for ₦1,200. Link in bio! #DataDeals #StayConnected", sellingTips: ["Everyone needs data — easiest product to sell", "Promote during start of month when people reload", "Offer to help with the purchase process"] } },
+  { id: "p6", name: "Spotify Premium 3mo", brand: "Spotify", category: "digital", commissionRate: 25, price: 4500, image: "🎵", description: "3-month premium subscription", assets: { images: [], whatsappMessage: "🎵 Spotify Premium for 3 months at just ₦4,500! No ads, offline downloads. Use my link 👇", instagramCaption: "🎵 Upgrade your music game! Spotify Premium 3 months — ₦4,500. No ads ever! #SpotifyPremium #Music", sellingTips: ["25% commission is one of the highest — push this one!", "Play music during hangouts, then mention the deal", "Great for music lovers — know your audience"] } },
+  { id: "p7", name: "Coursera Plus Annual", brand: "Coursera", category: "digital", commissionRate: 30, price: 35000, image: "📚", description: "Unlimited access to 7,000+ courses", assets: { images: [], whatsappMessage: "📚 Unlock 7,000+ courses on Coursera Plus for ₦35,000/year! Invest in yourself 🚀 Link below 👇", instagramCaption: "📚 Level up your skills! Coursera Plus gives you unlimited courses for one price. #LearnOnline #SkillUp", sellingTips: ["30% commission = ₦10,500 per sale — your highest earner!", "Target students looking for internships/skills", "Share your own learning experience if you use it"] } },
+  { id: "p8", name: "Netflix Student Plan", brand: "Netflix", category: "digital", commissionRate: 10, price: 2900, image: "🎬", description: "Monthly student subscription", assets: { images: [], whatsappMessage: "🎬 Netflix Student Plan at just ₦2,900/month! Binge your faves. Sign up here 👇", instagramCaption: "🎬 Movie nights sorted! Netflix Student Plan ₦2,900/mo. #Netflix #StudentLife", sellingTips: ["Promote around new show releases", "Everyone watches Netflix — easy conversation starter", "Mention the student discount angle"] } },
+  { id: "p9", name: "PiggyVest Signup", brand: "PiggyVest", category: "fintech", commissionRate: 20, price: 0, image: "🐷", description: "Free signup — earn on each new user", assets: { images: [], whatsappMessage: "🐷 Start saving smartly with PiggyVest — it's FREE to sign up! Join using my link 👇", instagramCaption: "🐷 Save smarter, not harder! PiggyVest is free to join. Start your savings journey today! #PiggyVest #Savings", sellingTips: ["Free signup = zero friction for customers", "Share your own savings progress as social proof", "Target students who want to build financial habits"] } },
+  { id: "p10", name: "Kuda Bank Account", brand: "Kuda", category: "fintech", commissionRate: 15, price: 0, image: "🏦", description: "Free digital bank account signup", assets: { images: [], whatsappMessage: "🏦 Open a free Kuda Bank account — no charges, free transfers! Sign up here 👇", instagramCaption: "🏦 Bank smarter with Kuda! Free account, free transfers. #KudaBank #FintechNigeria", sellingTips: ["Highlight free transfers — students love saving money", "Show the app interface — it's sleek and modern", "Mention the spending analytics feature"] } },
+  { id: "p11", name: "Cowrywise Investment", brand: "Cowrywise", category: "fintech", commissionRate: 22, price: 0, image: "📈", description: "Investment platform signup", assets: { images: [], whatsappMessage: "📈 Start investing with as little as ₦100 on Cowrywise! Join free 👇", instagramCaption: "📈 Your money should work for you! Start investing on Cowrywise today. #Investing #WealthBuilding", sellingTips: ["Emphasize you can start with just ₦100", "22% commission is excellent for a free signup", "Target financially-conscious students"] } },
+  { id: "p12", name: "Campus Connect 2026", brand: "Volt Events", category: "events", commissionRate: 10, price: 3000, image: "🎉", description: "Biggest campus networking event", assets: { images: [], whatsappMessage: "🎉 Campus Connect 2026 tickets are live! ₦3,000 only. Don't miss out! Get yours 👇", instagramCaption: "🎉 The biggest campus event of the year! Campus Connect 2026 — ₦3,000. #CampusConnect #Networking", sellingTips: ["Create FOMO — limited tickets available", "Share speaker lineup and past event highlights", "Offer group discounts for friend groups"] } },
+  { id: "p13", name: "Tech Career Fair", brand: "Volt Events", category: "events", commissionRate: 12, price: 2000, image: "💼", description: "Connect with top tech companies", assets: { images: [], whatsappMessage: "💼 Land your dream tech job! Tech Career Fair tickets at ₦2,000. Register now 👇", instagramCaption: "💼 Meet top tech companies at the Career Fair! ₦2,000 — your future self will thank you. #TechCareers", sellingTips: ["Target final year students and job seekers", "Mention specific companies attending", "12% commission on volume sales adds up fast"] } },
+  { id: "p14", name: "Music Festival Pass", brand: "CampusFest", category: "events", commissionRate: 8, price: 5000, image: "🎤", description: "All-access weekend music festival", assets: { images: [], whatsappMessage: "🎤 All-access Music Festival Pass for ₦5,000! A whole weekend of vibes 🔥 Get yours 👇", instagramCaption: "🎤 Weekend vibes loading! All-access Music Festival Pass ₦5,000 #MusicFestival #CampusFest", sellingTips: ["Share artist lineup to build excitement", "Promote early — festival tickets sell best 2 weeks before", "Use stories and reels for maximum reach"] } },
 ];
 
 export interface Transaction {
   id: string;
   date: string;
-  type: "commission" | "referral_bonus" | "signup_bonus" | "performance_bonus" | "payout";
+  type: "commission" | "referral_bonus" | "signup_bonus" | "performance_bonus" | "payout" | "manual_sale";
   description: string;
   amount: number;
   status: "pending" | "paid" | "processing";
+  proofFileName?: string;
 }
 
 export const transactions: Transaction[] = [
