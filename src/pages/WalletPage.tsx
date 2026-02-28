@@ -3,8 +3,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { walletSummary, transactions as initialTransactions, formatNaira, Transaction } from "@/data/mockData";
-import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, PlusCircle } from "lucide-react";
+import { useWallet } from "@/hooks/useWallet";
+import { useAuth } from "@/contexts/AuthContext";
+import { formatNaira } from "@/lib/utils";
+import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, PlusCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ManualSaleDialog } from "@/components/ManualSaleDialog";
 
@@ -19,13 +21,17 @@ const typeLabels: Record<string, string> = {
 
 const WalletPage = () => {
   const [manualSaleOpen, setManualSaleOpen] = useState(false);
-  const [manualTransactions, setManualTransactions] = useState<Transaction[]>([]);
+  const { summary, transactions, isLoading } = useWallet();
 
-  const allTransactions = [...manualTransactions, ...initialTransactions];
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
-  const handleManualSale = (tx: Transaction) => {
-    setManualTransactions((prev) => [tx, ...prev]);
-  };
+  const allTransactions = transactions || [];
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -39,7 +45,6 @@ const WalletPage = () => {
         </Button>
       </div>
 
-      {/* Balance Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="border-primary/30 volt-glow">
           <CardContent className="p-5">
@@ -47,7 +52,7 @@ const WalletPage = () => {
               <WalletIcon className="h-4 w-4 text-primary" />
               <span className="text-xs text-muted-foreground">Available Balance</span>
             </div>
-            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(walletSummary.availableBalance)}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(summary.availableBalance)}</p>
             <Button size="sm" className="mt-3 volt-gradient w-full" onClick={() => toast.success("Payout requested!")}>
               Request Payout
             </Button>
@@ -59,7 +64,7 @@ const WalletPage = () => {
               <Clock className="h-4 w-4 text-warning" />
               <span className="text-xs text-muted-foreground">Pending Earnings</span>
             </div>
-            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(walletSummary.pendingEarnings)}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(summary.pendingEarnings)}</p>
             <p className="text-xs text-muted-foreground mt-3">Clears every Friday</p>
           </CardContent>
         </Card>
@@ -69,13 +74,12 @@ const WalletPage = () => {
               <DollarSign className="h-4 w-4 text-success" />
               <span className="text-xs text-muted-foreground">Total Earned (Lifetime)</span>
             </div>
-            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(walletSummary.totalEarned)}</p>
-            <p className="text-xs text-muted-foreground mt-3">{formatNaira(walletSummary.totalPaidOut)} paid out</p>
+            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(summary.totalEarned)}</p>
+            <p className="text-xs text-muted-foreground mt-3">{formatNaira(summary.totalPaidOut)} paid out</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Transactions */}
       <Card className="border-border/50">
         <CardContent className="p-4 md:p-6">
           <Tabs defaultValue="all">
@@ -101,8 +105,8 @@ const WalletPage = () => {
                           <p className="text-sm font-medium">{t.description}</p>
                           <div className="flex items-center gap-1.5">
                             <p className="text-xs text-muted-foreground">{typeLabels[t.type]} · {t.date}</p>
-                            {t.proofFileName && (
-                              <Badge variant="outline" className="text-[10px] text-primary border-primary/20">📎 {t.proofFileName}</Badge>
+                            {t.proof_file_name && (
+                              <Badge variant="outline" className="text-[10px] text-primary border-primary/20">📎 {t.proof_file_name}</Badge>
                             )}
                           </div>
                         </div>
@@ -117,13 +121,16 @@ const WalletPage = () => {
                       </div>
                     </div>
                   ))}
+                {allTransactions.filter((t) => tab === "all" || t.type === tab).length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-8">No transactions yet</p>
+                )}
               </TabsContent>
             ))}
           </Tabs>
         </CardContent>
       </Card>
 
-      <ManualSaleDialog open={manualSaleOpen} onOpenChange={setManualSaleOpen} onSubmit={handleManualSale} />
+      <ManualSaleDialog open={manualSaleOpen} onOpenChange={setManualSaleOpen} />
     </div>
   );
 };

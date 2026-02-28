@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Product, formatNaira, currentUser } from "@/data/mockData";
+import { Product } from "@/hooks/useProducts";
+import { useProfile } from "@/hooks/useProfile";
+import { formatNaira } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,10 +33,11 @@ const categoryColors: Record<string, string> = {
 export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetailSheetProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const { data: profile } = useProfile();
 
   if (!product) return null;
 
-  const referralLink = `https://volt.ng/ref/${currentUser.referralCode}/${product.id}`;
+  const referralLink = `https://volt.ng/ref/${profile?.referral_code || "VOLT"}/${product.id}`;
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);

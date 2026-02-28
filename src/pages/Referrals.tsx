@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { currentUser, referrals, formatNaira } from "@/data/mockData";
-import { Copy, Share2, Users, Gift, TrendingUp } from "lucide-react";
+import { useProfile } from "@/hooks/useProfile";
+import { useReferrals } from "@/hooks/useReferrals";
+import { formatNaira } from "@/lib/utils";
+import { Copy, Share2, Users, Gift, TrendingUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const statusColors: Record<string, string> = {
@@ -12,17 +14,32 @@ const statusColors: Record<string, string> = {
 };
 
 const Referrals = () => {
+  const { data: profile } = useProfile();
+  const { data: referrals = [], isLoading } = useReferrals();
+
   const totalBonus = referrals.reduce((sum, r) => sum + r.earnings, 0);
 
   const copyCode = () => {
-    navigator.clipboard.writeText(currentUser.referralCode);
-    toast.success("Referral code copied!");
+    if (profile?.referral_code) {
+      navigator.clipboard.writeText(profile.referral_code);
+      toast.success("Referral code copied!");
+    }
   };
 
   const shareLink = () => {
-    navigator.clipboard.writeText(currentUser.referralLink);
-    toast.success("Referral link copied!");
+    if (profile?.referral_code) {
+      navigator.clipboard.writeText(`https://volt.ng/ref/${profile.referral_code}`);
+      toast.success("Referral link copied!");
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -31,12 +48,11 @@ const Referrals = () => {
         <p className="text-muted-foreground mt-1">Invite friends and earn bonuses</p>
       </div>
 
-      {/* Referral Code Card */}
       <Card className="border-primary/30 volt-glow">
         <CardContent className="p-6 text-center space-y-4">
           <p className="text-sm text-muted-foreground">Your Referral Code</p>
           <p className="text-2xl sm:text-3xl md:text-4xl font-bold font-display tracking-widest text-primary">
-            {currentUser.referralCode}
+            {profile?.referral_code || "..."}
           </p>
           <div className="flex justify-center gap-3">
             <Button onClick={copyCode} variant="outline" size="sm">
@@ -49,7 +65,6 @@ const Referrals = () => {
         </CardContent>
       </Card>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
@@ -74,15 +89,17 @@ const Referrals = () => {
         </Card>
       </div>
 
-      {/* Referral List */}
       <Card className="border-border/50">
         <CardContent className="p-4 md:p-6">
           <h3 className="text-sm font-semibold mb-4">Referred Students</h3>
           <div className="space-y-3">
+            {referrals.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-6">No referrals yet. Share your code to get started!</p>
+            )}
             {referrals.map((r) => (
               <div key={r.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b border-border/50 last:border-0 gap-1 sm:gap-0">
                 <div>
-                  <p className="text-sm font-medium">{r.name}</p>
+                  <p className="text-sm font-medium">{r.referred_name}</p>
                   <p className="text-xs text-muted-foreground">{r.date}</p>
                 </div>
                 <div className="flex items-center gap-3">

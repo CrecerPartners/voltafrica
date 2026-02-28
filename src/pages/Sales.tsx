@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { sales, dashboardStats, formatNaira, ProductCategory } from "@/data/mockData";
+import { useSales } from "@/hooks/useSales";
+import { formatNaira } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingCart, TrendingUp, Star } from "lucide-react";
+import { ShoppingCart, TrendingUp, Star, Loader2 } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   confirmed: "text-success border-success/20",
@@ -13,6 +14,7 @@ const statusColors: Record<string, string> = {
 };
 
 const Sales = () => {
+  const { data: sales = [], isLoading } = useSales();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
@@ -20,9 +22,19 @@ const Sales = () => {
     (s) => (statusFilter === "all" || s.status === statusFilter) && (categoryFilter === "all" || s.category === categoryFilter)
   );
 
-  const topProduct = sales
-    .filter((s) => s.status === "confirmed")
-    .reduce((top, s) => (s.commission > (top?.commission || 0) ? s : top), sales[0]);
+  const totalSales = sales.length;
+  const confirmedSales = sales.filter(s => s.status === "confirmed");
+  const topProduct = confirmedSales.length > 0
+    ? confirmedSales.reduce((top, s) => (s.commission > (top?.commission || 0) ? s : top), confirmedSales[0])
+    : null;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-6xl">
@@ -31,32 +43,30 @@ const Sales = () => {
         <p className="text-muted-foreground mt-1">Monitor all your attributed sales</p>
       </div>
 
-      {/* Summary Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <ShoppingCart className="h-5 w-5 mx-auto text-primary mb-1" />
-            <p className="text-xl sm:text-2xl font-bold font-display">{dashboardStats.totalSales}</p>
+            <p className="text-xl sm:text-2xl font-bold font-display">{totalSales}</p>
             <p className="text-xs text-muted-foreground">Total Sales</p>
           </CardContent>
         </Card>
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <TrendingUp className="h-5 w-5 mx-auto text-success mb-1" />
-            <p className="text-xl sm:text-2xl font-bold font-display">{dashboardStats.conversionRate}%</p>
-            <p className="text-xs text-muted-foreground">Conversion Rate</p>
+            <p className="text-xl sm:text-2xl font-bold font-display">{confirmedSales.length}</p>
+            <p className="text-xs text-muted-foreground">Confirmed</p>
           </CardContent>
         </Card>
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <Star className="h-5 w-5 mx-auto text-warning mb-1" />
-            <p className="text-sm font-bold font-display truncate">{topProduct?.product}</p>
+            <p className="text-sm font-bold font-display truncate">{topProduct?.product_name || "—"}</p>
             <p className="text-xs text-muted-foreground">Top Product</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-2">
         {["all", "confirmed", "pending", "cancelled"].map((s) => (
           <Button key={s} variant={statusFilter === s ? "default" : "outline"} size="sm" onClick={() => setStatusFilter(s)}
@@ -73,7 +83,6 @@ const Sales = () => {
         ))}
       </div>
 
-      {/* Sales Table */}
       <Card className="border-border/50">
         <CardContent className="p-0 overflow-x-auto">
           <Table className="min-w-[600px]">
@@ -88,10 +97,15 @@ const Sales = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {filtered.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No sales yet</TableCell>
+                </TableRow>
+              )}
               {filtered.map((sale) => (
                 <TableRow key={sale.id} className="border-border/50">
                   <TableCell className="text-xs">{sale.date}</TableCell>
-                  <TableCell className="font-medium text-sm">{sale.product}</TableCell>
+                  <TableCell className="font-medium text-sm">{sale.product_name}</TableCell>
                   <TableCell className="hidden sm:table-cell text-muted-foreground text-xs">{sale.customer}</TableCell>
                   <TableCell className="text-right text-sm">{sale.amount > 0 ? formatNaira(sale.amount) : "Free"}</TableCell>
                   <TableCell className="text-right text-sm font-semibold text-success">{formatNaira(sale.commission)}</TableCell>

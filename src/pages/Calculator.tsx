@@ -3,8 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { products, formatNaira } from "@/data/mockData";
-import { Calculator, Plus, Trash2, Sparkles, Share2 } from "lucide-react";
+import { useProducts, Product } from "@/hooks/useProducts";
+import { formatNaira } from "@/lib/utils";
+import { Calculator, Plus, Trash2, Sparkles, Share2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface PlanItem {
@@ -31,6 +32,7 @@ const getMotivation = (total: number) => {
 };
 
 const Calculator_Page = () => {
+  const { data: products = [], isLoading } = useProducts();
   const [items, setItems] = useState<PlanItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
@@ -53,10 +55,11 @@ const Calculator_Page = () => {
     setItems(items.filter((i) => i.productId !== productId));
   };
 
-  const getProduct = (id: string) => products.find((p) => p.id === id)!;
+  const getProduct = (id: string) => products.find((p) => p.id === id);
 
   const calculateCommission = (item: PlanItem) => {
     const p = getProduct(item.productId);
+    if (!p) return 0;
     return item.quantity * p.price * (p.commissionRate / 100);
   };
 
@@ -66,12 +69,21 @@ const Calculator_Page = () => {
   const sharePlan = () => {
     const lines = items.map((item) => {
       const p = getProduct(item.productId);
+      if (!p) return "";
       return `• ${p.name} x${item.quantity} = ${formatNaira(calculateCommission(item))}`;
     });
     const text = `🔥 My Volt Earnings Plan\n\n${lines.join("\n")}\n\n💰 Total: ${formatNaira(totalEarnings)} from ${totalSales} sales!\n\nJoin Volt and start earning too! ⚡`;
     navigator.clipboard.writeText(text);
     toast.success("Plan copied to clipboard!");
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -80,7 +92,6 @@ const Calculator_Page = () => {
         <p className="text-muted-foreground mt-1">See how much you could earn selling products</p>
       </div>
 
-      {/* Add Product */}
       <Card className="border-border/50">
         <CardContent className="p-4 md:p-6">
           <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
@@ -115,13 +126,13 @@ const Calculator_Page = () => {
         </CardContent>
       </Card>
 
-      {/* Items List */}
       {items.length > 0 && (
         <Card className="border-border/50">
           <CardContent className="p-4 md:p-6 space-y-3">
             <h3 className="text-sm font-semibold">Your Sales Plan</h3>
             {items.map((item) => {
               const p = getProduct(item.productId);
+              if (!p) return null;
               const commission = calculateCommission(item);
               return (
                 <div key={item.productId} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
@@ -147,7 +158,6 @@ const Calculator_Page = () => {
         </Card>
       )}
 
-      {/* Total */}
       <Card className="border-primary/30 volt-glow">
         <CardContent className="p-5 md:p-6 text-center space-y-2">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">Projected Earnings</p>

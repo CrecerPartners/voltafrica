@@ -3,10 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { products, Product, ProductCategory, formatNaira } from "@/data/mockData";
-import { Link2, Filter, Search, Image, PackageOpen } from "lucide-react";
+import { useProducts, Product } from "@/hooks/useProducts";
+import { useProfile } from "@/hooks/useProfile";
+import { formatNaira } from "@/lib/utils";
+import { Link2, Filter, Search, Image, PackageOpen, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ProductDetailSheet } from "@/components/ProductDetailSheet";
+
+type ProductCategory = "physical" | "digital" | "fintech" | "events";
 
 const categoryLabels: Record<ProductCategory, string> = {
   physical: "Physical",
@@ -23,6 +27,8 @@ const categoryColors: Record<ProductCategory, string> = {
 };
 
 const Marketplace = () => {
+  const { data: products = [], isLoading } = useProducts();
+  const { data: profile } = useProfile();
   const [activeCategory, setActiveCategory] = useState<ProductCategory | "all">("all");
   const [sortBy, setSortBy] = useState<"commission" | "name">("commission");
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,7 +42,8 @@ const Marketplace = () => {
 
   const getLink = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(`https://volt.ng/ref/VOLT-CHID23/${product.id}`);
+    const code = profile?.referral_code || "VOLT";
+    navigator.clipboard.writeText(`https://volt.ng/ref/${code}/${product.id}`);
     toast.success(`Link copied for ${product.name}!`);
   };
 
@@ -47,6 +54,14 @@ const Marketplace = () => {
 
   const categories: (ProductCategory | "all")[] = ["all", "physical", "digital", "fintech", "events"];
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5 max-w-7xl">
       <div className="flex items-baseline gap-3">
@@ -54,44 +69,26 @@ const Marketplace = () => {
         <span className="text-sm text-muted-foreground">{filtered.length} products</span>
       </div>
 
-      {/* Search + Filters */}
       <div className="space-y-3">
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-9"
-          />
+          <Input placeholder="Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 h-9" />
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {categories.map((cat) => (
-            <Button
-              key={cat}
-              variant={activeCategory === cat ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveCategory(cat)}
-              className={activeCategory === cat ? "volt-gradient h-8 text-xs" : "h-8 text-xs"}
-            >
+            <Button key={cat} variant={activeCategory === cat ? "default" : "outline"} size="sm" onClick={() => setActiveCategory(cat)}
+              className={activeCategory === cat ? "volt-gradient h-8 text-xs" : "h-8 text-xs"}>
               {cat === "all" ? "All" : categoryLabels[cat]}
             </Button>
           ))}
           <div className="ml-auto">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSortBy(sortBy === "commission" ? "name" : "commission")}
-              className="text-muted-foreground h-8 text-xs"
-            >
-              <Filter className="h-3 w-3 mr-1" />
-              Sort: {sortBy === "commission" ? "Commission %" : "Name"}
+            <Button variant="ghost" size="sm" onClick={() => setSortBy(sortBy === "commission" ? "name" : "commission")} className="text-muted-foreground h-8 text-xs">
+              <Filter className="h-3 w-3 mr-1" /> Sort: {sortBy === "commission" ? "Commission %" : "Name"}
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Product Grid */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <PackageOpen className="h-12 w-12 text-muted-foreground/40 mb-3" />
@@ -101,11 +98,7 @@ const Marketplace = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {filtered.map((product) => (
-            <Card
-              key={product.id}
-              className="border-border/50 group hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer"
-              onClick={() => openDetail(product)}
-            >
+            <Card key={product.id} className="border-border/50 group hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer" onClick={() => openDetail(product)}>
               <CardContent className="p-3.5 space-y-2.5">
                 <div className="flex items-start justify-between">
                   <div className="text-2xl">{product.image}</div>
@@ -120,20 +113,17 @@ const Marketplace = () => {
                 <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
                 <div className="flex items-center justify-between pt-0.5">
                   <div>
-                    {product.price > 0 && (
-                      <p className="text-xs text-muted-foreground">{formatNaira(product.price)}</p>
-                    )}
+                    {product.price > 0 && <p className="text-xs text-muted-foreground">{formatNaira(product.price)}</p>}
                     <p className="text-sm font-bold text-primary">{product.commissionRate}%</p>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    {product.assets.images.length > 0 && (
+                    {product.assets?.images?.length > 0 && (
                       <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
                         <Image className="h-3 w-3" /> {product.assets.images.length}
                       </span>
                     )}
                     <Button size="sm" onClick={(e) => getLink(e, product)} className="volt-gradient text-xs h-7 px-2.5">
-                      <Link2 className="h-3 w-3 mr-1" />
-                      Link
+                      <Link2 className="h-3 w-3 mr-1" /> Link
                     </Button>
                   </div>
                 </div>

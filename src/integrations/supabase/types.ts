@@ -14,16 +14,258 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      products: {
+        Row: {
+          assets: Json
+          brand: string
+          category: string
+          commission_rate: number
+          created_at: string
+          description: string
+          id: string
+          image: string
+          name: string
+          price: number
+        }
+        Insert: {
+          assets?: Json
+          brand: string
+          category: string
+          commission_rate?: number
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          name: string
+          price?: number
+        }
+        Update: {
+          assets?: Json
+          brand?: string
+          category?: string
+          commission_rate?: number
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          account_number: string | null
+          avatar_url: string | null
+          bank_name: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          referral_code: string | null
+          tier: string
+          university: string
+          updated_at: string
+          user_id: string
+          whatsapp: string | null
+        }
+        Insert: {
+          account_number?: string | null
+          avatar_url?: string | null
+          bank_name?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          referral_code?: string | null
+          tier?: string
+          university?: string
+          updated_at?: string
+          user_id: string
+          whatsapp?: string | null
+        }
+        Update: {
+          account_number?: string | null
+          avatar_url?: string | null
+          bank_name?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          referral_code?: string | null
+          tier?: string
+          university?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          date: string
+          earnings: number
+          id: string
+          referred_name: string
+          referred_user_id: string | null
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          earnings?: number
+          id?: string
+          referred_name?: string
+          referred_user_id?: string | null
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          earnings?: number
+          id?: string
+          referred_name?: string
+          referred_user_id?: string | null
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          amount: number
+          commission: number
+          created_at: string
+          customer: string
+          date: string
+          id: string
+          notes: string | null
+          product_id: string | null
+          proof_file_url: string | null
+          quantity: number
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          commission?: number
+          created_at?: string
+          customer?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          product_id?: string | null
+          proof_file_url?: string | null
+          quantity?: number
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          commission?: number
+          created_at?: string
+          customer?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          product_id?: string | null
+          proof_file_url?: string | null
+          quantity?: number
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          date: string
+          description: string
+          id: string
+          proof_file_name: string | null
+          status: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+          proof_file_name?: string | null
+          status?: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+          proof_file_name?: string | null
+          status?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      leaderboard_view: {
+        Row: {
+          name: string | null
+          rank: number | null
+          total_earnings: number | null
+          total_sales: number | null
+          university: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +392,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
