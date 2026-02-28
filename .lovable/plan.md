@@ -1,99 +1,74 @@
 
 
-# Three New Features: Earnings Calculator, Sales Assets Hub, and Manual Sale Entry
+# Enhance Product Assets for All Categories + Tighten Marketplace UI
 
 ## Overview
-Adding three features students have been asking for: (1) a calculator to see how much they could earn selling different product combinations, (2) a place to grab product images and sharable marketing assets, and (3) a way to manually log sales with proof on the Wallet page.
+Two changes: (1) Give every product -- digital, fintech, events, not just physical -- proper images and sharable assets with direct social sharing buttons, and (2) polish the Marketplace page layout for a cleaner, more professional look.
 
 ---
 
-## Feature 1: Earnings Calculator
+## 1. Add Images and Richer Assets to ALL Products
 
-**What it does:** Students pick products from a dropdown, set the quantity they think they can sell, and instantly see their projected earnings. They can add multiple products to build a "sales plan" and see a grand total -- motivating them to sell more.
+**Problem:** Currently only physical products (earbuds, watch, hoodie, lamp) have images. Digital (MTN, Spotify, Coursera, Netflix), fintech (PiggyVest, Kuda, Cowrywise), and events products all have empty `images: []` arrays.
 
-**Where it lives:** New page at `/calculator` with a sidebar nav entry.
+**Fix in `src/data/mockData.ts`:**
+- Add 2 relevant Unsplash/placeholder images per product for every category:
+  - Digital: brand-relevant lifestyle images (e.g., person streaming music for Spotify, studying for Coursera)
+  - Fintech: finance/savings themed images (piggy bank, phone banking)
+  - Events: crowd/concert/networking themed images
+- Add a `twitterCaption` field to `ProductAssets` interface for broader social sharing
+- Add a `videoUrl` field (optional, string or empty) to `ProductAssets` for products that have promo videos
 
-### UI Design
-- Header: "Earnings Calculator" with subtitle "See how much you could earn"
-- A card with a product selector (dropdown of all products) + quantity input + "Add" button
-- A running list of added products showing: product name, price, commission %, qty, and projected commission per product
-- A prominent **total projected earnings** display at the bottom
-- "Clear All" and "Share Plan" buttons
-- A motivational message based on the total (e.g., "That's enough for a new laptop!" or "You'd be on track for Gold tier!")
-
-### Technical Details
-- New file: `src/pages/Calculator.tsx`
-- Uses existing `products` array from `mockData.ts` for product data and commission rates
-- Pure client-side math: `qty * price * (commissionRate / 100)`
-- Uses `useState` for the product list, Select component for product picker
-- Add route `/calculator` in `App.tsx`, add nav item in `AppSidebar.tsx` with `Calculator` icon from lucide
-
----
-
-## Feature 2: Sales Assets Hub (Product Detail Drawer)
-
-**What it does:** When a student clicks on a product card in the Marketplace, a detail panel opens showing product images, description, selling tips, and downloadable/sharable marketing assets (social media captions, WhatsApp messages, Instagram story templates).
-
-**Where it lives:** Integrated into the existing Marketplace page via a sheet/drawer component.
-
-### UI Design
-- Clicking a product card opens a **Sheet** (slide-in panel from the right)
-- Inside the sheet:
-  - Large product image/emoji at top
-  - Product name, brand, price, commission info
-  - **"Product Images" section**: Grid of placeholder product photos (mock URLs) with "Copy Image Link" and "Download" buttons
-  - **"Sales Assets" section**: Pre-written WhatsApp message, Instagram caption, and a shareable product link -- each with a "Copy" button
-  - **"Selling Tips" section**: 2-3 bullet points on how to pitch the product
-  - "Get Referral Link" button at the bottom
-
-### Technical Details
-- New file: `src/components/ProductDetailSheet.tsx`
-- Update `src/data/mockData.ts`: Add `assets` field to `Product` interface with `images: string[]`, `whatsappMessage: string`, `instagramCaption: string`, `sellingTips: string[]`
-- Update `src/pages/Marketplace.tsx`: Add click handler on product cards to open the sheet, pass selected product as prop
-- Uses existing Sheet component from `@/components/ui/sheet`
-- Copy-to-clipboard for all sharable content using `navigator.clipboard`
+**Updated `ProductAssets` interface:**
+```
+interface ProductAssets {
+  images: string[];
+  videoUrl?: string;
+  whatsappMessage: string;
+  instagramCaption: string;
+  twitterCaption: string;
+  sellingTips: string[];
+}
+```
 
 ---
 
-## Feature 3: Manual Sale Entry on Wallet Page
+## 2. Upgrade ProductDetailSheet with Social Share Buttons
 
-**What it does:** Students can manually log a sale they made (e.g., sold a hoodie in person), select the product, enter customer info, upload proof (receipt/screenshot), and it appears in their transaction history as "pending review."
+**Changes in `src/components/ProductDetailSheet.tsx`:**
 
-**Where it lives:** A button on the Wallet page that opens a dialog/modal form.
-
-### UI Design
-- "Log a Sale" button at the top of the Wallet page (next to the header)
-- Clicking it opens a **Dialog** with a form:
-  - Product selector (dropdown from product list)
-  - Quantity sold (number input, default 1)
-  - Customer name or identifier (text input)
-  - Proof of sale: file upload button (stores locally as a preview, shows filename)
-  - Optional notes field
-  - Auto-calculated commission display based on selected product
-  - "Submit Sale" button
-- On submit: adds the sale to the local transactions list with status "pending" and shows a success toast
-- The new transaction appears immediately in the transaction list with a special "manual" badge
-
-### Technical Details
-- New file: `src/components/ManualSaleDialog.tsx`
-- Update `src/pages/WalletPage.tsx`: Add "Log a Sale" button, import and render the dialog, manage state for manually added transactions
-- Update `src/data/mockData.ts`: Add `"manual_sale"` to the Transaction type union, add label in WalletPage
-- Uses existing Dialog, Select, Input, Button, and Textarea components
-- File upload is cosmetic (stores filename in state, shows preview) -- no backend storage
-- Commission auto-calculates from the product's `commissionRate` and `price`
+- **Product Images section**: Always show (even for non-physical). Add a "Share to WhatsApp" button per image that opens `https://wa.me/?text=` with the image URL + referral link
+- **Video section**: If `videoUrl` exists, show an embedded video placeholder with a "Share Video" button
+- **Sales Assets section**: Replace plain "Copy" buttons with a row of social share icons:
+  - WhatsApp: opens `https://wa.me/?text=` with pre-filled message + referral link
+  - Instagram: copy caption (can't deep-link to IG post creation)
+  - Twitter/X: opens `https://twitter.com/intent/tweet?text=` with caption + link
+  - General copy button stays for clipboard
+- **"Share All Assets" button**: One-tap copies all text assets (WhatsApp msg + IG caption + referral link) to clipboard
+- Make image grid show images at a better aspect ratio with rounded corners
+- Add "Download Image" button that opens image in new tab (since direct download from Unsplash cross-origin isn't possible)
 
 ---
 
-## Changes Summary
+## 3. Tighten Marketplace Page UI
 
-| File | Action | Purpose |
-|------|--------|---------|
-| `src/pages/Calculator.tsx` | Create | Earnings calculator page |
-| `src/components/ProductDetailSheet.tsx` | Create | Product detail + assets drawer |
-| `src/components/ManualSaleDialog.tsx` | Create | Manual sale entry form |
-| `src/data/mockData.ts` | Edit | Add assets data to products, add manual_sale type |
-| `src/pages/Marketplace.tsx` | Edit | Add click-to-open product detail sheet |
-| `src/pages/WalletPage.tsx` | Edit | Add "Log a Sale" button + dialog integration |
-| `src/components/AppSidebar.tsx` | Edit | Add Calculator nav item |
-| `src/App.tsx` | Edit | Add /calculator route |
+**Changes in `src/pages/Marketplace.tsx`:**
+
+- Add a product count indicator next to the header (e.g., "14 products")
+- Tighten card padding and spacing for a denser, cleaner grid
+- Add a subtle hover scale effect on cards (`hover:shadow-md hover:-translate-y-0.5 transition-all`)
+- Show a small asset indicator on each card (e.g., a camera icon with count like "2 images") so students know assets are available before clicking
+- Make the "Get Link" button slightly smaller and more compact
+- Add an empty state message when no products match a filter
+- Improve filter bar: add a search input to filter products by name
+
+---
+
+## Files Changed
+
+| File | Change |
+|------|--------|
+| `src/data/mockData.ts` | Add `twitterCaption` and `videoUrl` to interface; add images to all 14 products |
+| `src/components/ProductDetailSheet.tsx` | Add social share buttons (WhatsApp, Twitter/X), video section, "Share All" button, improved image grid |
+| `src/pages/Marketplace.tsx` | Add search input, asset count indicator on cards, hover effects, product count, empty state |
 
