@@ -43,7 +43,7 @@ const Profile = () => {
 
       {/* Avatar */}
       <Card className="border-border/50">
-        <CardContent className="p-6 flex items-center gap-4">
+        <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
           <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center text-2xl font-bold font-display text-primary">
             {currentUser.name.split(" ").map(n => n[0]).join("")}
           </div>

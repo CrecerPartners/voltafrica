@@ -30,7 +30,7 @@ const WalletPage = () => {
               <WalletIcon className="h-4 w-4 text-primary" />
               <span className="text-xs text-muted-foreground">Available Balance</span>
             </div>
-            <p className="text-3xl font-bold font-display">{formatNaira(walletSummary.availableBalance)}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(walletSummary.availableBalance)}</p>
             <Button size="sm" className="mt-3 volt-gradient w-full" onClick={() => toast.success("Payout requested!")}>
               Request Payout
             </Button>
@@ -42,7 +42,7 @@ const WalletPage = () => {
               <Clock className="h-4 w-4 text-warning" />
               <span className="text-xs text-muted-foreground">Pending Earnings</span>
             </div>
-            <p className="text-3xl font-bold font-display">{formatNaira(walletSummary.pendingEarnings)}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(walletSummary.pendingEarnings)}</p>
             <p className="text-xs text-muted-foreground mt-3">Clears every Friday</p>
           </CardContent>
         </Card>
@@ -52,7 +52,7 @@ const WalletPage = () => {
               <DollarSign className="h-4 w-4 text-success" />
               <span className="text-xs text-muted-foreground">Total Earned (Lifetime)</span>
             </div>
-            <p className="text-3xl font-bold font-display">{formatNaira(walletSummary.totalEarned)}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(walletSummary.totalEarned)}</p>
             <p className="text-xs text-muted-foreground mt-3">{formatNaira(walletSummary.totalPaidOut)} paid out</p>
           </CardContent>
         </Card>
@@ -62,7 +62,7 @@ const WalletPage = () => {
       <Card className="border-border/50">
         <CardContent className="p-4 md:p-6">
           <Tabs defaultValue="all">
-            <TabsList className="bg-secondary mb-4">
+            <TabsList className="bg-secondary mb-4 overflow-x-auto w-full justify-start">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="commission">Commissions</TabsTrigger>
               <TabsTrigger value="referral_bonus">Referral</TabsTrigger>

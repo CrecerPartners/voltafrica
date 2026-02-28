@@ -77,7 +77,7 @@ const Dashboard = () => {
         <Card className="lg:col-span-3 border-border/50">
           <CardContent className="p-4 md:p-6">
             <h3 className="text-sm font-semibold mb-4">Earnings Trend</h3>
-            <div className="h-[220px]">
+            <div className="h-[180px] sm:h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={earningsData}>
                   <defs>
@@ -86,12 +86,12 @@ const Dashboard = () => {
                       <stop offset="100%" stopColor="hsl(207 90% 54%)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(0 0% 18%)" />
-                  <XAxis dataKey="week" stroke="hsl(0 0% 55%)" fontSize={12} />
-                  <YAxis stroke="hsl(0 0% 55%)" fontSize={12} tickFormatter={(v) => `₦${(v/1000).toFixed(0)}k`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="week" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={(v) => `₦${(v/1000).toFixed(0)}k`} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: "hsl(0 0% 10%)", border: "1px solid hsl(0 0% 18%)", borderRadius: "8px" }}
-                    labelStyle={{ color: "hsl(0 0% 55%)" }}
+                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }}
+                    labelStyle={{ color: "hsl(var(--muted-foreground))" }}
                     formatter={(value: number) => [formatNaira(value), "Earnings"]}
                   />
                   <Area type="monotone" dataKey="earnings" stroke="hsl(207 90% 54%)" fill="url(#blueGrad)" strokeWidth={2} />

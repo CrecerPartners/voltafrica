@@ -35,7 +35,7 @@ const Referrals = () => {
       <Card className="border-primary/30 volt-glow">
         <CardContent className="p-6 text-center space-y-4">
           <p className="text-sm text-muted-foreground">Your Referral Code</p>
-          <p className="text-3xl md:text-4xl font-bold font-display tracking-widest text-primary">
+          <p className="text-2xl sm:text-3xl md:text-4xl font-bold font-display tracking-widest text-primary">
             {currentUser.referralCode}
           </p>
           <div className="flex justify-center gap-3">
@@ -50,25 +50,25 @@ const Referrals = () => {
       </Card>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <Users className="h-5 w-5 mx-auto text-primary mb-1" />
-            <p className="text-2xl font-bold font-display">{referrals.length}</p>
+            <p className="text-xl sm:text-2xl font-bold font-display">{referrals.length}</p>
             <p className="text-xs text-muted-foreground">Total Referrals</p>
           </CardContent>
         </Card>
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <TrendingUp className="h-5 w-5 mx-auto text-success mb-1" />
-            <p className="text-2xl font-bold font-display">{referrals.filter(r => r.status !== "signed_up").length}</p>
+            <p className="text-xl sm:text-2xl font-bold font-display">{referrals.filter(r => r.status !== "signed_up").length}</p>
             <p className="text-xs text-muted-foreground">Active Signups</p>
           </CardContent>
         </Card>
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <Gift className="h-5 w-5 mx-auto text-warning mb-1" />
-            <p className="text-2xl font-bold font-display">{formatNaira(totalBonus)}</p>
+            <p className="text-xl sm:text-2xl font-bold font-display">{formatNaira(totalBonus)}</p>
             <p className="text-xs text-muted-foreground">Bonus Earned</p>
           </CardContent>
         </Card>
@@ -80,7 +80,7 @@ const Referrals = () => {
           <h3 className="text-sm font-semibold mb-4">Referred Students</h3>
           <div className="space-y-3">
             {referrals.map((r) => (
-              <div key={r.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+              <div key={r.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b border-border/50 last:border-0 gap-1 sm:gap-0">
                 <div>
                   <p className="text-sm font-medium">{r.name}</p>
                   <p className="text-xs text-muted-foreground">{r.date}</p>
