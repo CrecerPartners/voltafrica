@@ -9,6 +9,7 @@ import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import Marketplace from "@/pages/Marketplace";
 import WalletPage from "@/pages/WalletPage";
+import Calculator from "@/pages/Calculator";
 import Referrals from "@/pages/Referrals";
 import Sales from "@/pages/Sales";
 import Leaderboard from "@/pages/Leaderboard";
@@ -30,6 +31,7 @@ const App = () => (
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/calculator" element={<Calculator />} />
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/referrals" element={<Referrals />} />
             <Route path="/sales" element={<Sales />} />

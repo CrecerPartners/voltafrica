@@ -7,6 +7,7 @@ import {
   Trophy,
   User,
   Zap,
+  Calculator,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -26,6 +27,7 @@ import {
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Marketplace", url: "/marketplace", icon: ShoppingBag },
+  { title: "Calculator", url: "/calculator", icon: Calculator },
   { title: "Wallet", url: "/wallet", icon: Wallet },
   { title: "Referrals", url: "/referrals", icon: Users },
   { title: "Sales", url: "/sales", icon: BarChart3 },
