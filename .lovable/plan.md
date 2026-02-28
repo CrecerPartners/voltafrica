@@ -1,74 +1,85 @@
 
 
-# Enhance Product Assets for All Categories + Tighten Marketplace UI
+# Full-Screen Image Viewer + Universal Share Button
 
 ## Overview
-Two changes: (1) Give every product -- digital, fintech, events, not just physical -- proper images and sharable assets with direct social sharing buttons, and (2) polish the Marketplace page layout for a cleaner, more professional look.
+Three improvements: (1) clicking a product image opens a full-screen lightbox with left/right navigation, (2) a universal share button that uses the browser's native `navigator.share()` API to let users share to ANY app (WhatsApp Status, DMs, groups, Instagram, Telegram, etc.), and (3) streamlined share UX across the product detail sheet.
 
 ---
 
-## 1. Add Images and Richer Assets to ALL Products
+## 1. Full-Screen Image Lightbox
 
-**Problem:** Currently only physical products (earbuds, watch, hoodie, lamp) have images. Digital (MTN, Spotify, Coursera, Netflix), fintech (PiggyVest, Kuda, Cowrywise), and events products all have empty `images: []` arrays.
+**New component: `src/components/ImageLightbox.tsx`**
 
-**Fix in `src/data/mockData.ts`:**
-- Add 2 relevant Unsplash/placeholder images per product for every category:
-  - Digital: brand-relevant lifestyle images (e.g., person streaming music for Spotify, studying for Coursera)
-  - Fintech: finance/savings themed images (piggy bank, phone banking)
-  - Events: crowd/concert/networking themed images
-- Add a `twitterCaption` field to `ProductAssets` interface for broader social sharing
-- Add a `videoUrl` field (optional, string or empty) to `ProductAssets` for products that have promo videos
+A modal overlay that shows the clicked image at full size with:
+- Dark backdrop covering the entire screen
+- Large image centered with `object-contain` to fit any aspect ratio
+- Left/right arrow buttons to navigate between images
+- Keyboard support (arrow keys, Escape to close)
+- Image counter ("2 / 4") at the top
+- A universal share button on the lightbox itself (share current image)
+- Close button (X) in the top-right corner
+- Built using Radix Dialog for accessibility
 
-**Updated `ProductAssets` interface:**
-```
-interface ProductAssets {
-  images: string[];
-  videoUrl?: string;
-  whatsappMessage: string;
-  instagramCaption: string;
-  twitterCaption: string;
-  sellingTips: string[];
-}
-```
+## 2. Universal Share Button (Native Share API)
 
----
+**How it works:** The Web Share API (`navigator.share()`) opens the device's native share sheet -- which includes WhatsApp (DMs, groups, AND Status), Instagram, Telegram, Facebook, Twitter, email, and every other app installed on the user's phone. This is the best way to support "all socials" without building individual integrations.
 
-## 2. Upgrade ProductDetailSheet with Social Share Buttons
+**Fallback:** On desktop browsers that don't support `navigator.share()`, fall back to a popover with icon buttons for WhatsApp, Twitter/X, copy link, plus a "Copy All" button.
 
-**Changes in `src/components/ProductDetailSheet.tsx`:**
+**Share helper: `src/lib/shareUtils.ts`**
 
-- **Product Images section**: Always show (even for non-physical). Add a "Share to WhatsApp" button per image that opens `https://wa.me/?text=` with the image URL + referral link
-- **Video section**: If `videoUrl` exists, show an embedded video placeholder with a "Share Video" button
-- **Sales Assets section**: Replace plain "Copy" buttons with a row of social share icons:
-  - WhatsApp: opens `https://wa.me/?text=` with pre-filled message + referral link
-  - Instagram: copy caption (can't deep-link to IG post creation)
-  - Twitter/X: opens `https://twitter.com/intent/tweet?text=` with caption + link
-  - General copy button stays for clipboard
-- **"Share All Assets" button**: One-tap copies all text assets (WhatsApp msg + IG caption + referral link) to clipboard
-- Make image grid show images at a better aspect ratio with rounded corners
-- Add "Download Image" button that opens image in new tab (since direct download from Unsplash cross-origin isn't possible)
+A utility file with:
+- `shareContent(title, text, url?)` -- tries `navigator.share()` first, falls back to clipboard copy
+- `shareToWhatsApp(text)` -- opens `https://api.whatsapp.com/send?text=...` (works for DMs, groups, and Status)
+- `shareToTwitter(text, url)` -- opens Twitter intent
+- `shareToTelegram(text, url)` -- opens Telegram share link
+- `shareToFacebook(url)` -- opens Facebook sharer
+- `copyToClipboard(text, label)` -- copies and shows toast
 
----
+## 3. Changes to ProductDetailSheet
 
-## 3. Tighten Marketplace Page UI
+**Updated `src/components/ProductDetailSheet.tsx`:**
 
-**Changes in `src/pages/Marketplace.tsx`:**
+- **Image grid**: Clicking an image opens the new lightbox (not just hover actions). Keep hover overlay but simplify to just a "View" icon.
+- **Per-image share**: Inside the lightbox, a share button that shares the image URL + product caption via native share.
+- **Replace individual platform sections** with a cleaner layout:
+  - Keep WhatsApp, Instagram, Twitter caption previews (collapsible)
+  - Each caption gets a single row: platform icon + preview text + **Share** button (native) + **Copy** button
+  - The Share button uses `navigator.share()` with the caption + referral link pre-filled
+- **Universal "Share Product" button** at the bottom: uses native share with product name, description, and referral link. This one button covers WhatsApp Status, DMs, groups, Instagram, Telegram, etc.
+- **Video share**: If video exists, share button sends video URL + caption via native share
 
-- Add a product count indicator next to the header (e.g., "14 products")
-- Tighten card padding and spacing for a denser, cleaner grid
-- Add a subtle hover scale effect on cards (`hover:shadow-md hover:-translate-y-0.5 transition-all`)
-- Show a small asset indicator on each card (e.g., a camera icon with count like "2 images") so students know assets are available before clicking
-- Make the "Get Link" button slightly smaller and more compact
-- Add an empty state message when no products match a filter
-- Improve filter bar: add a search input to filter products by name
+## 4. Share Fallback Popover
+
+**New component: `src/components/SharePopover.tsx`**
+
+For desktop browsers without native share support:
+- A popover triggered by the share button
+- Row of circular icon buttons: WhatsApp, Twitter/X, Telegram, Facebook, Copy Link
+- Each opens the respective deep link or copies to clipboard
+- Clean, compact grid of icons
 
 ---
 
-## Files Changed
+## Technical Details
 
-| File | Change |
-|------|--------|
-| `src/data/mockData.ts` | Add `twitterCaption` and `videoUrl` to interface; add images to all 14 products |
-| `src/components/ProductDetailSheet.tsx` | Add social share buttons (WhatsApp, Twitter/X), video section, "Share All" button, improved image grid |
-| `src/pages/Marketplace.tsx` | Add search input, asset count indicator on cards, hover effects, product count, empty state |
+### New Files
+| File | Purpose |
+|------|---------|
+| `src/components/ImageLightbox.tsx` | Full-screen image viewer with arrows and share |
+| `src/lib/shareUtils.ts` | Share utility functions (native share + fallbacks) |
+| `src/components/SharePopover.tsx` | Desktop fallback share menu with social icons |
+
+### Modified Files
+| File | Changes |
+|------|---------|
+| `src/components/ProductDetailSheet.tsx` | Integrate lightbox on image click, replace per-platform share buttons with universal share, add SharePopover fallback, streamline sales assets section |
+
+### Key Implementation Notes
+- `navigator.share()` is well-supported on mobile (iOS Safari, Chrome Android) where social sharing matters most
+- `navigator.canShare()` check before attempting share
+- WhatsApp link uses `https://api.whatsapp.com/send?text=` which supports DMs and groups; for Status, the native share sheet is the only way
+- No new dependencies needed -- all built with existing Dialog, Popover, and Button components
+- Images open in lightbox via Dialog with `useState` for current index
 
