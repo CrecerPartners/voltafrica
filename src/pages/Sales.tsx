@@ -32,18 +32,18 @@ const Sales = () => {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <ShoppingCart className="h-5 w-5 mx-auto text-primary mb-1" />
-            <p className="text-2xl font-bold font-display">{dashboardStats.totalSales}</p>
+            <p className="text-xl sm:text-2xl font-bold font-display">{dashboardStats.totalSales}</p>
             <p className="text-xs text-muted-foreground">Total Sales</p>
           </CardContent>
         </Card>
         <Card className="border-border/50">
           <CardContent className="p-4 text-center">
             <TrendingUp className="h-5 w-5 mx-auto text-success mb-1" />
-            <p className="text-2xl font-bold font-display">{dashboardStats.conversionRate}%</p>
+            <p className="text-xl sm:text-2xl font-bold font-display">{dashboardStats.conversionRate}%</p>
             <p className="text-xs text-muted-foreground">Conversion Rate</p>
           </CardContent>
         </Card>
@@ -64,7 +64,7 @@ const Sales = () => {
             {s === "all" ? "All Status" : s.charAt(0).toUpperCase() + s.slice(1)}
           </Button>
         ))}
-        <div className="border-l border-border mx-1" />
+        <div className="hidden sm:block border-l border-border mx-1" />
         {["all", "physical", "digital", "fintech", "events"].map((c) => (
           <Button key={c} variant={categoryFilter === c ? "default" : "outline"} size="sm" onClick={() => setCategoryFilter(c)}
             className={categoryFilter === c ? "volt-gradient" : ""}>
@@ -75,8 +75,8 @@ const Sales = () => {
 
       {/* Sales Table */}
       <Card className="border-border/50">
-        <CardContent className="p-0">
-          <Table>
+        <CardContent className="p-0 overflow-x-auto">
+          <Table className="min-w-[600px]">
             <TableHeader>
               <TableRow className="border-border/50">
                 <TableHead>Date</TableHead>

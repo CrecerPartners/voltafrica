@@ -20,7 +20,7 @@ const Leaderboard = () => {
         return (
           <div
             key={entry.rank + entry.name}
-            className={`flex items-center justify-between p-3 rounded-lg ${entry.isCurrentUser ? "bg-primary/10 border border-primary/30" : "bg-secondary/50"}`}
+            className={`flex items-center justify-between p-2 sm:p-3 rounded-lg ${entry.isCurrentUser ? "bg-primary/10 border border-primary/30" : "bg-secondary/50"}`}
           >
             <div className="flex items-center gap-3">
               <div className="w-8 text-center">
@@ -60,12 +60,12 @@ const Leaderboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">Current Tier</p>
-              <p className="text-lg font-bold font-display" style={{ color: currentTier.color }}>{currentTier.name}</p>
+              <p className="text-base sm:text-lg font-bold font-display" style={{ color: currentTier.color }}>{currentTier.name}</p>
             </div>
             {nextTier && (
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">Next Tier</p>
-                <p className="text-lg font-bold font-display" style={{ color: nextTier.color }}>{nextTier.name}</p>
+                <p className="text-base sm:text-lg font-bold font-display" style={{ color: nextTier.color }}>{nextTier.name}</p>
               </div>
             )}
           </div>
