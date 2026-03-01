@@ -4,6 +4,11 @@ import { LandingNavbar } from "@/components/LandingNavbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
+import {
   Zap,
   TrendingUp,
   Users,
@@ -14,6 +19,11 @@ import {
   Building2,
   ArrowRight,
   Star,
+  Gift,
+  DollarSign,
+  Flame,
+  Target,
+  Crown,
 } from "lucide-react";
 
 const audiences = {
@@ -38,12 +48,20 @@ const audiences = {
 };
 
 const features = [
-  { icon: TrendingUp, title: "Earn Commissions", desc: "Get paid for every sale you make — tracked in real time." },
-  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse products students actually want, from top brands." },
-  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth metrics." },
-  { icon: Trophy, title: "Leaderboards", desc: "Compete with peers, climb the ranks, unlock rewards." },
-  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales." },
-  { icon: Star, title: "Tier Rewards", desc: "Level up from Bronze to Diamond with exclusive perks." },
+  { icon: TrendingUp, title: "Earn Commissions", desc: "Get paid for every sale you make — tracked in real time.", screenshot: "/screenshots/commissions.png" },
+  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse products students actually want, from top brands.", screenshot: "/screenshots/marketplace.png" },
+  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth metrics.", screenshot: "/screenshots/dashboard.png" },
+  { icon: Trophy, title: "Leaderboards", desc: "Compete with peers, climb the ranks, unlock rewards.", screenshot: "/screenshots/leaderboard.png" },
+  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales.", screenshot: "/screenshots/referrals.png" },
+  { icon: Star, title: "Tier Rewards", desc: "Level up from Bronze to Diamond with exclusive perks.", screenshot: "/screenshots/tiers.png" },
+];
+
+const rewards = [
+  { icon: Gift, title: "Signup Bonus", desc: "₦500 Credit to your Volt account the moment you register." },
+  { icon: DollarSign, title: "Direct Sales Commission", desc: "Up to 30% per product sold." },
+  { icon: Flame, title: "Referral Bonus", desc: '₦1,000 "Spark Bonus" for every friend you bring who makes their first 5 sales.' },
+  { icon: Target, title: "High-Volume Bonus", desc: "Extra Cash for Influencers who hit weekly targets." },
+  { icon: Crown, title: "Lead Base Pay", desc: "₦5,000 – ₦30,000 monthly (Team Leads only)." },
 ];
 
 const stats = [
@@ -64,14 +82,12 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Background decoration */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute -bottom-40 -left-40 h-[400px] w-[400px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
         <div className="relative mx-auto max-w-5xl px-4 pb-20 pt-16 text-center md:pb-28 md:pt-24">
-          {/* Toggle pill */}
           <div className="mx-auto mb-10 inline-flex rounded-full border border-border bg-muted/60 p-1 backdrop-blur-sm">
             <button
               onClick={() => setTab("students")}
@@ -95,7 +111,6 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Animated content */}
           <div key={tab} className="animate-fade-in">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl volt-gradient shadow-lg">
               <Icon className="h-7 w-7 text-primary-foreground" />
@@ -156,16 +171,71 @@ export default function LandingPage() {
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
-            <Card key={f.title} className="group border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
-              <CardContent className="flex flex-col gap-3 p-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
-                  <f.icon className="h-5 w-5" />
+            <HoverCard key={f.title} openDelay={200} closeDelay={100}>
+              <HoverCardTrigger asChild>
+                <Card className="group cursor-pointer border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
+                  <CardContent className="flex flex-col gap-3 p-6">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
+                      <f.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display text-lg font-semibold">{f.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+                  </CardContent>
+                </Card>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-72 p-2" side="top" sideOffset={8}>
+                <div className="overflow-hidden rounded-lg border border-border bg-muted/50">
+                  <img
+                    src={f.screenshot}
+                    alt={`${f.title} preview`}
+                    className="h-40 w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.svg";
+                    }}
+                  />
+                  <p className="px-3 py-2 text-xs font-medium text-muted-foreground">{f.title} — App Preview</p>
                 </div>
-                <h3 className="font-display text-lg font-semibold">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
-              </CardContent>
-            </Card>
+              </HoverCardContent>
+            </HoverCard>
           ))}
+        </div>
+      </section>
+
+      {/* How to Earn with Volt */}
+      <section className="border-y border-border bg-muted/30">
+        <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+          <div className="mb-12 text-center">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">How to Earn with Volt</h2>
+            <p className="mt-3 text-muted-foreground">
+              Multiple ways to earn — pick what works for you.
+            </p>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {rewards.map((r) => (
+              <Card key={r.title} className="border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
+                <CardContent className="flex flex-col gap-3 p-6">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <r.icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold">{r.title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{r.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="mt-12 text-center">
+            <p className="mb-4 text-lg font-semibold text-foreground">Find Your Niche</p>
+            <Button
+              asChild
+              size="lg"
+              className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90"
+            >
+              <Link to="/login?mode=signup">
+                Sign Up & Claim My ₦500 Bonus
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
