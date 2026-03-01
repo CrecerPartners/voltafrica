@@ -65,11 +65,18 @@ const rewards = [
   { icon: Crown, title: "Lead Base Pay", desc: "₦5,000 – ₦30,000 monthly (Team Leads only)." },
 ];
 
-const stats = [
+const studentStats = [
   { value: "500+", label: "Campuses" },
   { value: "10,000+", label: "Ambassadors" },
   { value: "₦50M+", label: "Commissions Paid" },
   { value: "200+", label: "Brand Partners" },
+];
+
+const brandStats = [
+  { value: "2M", label: "Active Student Buyers" },
+  { value: "60k", label: "Students per Campus" },
+  { value: "100+", label: "Agents per Campus" },
+  { value: "7 Days", label: "To Launch Sales" },
 ];
 
 export default function LandingPage() {
@@ -154,7 +161,7 @@ export default function LandingPage() {
       {/* Stats */}
       <section className="border-y border-border bg-muted/30">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-4 py-12 md:grid-cols-4 md:py-16">
-          {stats.map((s) => (
+          {(tab === "brands" ? brandStats : studentStats).map((s) => (
             <div key={s.label} className="text-center">
               <p className="font-display text-3xl font-bold text-primary md:text-4xl">{s.value}</p>
               <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
