@@ -166,9 +166,9 @@ export default function LandingPage() {
       {/* Features */}
       <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
         <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl font-bold md:text-4xl">Everything You Need to Succeed</h2>
+          <h2 className="font-display text-3xl font-bold md:text-4xl">Start Earning with Volt</h2>
           <p className="mt-3 text-muted-foreground">
-            Powerful tools for ambassadors and brands alike.
+            Powerful tools to help you sell, track, and grow — all in one place.
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -218,17 +218,20 @@ export default function LandingPage() {
               Multiple ways to earn — pick what works for you.
             </p>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {rewards.map((r) => (
-              <Card key={r.title} className="border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
-                <CardContent className="flex flex-col gap-3 p-6">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <r.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold">{r.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{r.desc}</p>
-                </CardContent>
-              </Card>
+          <div className="space-y-4 max-w-3xl mx-auto">
+            {rewards.map((r, i) => (
+              <div
+                key={r.title}
+                className="flex items-start gap-4 rounded-2xl border border-border/60 bg-card/80 p-5 transition-all hover:shadow-md"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
+                  {i + 1}
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-semibold">{r.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{r.desc}</p>
+                </div>
+              </div>
             ))}
           </div>
           <div className="mt-12 text-center">
