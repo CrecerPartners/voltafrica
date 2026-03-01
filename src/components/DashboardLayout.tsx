@@ -1,16 +1,19 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Bell, LogOut } from "lucide-react";
+import { Bell, LogOut, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export function DashboardLayout() {
   const { data: profile } = useProfile();
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const initials = (profile?.name || "?").split(" ").map(n => n[0]).join("").toUpperCase();
 
@@ -22,11 +25,25 @@ export function DashboardLayout() {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AppSidebar />
+        {/* Sidebar — desktop only */}
+        <div className="hidden md:block">
+          <AppSidebar />
+        </div>
+
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center justify-between border-b border-border px-4 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
             <div className="flex items-center gap-2">
-              <SidebarTrigger />
+              {/* Mobile: Volt logo — Desktop: sidebar trigger */}
+              {isMobile ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg volt-gradient">
+                    <Zap className="h-3.5 w-3.5 text-primary-foreground" />
+                  </div>
+                  <span className="text-lg font-bold font-display text-foreground">Volt</span>
+                </div>
+              ) : (
+                <SidebarTrigger />
+              )}
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />
@@ -39,15 +56,21 @@ export function DashboardLayout() {
                   {initials}
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
-                <LogOut className="h-4 w-4" />
-              </Button>
+              {/* Logout button — desktop only */}
+              {!isMobile && (
+                <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           </header>
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
+          <main className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
             <Outlet />
           </main>
         </div>
+
+        {/* Mobile bottom nav */}
+        <MobileBottomNav />
       </div>
     </SidebarProvider>
   );

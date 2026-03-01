@@ -137,4 +137,15 @@
   .volt-card {
     @apply bg-card border border-border rounded-xl;
   }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Mobile touch optimizations */
+@media (max-width: 767px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
