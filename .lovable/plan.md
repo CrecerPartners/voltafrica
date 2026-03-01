@@ -1,38 +1,70 @@
 
 
-# Fix Feature Cards Display
+# Landing Page with Dual-Audience Hero and About Pages
 
-## Problem
-The feature cards with hover screenshot previews look tacky -- the HoverCard popups are awkward on mobile (hover doesn't work well on touch) and the card styling needs polish on both mobile and desktop.
+## Overview
 
-## Changes
+Create a public-facing landing page at `/` with a Blakskill-style toggle hero (switching between "Brands" and "Students" messaging), a sticky navigation bar with menu items, and dedicated About pages for each audience. The current `/` redirect to `/login` will be replaced with this landing page.
 
-### File: `src/pages/LandingPage.tsx`
+## New Pages and Components
 
-**1. Remove HoverCard on mobile, keep on desktop only**
-- On mobile, the screenshot preview doesn't work well since there's no hover. Remove the HoverCard wrapper on mobile and show the screenshot inline as a small thumbnail at the top of each card instead.
-- Use a responsive approach: on mobile, each card shows a small rounded screenshot thumbnail above the icon/text. On desktop, keep the hover preview behavior.
+### 1. Landing Page (`src/pages/LandingPage.tsx`)
 
-**2. Improve card styling**
-- Add consistent card heights with `h-full` so cards in a row align
-- Improve spacing and padding for a cleaner look
-- Make the icon background slightly larger and more prominent
-- Add subtle border radius and shadow improvements
+A full marketing landing page with these sections:
 
-**3. Mobile layout: switch to 1-column on small screens**
-- Change grid from `grid gap-6 sm:grid-cols-2 lg:grid-cols-3` to include better mobile spacing
-- On mobile (< sm), show cards in a clean single column with the screenshot as a small inline preview image inside each card
+- **Sticky Navbar**: Volt logo on the left. Menu items: "For Students", "For Brands", "About". Right side: "Sign In" (ghost/outline) and "Get Started" (bold primary action button with volt-gradient).
+- **Hero Section** with a pill-shaped toggle (like Blakskill) to switch between two audiences:
+  - **Students tab**: "Join the Volt Squad" -- messaging about earning money as a campus ambassador, with a CTA to sign up.
+  - **Brands tab**: "Start Selling on Campus" -- messaging about reaching students through campus ambassadors, with a CTA to sign up as a brand.
+  - The hero background, headline, subtext, and CTA all animate/transition smoothly when switching tabs.
+- **Features/Benefits section**: Grid of cards highlighting key features (earn commissions, track sales, leaderboards, etc.)
+- **Social proof / stats section**: Numbers like "500+ campuses", "10,000+ ambassadors"
+- **Footer**: Links to About pages, social links, copyright.
 
-**4. Desktop HoverCard improvements**
-- Increase HoverCard width from `w-48` to `w-52` for a better screenshot aspect ratio
-- Add a subtle shadow and smoother border radius
-- Keep the `object-cover object-top` cropping
+### 2. About Students Page (`src/pages/AboutStudents.tsx`)
 
-### Technical approach
+A clean page explaining how Volt works for students/ambassadors. Sections: how it works (3 steps), benefits, testimonials placeholder, CTA to sign up.
 
-Replace the current HoverCard-wrapped cards with a component that:
-- On desktop: keeps the HoverCard behavior with improved styling
-- On mobile: shows a compact card with a small screenshot thumbnail visible directly (no hover needed), using the `useIsMobile` hook to conditionally render
+### 3. About Brands Page (`src/pages/AboutBrands.tsx`)
 
-This uses the existing `useIsMobile` hook from `src/hooks/use-mobile.tsx`.
+A clean page explaining how Volt works for brands. Sections: why campus marketing, how it works, pricing/plans placeholder, CTA to get started.
+
+### 4. Landing Navbar Component (`src/components/LandingNavbar.tsx`)
+
+Reusable sticky navbar for all public pages. Mobile: hamburger menu using Sheet/Drawer. Desktop: horizontal nav items. Includes the bold "Get Started" CTA button.
+
+## Route Changes (`src/App.tsx`)
+
+- `/` renders `LandingPage` (no longer redirects to `/login`)
+- `/about/students` renders `AboutStudents`
+- `/about/brands` renders `AboutBrands`
+- `/login` and `/forgot-password` remain as-is
+
+## Technical Details
+
+### Hero Toggle Implementation
+
+The toggle uses two buttons inside a rounded pill container. Clicking a tab sets state and triggers a smooth CSS transition on the content below. Each tab has its own:
+- Headline text
+- Subtitle text
+- CTA button (links to `/login` with signup mode param)
+- Background gradient or decorative elements
+
+The active tab button gets `volt-gradient` styling; the inactive gets a ghost/transparent style. Content transitions use opacity and translateY with `transition-all duration-500`.
+
+### Files to Create
+- `src/pages/LandingPage.tsx` -- main landing page with hero toggle
+- `src/pages/AboutStudents.tsx` -- about page for students
+- `src/pages/AboutBrands.tsx` -- about page for brands
+- `src/components/LandingNavbar.tsx` -- shared public navbar
+
+### Files to Modify
+- `src/App.tsx` -- update routes: `/` to LandingPage, add `/about/students` and `/about/brands`
+
+### Design Notes
+- All pages use existing Tailwind theme tokens (primary, foreground, card, etc.)
+- Space Grotesk for headings, Inter for body (already configured)
+- Mobile-first responsive design
+- Smooth scroll-based animations using existing `animate-fade-in` utilities
+- The landing navbar collapses into a hamburger menu on mobile using the existing Sheet component
 
