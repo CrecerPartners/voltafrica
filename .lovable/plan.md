@@ -1,65 +1,70 @@
 
 
-# Mobile-Native Bottom Navigation Bar
+# Landing Page with Dual-Audience Hero and About Pages
 
 ## Overview
 
-Replace the collapsible sidebar with a **bottom tab bar** on mobile devices, creating a native app-like navigation experience. The sidebar remains for desktop/tablet. This follows the pattern shown in the reference image (Home, Feed, Members, Inbox tabs at the bottom).
+Create a public-facing landing page at `/` with a Blakskill-style toggle hero (switching between "Brands" and "Students" messaging), a sticky navigation bar with menu items, and dedicated About pages for each audience. The current `/` redirect to `/login` will be replaced with this landing page.
 
-## What Changes
+## New Pages and Components
 
-### 1. New Component: `MobileBottomNav`
+### 1. Landing Page (`src/pages/LandingPage.tsx`)
 
-A fixed bottom navigation bar visible only on mobile (`md:hidden`). It will show 5 primary tabs (the most-used routes) with icons and labels, plus a "More" menu for remaining pages. The active tab gets a highlighted style (filled icon + primary color). Uses `useLocation` for active state and `useNavigate` for instant transitions.
+A full marketing landing page with these sections:
 
-**Primary tabs (bottom bar):**
-- Dashboard (home icon)
-- Marketplace (shopping bag)
-- Wallet (wallet icon)
-- Sales (chart icon)
-- More (menu icon -- opens a drawer/sheet with: Calculator, Referrals, Leaderboard, Profile, Logout)
+- **Sticky Navbar**: Volt logo on the left. Menu items: "For Students", "For Brands", "About". Right side: "Sign In" (ghost/outline) and "Get Started" (bold primary action button with volt-gradient).
+- **Hero Section** with a pill-shaped toggle (like Blakskill) to switch between two audiences:
+  - **Students tab**: "Join the Volt Squad" -- messaging about earning money as a campus ambassador, with a CTA to sign up.
+  - **Brands tab**: "Start Selling on Campus" -- messaging about reaching students through campus ambassadors, with a CTA to sign up as a brand.
+  - The hero background, headline, subtext, and CTA all animate/transition smoothly when switching tabs.
+- **Features/Benefits section**: Grid of cards highlighting key features (earn commissions, track sales, leaderboards, etc.)
+- **Social proof / stats section**: Numbers like "500+ campuses", "10,000+ ambassadors"
+- **Footer**: Links to About pages, social links, copyright.
 
-### 2. Update `DashboardLayout`
+### 2. About Students Page (`src/pages/AboutStudents.tsx`)
 
-- Hide the sidebar entirely on mobile (`hidden md:block`)
-- Hide the `SidebarTrigger` on mobile
-- Add `MobileBottomNav` component (only renders on mobile)
-- Add bottom padding to `<main>` on mobile so content doesn't get hidden behind the nav bar
-- Simplify the mobile header: show Volt logo on the left, notification + avatar on the right
+A clean page explaining how Volt works for students/ambassadors. Sections: how it works (3 steps), benefits, testimonials placeholder, CTA to sign up.
 
-### 3. Update `AppSidebar`
+### 3. About Brands Page (`src/pages/AboutBrands.tsx`)
 
-- Add `className="hidden md:flex"` so it only renders on desktop/tablet
+A clean page explaining how Volt works for brands. Sections: why campus marketing, how it works, pricing/plans placeholder, CTA to get started.
 
-### 4. CSS/Styling Enhancements
+### 4. Landing Navbar Component (`src/components/LandingNavbar.tsx`)
 
-- Add `safe-area-inset` padding for notched phones (env(safe-area-inset-bottom))
-- Smooth transitions on tab switches
-- Haptic-like active states with scale transforms
+Reusable sticky navbar for all public pages. Mobile: hamburger menu using Sheet/Drawer. Desktop: horizontal nav items. Includes the bold "Get Started" CTA button.
 
----
+## Route Changes (`src/App.tsx`)
+
+- `/` renders `LandingPage` (no longer redirects to `/login`)
+- `/about/students` renders `AboutStudents`
+- `/about/brands` renders `AboutBrands`
+- `/login` and `/forgot-password` remain as-is
 
 ## Technical Details
 
-### New File: `src/components/MobileBottomNav.tsx`
+### Hero Toggle Implementation
 
-- Uses `useIsMobile()` hook to conditionally render
-- Fixed position at bottom, `z-50`, with backdrop blur and border-top
-- 5 tab buttons in a flex row
-- "More" tab opens a Drawer (vaul) with remaining nav items + logout
-- Active tab detection via `useLocation().pathname`
-- `pb-[env(safe-area-inset-bottom)]` for safe area on iOS
+The toggle uses two buttons inside a rounded pill container. Clicking a tab sets state and triggers a smooth CSS transition on the content below. Each tab has its own:
+- Headline text
+- Subtitle text
+- CTA button (links to `/login` with signup mode param)
+- Background gradient or decorative elements
 
-### Modified: `src/components/DashboardLayout.tsx`
+The active tab button gets `volt-gradient` styling; the inactive gets a ghost/transparent style. Content transitions use opacity and translateY with `transition-all duration-500`.
 
-- Import `useIsMobile` and `MobileBottomNav`
-- Wrap `AppSidebar` in a div with `hidden md:block`
-- Hide `SidebarTrigger` on mobile, show Volt logo instead
-- Add `pb-20 md:pb-0` to main content area
-- Render `<MobileBottomNav />` at the end
+### Files to Create
+- `src/pages/LandingPage.tsx` -- main landing page with hero toggle
+- `src/pages/AboutStudents.tsx` -- about page for students
+- `src/pages/AboutBrands.tsx` -- about page for brands
+- `src/components/LandingNavbar.tsx` -- shared public navbar
 
-### Modified: `src/index.css`
+### Files to Modify
+- `src/App.tsx` -- update routes: `/` to LandingPage, add `/about/students` and `/about/brands`
 
-- Add utility class for safe-area bottom padding
-- Ensure smooth touch interactions (touch-action, -webkit-tap-highlight-color)
+### Design Notes
+- All pages use existing Tailwind theme tokens (primary, foreground, card, etc.)
+- Space Grotesk for headings, Inter for body (already configured)
+- Mobile-first responsive design
+- Smooth scroll-based animations using existing `animate-fade-in` utilities
+- The landing navbar collapses into a hamburger menu on mobile using the existing Sheet component
 
