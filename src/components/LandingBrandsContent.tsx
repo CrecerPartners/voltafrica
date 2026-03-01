@@ -101,11 +101,11 @@ export function LandingBrandsContent() {
     <>
       {/* Brand Hero Image */}
       <section className="mx-auto max-w-6xl px-4 py-12 md:py-16">
-        <div className="mx-auto max-w-sm overflow-hidden rounded-3xl border border-border/40 shadow-xl md:max-w-md">
+        <div className="mx-auto max-w-sm overflow-hidden rounded-3xl border border-border/40 shadow-xl md:max-w-2xl lg:max-w-4xl">
           <img
             src="/images/hero-brands.png"
             alt="Students don't buy from ads — they buy from people they trust"
-            className="w-full object-cover"
+            className="w-full object-cover md:aspect-video"
             loading="lazy"
           />
         </div>
