@@ -181,7 +181,8 @@ export default function LandingPage() {
                       <img
                         src={f.screenshot}
                         alt={`${f.title} preview`}
-                        className="h-36 w-full object-cover object-top"
+                        className="h-36 w-full object-cover"
+                        style={{ objectPosition: "0 -30px" }}
                       />
                     </div>
                   )}
@@ -206,7 +207,8 @@ export default function LandingPage() {
                     <img
                       src={f.screenshot}
                       alt={`${f.title} preview`}
-                      className="h-80 w-full object-cover object-top"
+                      className="h-80 w-full object-cover"
+                      style={{ objectPosition: "0 -30px" }}
                     />
                   </div>
                   <p className="mt-1.5 text-center text-xs font-medium text-muted-foreground">{f.title}</p>
