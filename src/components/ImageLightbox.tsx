@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X, Share2 } from "lucide-react";
@@ -69,8 +69,24 @@ export function ImageLightbox({ images, initialIndex, open, onOpenChange, produc
           </div>
         </div>
 
-        {/* Image */}
-        <div className="flex items-center justify-center w-full h-full px-16">
+        {/* Image with swipe */}
+        <div
+          className="flex items-center justify-center w-full h-full px-4 md:px-16"
+          onTouchStart={(e) => {
+            const touch = e.touches[0];
+            (e.currentTarget as any)._touchStartX = touch.clientX;
+          }}
+          onTouchEnd={(e) => {
+            const startX = (e.currentTarget as any)._touchStartX;
+            if (startX == null) return;
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            if (Math.abs(diff) > 50) {
+              if (diff > 0) next();
+              else prev();
+            }
+          }}
+        >
           <img
             src={images[index]}
             alt={`${productName} ${index + 1}`}
