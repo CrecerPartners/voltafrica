@@ -8,6 +8,7 @@ import {
   HoverCardTrigger,
   HoverCardContent,
 } from "@/components/ui/hover-card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Zap,
   TrendingUp,
@@ -73,6 +74,7 @@ const stats = [
 
 export default function LandingPage() {
   const [tab, setTab] = useState<"students" | "brands">("students");
+  const isMobile = useIsMobile();
   const active = audiences[tab];
   const Icon = active.icon;
 
@@ -169,32 +171,49 @@ export default function LandingPage() {
             Powerful tools for ambassadors and brands alike.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <HoverCard key={f.title} openDelay={200} closeDelay={100}>
-              <HoverCardTrigger asChild>
-                <Card className="group cursor-pointer border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
-                  <CardContent className="flex flex-col gap-3 p-6">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
-                      <f.icon className="h-5 w-5" />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => {
+            const cardContent = (
+              <Card className="group h-full cursor-pointer border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
+                <CardContent className="flex h-full flex-col gap-3 p-6">
+                  {isMobile && (
+                    <div className="mb-1 overflow-hidden rounded-xl border border-border/40">
+                      <img
+                        src={f.screenshot}
+                        alt={`${f.title} preview`}
+                        className="h-36 w-full object-cover object-top"
+                      />
                     </div>
-                    <h3 className="font-display text-lg font-semibold">{f.title}</h3>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
-                  </CardContent>
-                </Card>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-48 p-1.5" side="top" sideOffset={8}>
-                <div className="overflow-hidden rounded-lg border border-border">
-                  <img
-                    src={f.screenshot}
-                    alt={`${f.title} preview`}
-                    className="h-72 w-full object-cover object-top"
-                  />
-                </div>
-                <p className="mt-1.5 text-center text-xs font-medium text-muted-foreground">{f.title}</p>
-              </HoverCardContent>
-            </HoverCard>
-          ))}
+                  )}
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
+                    <f.icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold">{f.title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+                </CardContent>
+              </Card>
+            );
+
+            if (isMobile) {
+              return <div key={f.title}>{cardContent}</div>;
+            }
+
+            return (
+              <HoverCard key={f.title} openDelay={200} closeDelay={100}>
+                <HoverCardTrigger asChild>{cardContent}</HoverCardTrigger>
+                <HoverCardContent className="w-52 p-1.5 shadow-lg" side="top" sideOffset={8}>
+                  <div className="overflow-hidden rounded-lg border border-border">
+                    <img
+                      src={f.screenshot}
+                      alt={`${f.title} preview`}
+                      className="h-80 w-full object-cover object-top"
+                    />
+                  </div>
+                  <p className="mt-1.5 text-center text-xs font-medium text-muted-foreground">{f.title}</p>
+                </HoverCardContent>
+              </HoverCard>
+            );
+          })}
         </div>
       </section>
 
