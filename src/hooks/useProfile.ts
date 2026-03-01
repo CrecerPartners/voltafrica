@@ -55,3 +55,37 @@ export function useUpdateProfile() {
     },
   });
 }
+
+export function useUploadAvatar() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${user!.id}/avatar.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const avatar_url = urlData.publicUrl + "?t=" + Date.now();
+
+      const { error: updateError } = await supabase
+        .from("profiles" as any)
+        .update({ avatar_url } as any)
+        .eq("user_id", user!.id);
+      if (updateError) throw updateError;
+
+      return avatar_url;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+    },
+  });
+}

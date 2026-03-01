@@ -12,6 +12,7 @@ import {
   User,
   LogOut,
   Zap,
+  GraduationCap,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,6 +34,7 @@ const moreTabs = [
   { label: "Calculator", path: "/calculator", icon: Calculator },
   { label: "Referrals", path: "/referrals", icon: Users },
   { label: "Leaderboard", path: "/leaderboard", icon: Trophy },
+  { label: "Training", path: "/training", icon: GraduationCap },
   { label: "Profile", path: "/profile", icon: User },
 ];
 

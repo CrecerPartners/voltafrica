@@ -223,6 +223,112 @@ export type Database = {
           },
         ]
       }
+      training_courses: {
+        Row: {
+          category: string
+          cover_color: string
+          created_at: string
+          description: string
+          id: string
+          level: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          category?: string
+          cover_color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          level?: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          category?: string
+          cover_color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          level?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      training_lessons: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          module_number: number
+          module_title: string
+          sort_order: number
+          title: string
+          youtube_url: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          module_number?: number
+          module_title?: string
+          sort_order?: number
+          title: string
+          youtube_url?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          module_number?: number
+          module_title?: string
+          sort_order?: number
+          title?: string
+          youtube_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_lessons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "training_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          id: string
+          lesson_id: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          lesson_id: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          lesson_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "training_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transactions: {
         Row: {
           amount: number
