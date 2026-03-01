@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { useProducts, Product } from "@/hooks/useProducts";
 import { useProfile } from "@/hooks/useProfile";
 import { formatNaira } from "@/lib/utils";
-import { Link2, Filter, Search, Image, PackageOpen, Loader2 } from "lucide-react";
+import { Link2, Filter, Search, PackageOpen, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ProductDetailSheet } from "@/components/ProductDetailSheet";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 type ProductCategory = "physical" | "digital" | "fintech" | "events";
 
@@ -98,14 +99,29 @@ const Marketplace = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {filtered.map((product) => (
-            <Card key={product.id} className="border-border/50 group hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer" onClick={() => openDetail(product)}>
-              <CardContent className="p-3.5 space-y-2.5">
-                <div className="flex items-start justify-between">
-                  <div className="text-2xl">{product.image}</div>
-                  <Badge variant="outline" className={`${categoryColors[product.category]} text-[10px] px-1.5 py-0`}>
-                    {categoryLabels[product.category]}
-                  </Badge>
-                </div>
+            <Card key={product.id} className="border-border/50 group hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer overflow-hidden" onClick={() => openDetail(product)}>
+              {/* Hero image */}
+              <div className="relative overflow-hidden">
+                <AspectRatio ratio={4 / 3}>
+                  {product.assets?.images?.length > 0 ? (
+                    <img
+                      src={product.assets.images[0]}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <span className="text-4xl">{product.image}</span>
+                    </div>
+                  )}
+                </AspectRatio>
+                <Badge variant="outline" className={`${categoryColors[product.category]} text-[10px] px-1.5 py-0 absolute top-2 right-2 backdrop-blur-sm bg-background/70`}>
+                  {categoryLabels[product.category]}
+                </Badge>
+              </div>
+              {/* Details */}
+              <CardContent className="p-3.5 space-y-2">
                 <div>
                   <h3 className="font-semibold text-sm leading-tight">{product.name}</h3>
                   <p className="text-xs text-muted-foreground">{product.brand}</p>
@@ -116,16 +132,9 @@ const Marketplace = () => {
                     {product.price > 0 && <p className="text-xs text-muted-foreground">{formatNaira(product.price)}</p>}
                     <p className="text-sm font-bold text-primary">{product.commissionRate}%</p>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    {product.assets?.images?.length > 0 && (
-                      <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
-                        <Image className="h-3 w-3" /> {product.assets.images.length}
-                      </span>
-                    )}
-                    <Button size="sm" onClick={(e) => getLink(e, product)} className="volt-gradient text-xs h-7 px-2.5">
-                      <Link2 className="h-3 w-3 mr-1" /> Link
-                    </Button>
-                  </div>
+                  <Button size="sm" onClick={(e) => getLink(e, product)} className="volt-gradient text-xs h-7 px-2.5">
+                    <Link2 className="h-3 w-3 mr-1" /> Link
+                  </Button>
                 </div>
               </CardContent>
             </Card>
