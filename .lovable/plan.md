@@ -1,37 +1,38 @@
 
 
-# Fix Feature Card Screenshots — Capture Real App Screenshots
+# Fix Feature Cards Display
 
 ## Problem
+The feature cards with hover screenshot previews look tacky -- the HoverCard popups are awkward on mobile (hover doesn't work well on touch) and the card styling needs polish on both mobile and desktop.
 
-The feature card hover previews show placeholder images because the screenshot files (`/screenshots/commissions.png`, etc.) don't exist in the `public/` directory. They all fall back to `placeholder.svg`.
+## Changes
 
-## Solution
+### File: `src/pages/LandingPage.tsx`
 
-Use the browser automation tool to capture real screenshots of each app page in mobile format (375x812 viewport), then save them to `public/screenshots/`. Since these pages are behind authentication, you'll need to be logged in first in the preview.
+**1. Remove HoverCard on mobile, keep on desktop only**
+- On mobile, the screenshot preview doesn't work well since there's no hover. Remove the HoverCard wrapper on mobile and show the screenshot inline as a small thumbnail at the top of each card instead.
+- Use a responsive approach: on mobile, each card shows a small rounded screenshot thumbnail above the icon/text. On desktop, keep the hover preview behavior.
 
-### Step 1: Log in to the preview
+**2. Improve card styling**
+- Add consistent card heights with `h-full` so cards in a row align
+- Improve spacing and padding for a cleaner look
+- Make the icon background slightly larger and more prominent
+- Add subtle border radius and shadow improvements
 
-You'll need to log in to the app in the preview iframe first so the browser can access the protected routes.
+**3. Mobile layout: switch to 1-column on small screens**
+- Change grid from `grid gap-6 sm:grid-cols-2 lg:grid-cols-3` to include better mobile spacing
+- On mobile (< sm), show cards in a clean single column with the screenshot as a small inline preview image inside each card
 
-### Step 2: Navigate and screenshot each page
+**4. Desktop HoverCard improvements**
+- Increase HoverCard width from `w-48` to `w-52` for a better screenshot aspect ratio
+- Add a subtle shadow and smoother border radius
+- Keep the `object-cover object-top` cropping
 
-Capture mobile-format screenshots of these pages and save to `public/screenshots/`:
+### Technical approach
 
-| Feature Card | App Route | Screenshot File |
-|---|---|---|
-| Earn Commissions | `/sales` | `public/screenshots/commissions.png` |
-| Curated Marketplace | `/marketplace` | `public/screenshots/marketplace.png` |
-| Track Everything | `/dashboard` | `public/screenshots/dashboard.png` |
-| Leaderboards | `/leaderboard` | `public/screenshots/leaderboard.png` |
-| Refer & Earn | `/referrals` | `public/screenshots/referrals.png` |
-| Tier Rewards | `/wallet` (or `/profile`) | `public/screenshots/tiers.png` |
+Replace the current HoverCard-wrapped cards with a component that:
+- On desktop: keeps the HoverCard behavior with improved styling
+- On mobile: shows a compact card with a small screenshot thumbnail visible directly (no hover needed), using the `useIsMobile` hook to conditionally render
 
-### Step 3: Update hover card styling
-
-Adjust the `HoverCardContent` image display to use a taller aspect ratio that better fits mobile screenshots (change from `h-40` to a taller height like `h-64` or use `aspect-[9/16]`), and set `object-cover` with `object-top` so the top of the screenshot is visible.
-
-### Prerequisites
-
-**You must be logged in** to the preview app before I can capture screenshots. Please log in to the app in the preview window, then approve this plan so I can proceed.
+This uses the existing `useIsMobile` hook from `src/hooks/use-mobile.tsx`.
 
