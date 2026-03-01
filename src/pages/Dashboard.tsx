@@ -25,14 +25,29 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
   const { data: profile } = useProfile();
   const { data: transactions } = useTransactions();
   const { data: sales } = useSales();
   const { data: referrals } = useReferrals();
+
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    await queryClient.invalidateQueries({ queryKey: ["sales"] });
+    await queryClient.invalidateQueries({ queryKey: ["referrals"] });
+    await queryClient.invalidateQueries({ queryKey: ["profile"] });
+  }, [queryClient]);
+
+  const { containerRef, pullDistance, isRefreshing } = usePullToRefresh({ onRefresh: handleRefresh });
 
   const dashboardStats = useMemo(() => {
     if (!transactions) return { totalEarnings: 0, pendingPayout: 0, totalSales: 0, referralCount: 0, weeklyGrowth: 0 };
@@ -87,7 +102,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div ref={isMobile ? containerRef : undefined} className="space-y-6 max-w-7xl relative">
+      {/* Pull-to-refresh indicator */}
+      {isMobile && (pullDistance > 0 || isRefreshing) && (
+        <div
+          className="flex items-center justify-center transition-all duration-200"
+          style={{ height: pullDistance > 0 ? pullDistance : isRefreshing ? 40 : 0 }}
+        >
+          <Loader2
+            className={`h-5 w-5 text-primary transition-transform ${isRefreshing ? "animate-spin" : ""}`}
+            style={{ transform: `rotate(${pullDistance * 3}deg)`, opacity: Math.min(pullDistance / 60, 1) }}
+          />
+        </div>
+      )}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold font-display">
           Welcome back, {firstName} 👋
