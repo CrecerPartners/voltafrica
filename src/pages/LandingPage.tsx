@@ -176,16 +176,6 @@ export default function LandingPage() {
             const cardContent = (
               <Card className="group h-full cursor-pointer border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
                 <CardContent className="flex h-full flex-col gap-3 p-6">
-                  {isMobile && (
-                    <div className="mb-1 overflow-hidden rounded-xl border border-border/40">
-                      <img
-                        src={f.screenshot}
-                        alt={`${f.title} preview`}
-                        className="h-36 w-full object-cover"
-                        style={{ objectPosition: "0 -30px" }}
-                      />
-                    </div>
-                  )}
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
                     <f.icon className="h-5 w-5" />
                   </div>
