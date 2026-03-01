@@ -13,6 +13,9 @@ import {
   Copy,
   ShoppingBag,
   Wallet,
+  UserCog,
+  Banknote,
+  Trophy,
 } from "lucide-react";
 import {
   AreaChart,
@@ -87,6 +90,13 @@ const Dashboard = () => {
 
   const firstName = profile?.name?.split(" ")[0] || "there";
 
+  const copyReferralCode = () => {
+    if (profile?.referral_code) {
+      navigator.clipboard.writeText(profile.referral_code);
+      toast.success("Referral code copied!");
+    }
+  };
+
   const stats = [
     { label: "Total Earnings", value: formatNaira(dashboardStats.totalEarnings), icon: TrendingUp, trend: dashboardStats.weeklyGrowth > 0 ? `+${dashboardStats.weeklyGrowth}%` : undefined },
     { label: "Pending Payout", value: formatNaira(dashboardStats.pendingPayout), icon: Clock },
@@ -94,12 +104,14 @@ const Dashboard = () => {
     { label: "Referrals", value: dashboardStats.referralCount.toString(), icon: Users },
   ];
 
-  const copyReferralCode = () => {
-    if (profile?.referral_code) {
-      navigator.clipboard.writeText(profile.referral_code);
-      toast.success("Referral code copied!");
-    }
-  };
+  const quickActions = [
+    { label: "Set Up Your Profile", icon: UserCog, subtitle: "Complete your profile", onClick: () => navigate("/profile") },
+    { label: "Browse Products", icon: ShoppingBag, subtitle: "Find offers to promote", onClick: () => navigate("/marketplace") },
+    { label: "Check Wallet", icon: Wallet, subtitle: "View balance & payouts", onClick: () => navigate("/wallet") },
+    { label: "Copy Referral Code", icon: Copy, subtitle: "Share & earn bonuses", onClick: copyReferralCode },
+    { label: "Request Payout", icon: Banknote, subtitle: "Cash out your earnings", onClick: () => navigate("/wallet") },
+    { label: "View Leaderboard", icon: Trophy, subtitle: "See your ranking", onClick: () => navigate("/leaderboard") },
+  ];
 
   return (
     <div ref={isMobile ? containerRef : undefined} className="space-y-6 max-w-7xl relative">
@@ -137,6 +149,30 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Quick Actions */}
+      <div>
+        <h2 className="text-lg font-semibold font-display mb-3">Quick Actions</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          {quickActions.map((action) => (
+            <Card
+              key={action.label}
+              onClick={action.onClick}
+              className="border-border/50 hover:border-primary/50 hover:shadow-md transition-all cursor-pointer"
+            >
+              <CardContent className="p-4 flex items-start gap-3">
+                <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <action.icon className="h-4 w-4 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium text-sm">{action.label}</p>
+                  <p className="text-xs text-muted-foreground">{action.subtitle}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-5 gap-4">
@@ -188,30 +224,6 @@ const Dashboard = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Button onClick={copyReferralCode} variant="outline" className="h-auto py-3 justify-start gap-3">
-          <Copy className="h-4 w-4 text-primary" />
-          <div className="text-left">
-            <p className="font-medium text-sm">Copy Referral Code</p>
-            <p className="text-xs text-muted-foreground">{profile?.referral_code || "..."}</p>
-          </div>
-        </Button>
-        <Button onClick={() => navigate("/marketplace")} variant="outline" className="h-auto py-3 justify-start gap-3">
-          <ShoppingBag className="h-4 w-4 text-primary" />
-          <div className="text-left">
-            <p className="font-medium text-sm">Browse Products</p>
-            <p className="text-xs text-muted-foreground">Find offers to promote</p>
-          </div>
-        </Button>
-        <Button onClick={() => navigate("/wallet")} variant="outline" className="h-auto py-3 justify-start gap-3">
-          <Wallet className="h-4 w-4 text-primary" />
-          <div className="text-left">
-            <p className="font-medium text-sm">View Wallet</p>
-            <p className="text-xs text-muted-foreground">{formatNaira(dashboardStats.pendingPayout)} pending</p>
-          </div>
-        </Button>
       </div>
     </div>
   );
