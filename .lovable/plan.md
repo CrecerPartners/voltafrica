@@ -1,39 +1,48 @@
 
 
-# Redesign Dashboard Quick Actions
+# Modernize Marketplace Product Cards
 
 ## Overview
 
-Reorganize the Dashboard layout so the **Quick Actions** section is more prominent -- placed right after the stats cards, styled as a grid of visually distinct action boxes (Cards) instead of the current subtle outline buttons at the bottom.
+Redesign the marketplace product cards to use a **hero image** instead of an emoji icon, giving them a modern e-commerce look. Each card will display the first image from the product's `assets.images` array as a cover photo, with the product details below.
 
-## New Layout Order
+## Card Layout (New Design)
 
-1. Welcome header
-2. Stats cards (Total Earnings, Pending Payout, Total Sales, Referrals)
-3. **Quick Actions grid** (new prominent section)
-4. Earnings Trend chart + Recent Activity
+Each product card will follow this structure:
 
-## Quick Actions Grid
+```text
++---------------------------+
+|                           |
+|      [Product Image]      |  <-- aspect-ratio 4:3, object-cover, rounded top
+|                           |
++---------------------------+
+| Category Badge            |
+| Product Name              |
+| Brand                     |
+| Short description...      |
+|                           |
+| Price        Commission%  |
+|              [Get Link]   |
++---------------------------+
+```
 
-A section titled **"Quick Actions"** with a 2-column (mobile) / 3-column (desktop) grid of Card boxes. Each card has an icon, title, subtitle, and navigates to the correct page on click. The actions:
-
-| Action | Icon | Subtitle | Route |
-|--------|------|----------|-------|
-| Set Up Your Profile | UserCog | Complete your profile | `/profile` |
-| Browse Products | ShoppingBag | Find offers to promote | `/marketplace` |
-| Check Wallet | Wallet | View balance & payouts | `/wallet` |
-| Copy Referral Code | Copy | Share & earn bonuses | (clipboard copy) |
-| Request Payout | Banknote | Cash out your earnings | `/wallet` (or open payout dialog) |
-| View Leaderboard | Trophy | See your ranking | `/leaderboard` |
-
-Each card will be a clickable `Card` component with hover effects (`hover:border-primary/50 hover:shadow-md transition-all cursor-pointer`), an icon in a colored circle, bold title, and muted subtitle.
+- **Image area**: Uses the first URL from `product.assets.images[]` as a cover image. Falls back to a gradient placeholder with the emoji if no images exist.
+- **Hover effect**: Subtle scale-up on the image, card lifts with shadow.
+- **Category badge**: Overlaid on the image (top-right corner) with a frosted glass effect.
+- **Details section**: Clean typography below the image with name, brand, description, price, and commission rate.
 
 ## Technical Changes
 
-### Modified: `src/pages/Dashboard.tsx`
+### Modified: `src/pages/Marketplace.tsx`
 
-- Add a `quickActions` array with label, icon, subtitle, and onClick handler for each action
-- Move the Quick Actions section to appear **immediately after** the stats grid
-- Render as Card components in a responsive grid instead of outline Buttons
-- Remove the old bottom button row (replaced by the new section)
-- Add imports for `UserCog, Banknote, Trophy` from lucide-react
+- Replace the emoji `<div className="text-2xl">{product.image}</div>` with an `<img>` element showing `product.assets.images[0]`
+- Add a fallback for products without images: show a muted placeholder with the emoji centered
+- Move the category badge to overlay on top of the image (absolute positioning)
+- Wrap the image in an `AspectRatio` container (4:3 ratio) with `overflow-hidden rounded-t-lg`
+- Adjust `CardContent` padding and spacing for the new layout
+- The card structure changes from all-in-one padding to: image block (no padding) + content block (with padding)
+
+### No other files need modification
+
+The `Product` interface and data stay the same -- we're just using `assets.images[0]` which already exists in the data model.
+
