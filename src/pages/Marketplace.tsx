@@ -10,6 +10,7 @@ import { Link2, Filter, Search, PackageOpen, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ProductDetailSheet } from "@/components/ProductDetailSheet";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ImageLightbox } from "@/components/ImageLightbox";
 
 type ProductCategory = "physical" | "digital" | "fintech" | "events";
 
@@ -35,6 +36,16 @@ const Marketplace = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [lightboxProduct, setLightboxProduct] = useState<Product | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  const openImageLightbox = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    if (product.assets?.images?.length > 0) {
+      setLightboxProduct(product);
+      setLightboxOpen(true);
+    }
+  };
 
   const filtered = products
     .filter((p) => activeCategory === "all" || p.category === activeCategory)
@@ -109,6 +120,7 @@ const Marketplace = () => {
                       alt={product.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
+                      onClick={(e) => openImageLightbox(e, product)}
                     />
                   ) : (
                     <div className="w-full h-full bg-muted flex items-center justify-center">
@@ -143,6 +155,17 @@ const Marketplace = () => {
       )}
 
       <ProductDetailSheet product={selectedProduct} open={sheetOpen} onOpenChange={setSheetOpen} />
+
+      {lightboxProduct && (
+        <ImageLightbox
+          images={lightboxProduct.assets.images}
+          initialIndex={0}
+          open={lightboxOpen}
+          onOpenChange={setLightboxOpen}
+          productName={lightboxProduct.name}
+          referralLink={`https://volt.ng/ref/${profile?.referral_code || "VOLT"}/${lightboxProduct.id}`}
+        />
+      )}
     </div>
   );
 };
