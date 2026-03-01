@@ -1,51 +1,37 @@
 
-# Landing Page Enhancements
 
-## Overview
+# Fix Feature Card Screenshots — Capture Real App Screenshots
 
-Three changes: add a "How to Earn with Volt" rewards card section, add hover-to-preview screenshots on feature cards, remove "For Students"/"For Brands" from the navbar, and update "Direct Sale" to "Direct Sales Commission -- up to 30% per product sold."
+## Problem
 
-## Changes
+The feature card hover previews show placeholder images because the screenshot files (`/screenshots/commissions.png`, etc.) don't exist in the `public/` directory. They all fall back to `placeholder.svg`.
 
-### 1. Add "How to Earn with Volt" Section (`src/pages/LandingPage.tsx`)
+## Solution
 
-Insert a new section after the Features grid showing five reward cards in a responsive grid. Each card has an icon, bold title, and reward description:
+Use the browser automation tool to capture real screenshots of each app page in mobile format (375x812 viewport), then save them to `public/screenshots/`. Since these pages are behind authentication, you'll need to be logged in first in the preview.
 
-- **Signup Bonus** -- N500 Credit to your Volt account the moment you register
-- **Direct Sales Commission** -- Up to 30% per product sold
-- **Referral Bonus** -- N1,000 "Spark Bonus" for every friend you bring who makes their first 5 sales
-- **High-Volume Bonus** -- Extra Cash for Influencers who hit weekly targets
-- **Lead Base Pay** -- N5,000 - N30,000 monthly (Team Leads only)
+### Step 1: Log in to the preview
 
-Below the cards: a "Find Your Niche" subheading and a bold **"Sign Up & Claim My N500 Bonus"** CTA button linking to signup.
+You'll need to log in to the app in the preview iframe first so the browser can access the protected routes.
 
-New icons imported: `Gift, DollarSign, Flame, Target, Crown` from lucide-react.
+### Step 2: Navigate and screenshot each page
 
-### 2. Feature Cards with Screenshot Previews on Hover (`src/pages/LandingPage.tsx`)
+Capture mobile-format screenshots of these pages and save to `public/screenshots/`:
 
-- Add a `screenshot` field to each feature object (e.g., `/screenshots/commissions.png`)
-- Wrap each feature Card in a `HoverCardTrigger` from Radix UI
-- On hover, a `HoverCardContent` pops up showing a rounded placeholder screenshot image
-- Placeholder images used initially -- real screenshots can be swapped in later by uploading to `/public/screenshots/`
+| Feature Card | App Route | Screenshot File |
+|---|---|---|
+| Earn Commissions | `/sales` | `public/screenshots/commissions.png` |
+| Curated Marketplace | `/marketplace` | `public/screenshots/marketplace.png` |
+| Track Everything | `/dashboard` | `public/screenshots/dashboard.png` |
+| Leaderboards | `/leaderboard` | `public/screenshots/leaderboard.png` |
+| Refer & Earn | `/referrals` | `public/screenshots/referrals.png` |
+| Tier Rewards | `/wallet` (or `/profile`) | `public/screenshots/tiers.png` |
 
-### 3. Remove Nav Items from Navbar (`src/components/LandingNavbar.tsx`)
+### Step 3: Update hover card styling
 
-- Remove the `navItems` array and all desktop/mobile nav link rendering
-- Navbar becomes: **Volt logo | Sign In | Get Started**
-- "For Students" and "For Brands" links remain in the footer and hero toggle
+Adjust the `HoverCardContent` image display to use a taller aspect ratio that better fits mobile screenshots (change from `h-40` to a taller height like `h-64` or use `aspect-[9/16]`), and set `object-cover` with `object-top` so the top of the screenshot is visible.
 
-## Technical Details
+### Prerequisites
 
-### Modified: `src/pages/LandingPage.tsx`
-- Add `rewards` data array with 5 items (using updated "Direct Sales Commission" wording)
-- Add "How to Earn with Volt" section with responsive card grid (2 cols mobile, 3 cols desktop)
-- Import `HoverCard, HoverCardTrigger, HoverCardContent` from `@/components/ui/hover-card`
-- Add `screenshot` string to each feature entry
-- Wrap feature cards in HoverCard with image preview popup
-- Import additional lucide icons for reward cards
+**You must be logged in** to the preview app before I can capture screenshots. Please log in to the app in the preview window, then approve this plan so I can proceed.
 
-### Modified: `src/components/LandingNavbar.tsx`
-- Remove `navItems` array
-- Remove desktop `<nav>` element
-- Remove nav links from mobile Sheet content
-- Keep logo, Sign In button, Get Started button, and mobile hamburger (for Sign In/Get Started only)
