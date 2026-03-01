@@ -7,8 +7,8 @@ import { useWallet } from "@/hooks/useWallet";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatNaira } from "@/lib/utils";
 import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, PlusCircle, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import { ManualSaleDialog } from "@/components/ManualSaleDialog";
+import { RequestPayoutDialog } from "@/components/RequestPayoutDialog";
 
 const typeLabels: Record<string, string> = {
   commission: "Commission",
@@ -21,6 +21,7 @@ const typeLabels: Record<string, string> = {
 
 const WalletPage = () => {
   const [manualSaleOpen, setManualSaleOpen] = useState(false);
+  const [payoutOpen, setPayoutOpen] = useState(false);
   const { summary, transactions, isLoading } = useWallet();
 
   if (isLoading) {
@@ -53,7 +54,7 @@ const WalletPage = () => {
               <span className="text-xs text-muted-foreground">Available Balance</span>
             </div>
             <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(summary.availableBalance)}</p>
-            <Button size="sm" className="mt-3 volt-gradient w-full" onClick={() => toast.success("Payout requested!")}>
+            <Button size="sm" className="mt-3 volt-gradient w-full" onClick={() => setPayoutOpen(true)}>
               Request Payout
             </Button>
           </CardContent>
@@ -131,6 +132,7 @@ const WalletPage = () => {
       </Card>
 
       <ManualSaleDialog open={manualSaleOpen} onOpenChange={setManualSaleOpen} />
+      <RequestPayoutDialog open={payoutOpen} onOpenChange={setPayoutOpen} availableBalance={summary.availableBalance} />
     </div>
   );
 };

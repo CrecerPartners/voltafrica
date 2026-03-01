@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { useSales } from "@/hooks/useSales";
 import { formatNaira } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingCart, TrendingUp, Star, Loader2 } from "lucide-react";
+import { ShoppingCart, TrendingUp, Star, Loader2, PlusCircle } from "lucide-react";
+import { ManualSaleDialog } from "@/components/ManualSaleDialog";
 
 const statusColors: Record<string, string> = {
   confirmed: "text-success border-success/20",
@@ -17,6 +18,7 @@ const Sales = () => {
   const { data: sales = [], isLoading } = useSales();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [manualSaleOpen, setManualSaleOpen] = useState(false);
 
   const filtered = sales.filter(
     (s) => (statusFilter === "all" || s.status === statusFilter) && (categoryFilter === "all" || s.category === categoryFilter)
@@ -38,9 +40,14 @@ const Sales = () => {
 
   return (
     <div className="space-y-6 max-w-6xl">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold font-display">Sales Tracking</h1>
-        <p className="text-muted-foreground mt-1">Monitor all your attributed sales</p>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold font-display">Sales Tracking</h1>
+          <p className="text-muted-foreground mt-1">Monitor all your attributed sales</p>
+        </div>
+        <Button className="volt-gradient" onClick={() => setManualSaleOpen(true)}>
+          <PlusCircle className="h-4 w-4 mr-2" /> Log a Sale
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -118,6 +125,7 @@ const Sales = () => {
           </Table>
         </CardContent>
       </Card>
+      <ManualSaleDialog open={manualSaleOpen} onOpenChange={setManualSaleOpen} />
     </div>
   );
 };
