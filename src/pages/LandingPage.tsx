@@ -176,12 +176,13 @@ export default function LandingPage() {
       ) : (
         <>
           {/* Student Hero Image */}
-          <section className="mx-auto max-w-3xl px-4 py-12 md:py-16">
-            <div className="overflow-hidden rounded-3xl border border-border/40 shadow-xl">
+          <section className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+            <div className="mx-auto max-w-sm overflow-hidden rounded-3xl border border-border/40 shadow-xl md:max-w-md">
               <img
                 src="/images/hero-student-2.png"
                 alt="Join Volt Squad — Earn while in school"
                 className="w-full object-cover"
+                loading="lazy"
               />
             </div>
           </section>
