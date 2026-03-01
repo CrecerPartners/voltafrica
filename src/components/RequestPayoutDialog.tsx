@@ -78,7 +78,7 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
       if (txError) throw txError;
 
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      toast.success("Payout requested! You'll be paid within 24–48 hours.");
+      toast.success("Payout requested! Payment confirmation takes 3-7 working days.");
       setAmount("");
       onOpenChange(false);
     } catch (err: any) {
@@ -99,6 +99,14 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Verification info banner */}
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 flex items-start gap-2">
+            <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+            <p className="text-xs text-muted-foreground">
+              Only verified sales are eligible for payout. Sale verification and payment confirmation takes 3-7 working days.
+            </p>
+          </div>
+
           {/* Available balance */}
           <div className="rounded-lg bg-secondary p-4 text-center">
             <p className="text-xs text-muted-foreground mb-1">Available Balance</p>
