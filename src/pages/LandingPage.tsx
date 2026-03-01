@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
+import { LandingBrandsContent } from "@/components/LandingBrandsContent";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -170,113 +171,119 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl font-bold md:text-4xl">Start Earning with Volt</h2>
-          <p className="mt-3 text-muted-foreground">
-            Powerful tools to help you sell, track, and grow — all in one place.
-          </p>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => {
-            const cardContent = (
-              <Card className="group h-full cursor-pointer border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
-                <CardContent className="flex h-full flex-col gap-3 p-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
-                    <f.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold">{f.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
-                </CardContent>
-              </Card>
-            );
+      {tab === "brands" ? (
+        <LandingBrandsContent />
+      ) : (
+        <>
+          {/* Features */}
+          <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+            <div className="mb-12 text-center">
+              <h2 className="font-display text-3xl font-bold md:text-4xl">Start Earning with Volt</h2>
+              <p className="mt-3 text-muted-foreground">
+                Powerful tools to help you sell, track, and grow — all in one place.
+              </p>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((f) => {
+                const cardContent = (
+                  <Card className="group h-full cursor-pointer border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
+                    <CardContent className="flex h-full flex-col gap-3 p-6">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
+                        <f.icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="font-display text-lg font-semibold">{f.title}</h3>
+                      <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+                    </CardContent>
+                  </Card>
+                );
 
-            if (isMobile) {
-              return <div key={f.title}>{cardContent}</div>;
-            }
+                if (isMobile) {
+                  return <div key={f.title}>{cardContent}</div>;
+                }
 
-            return (
-              <HoverCard key={f.title} openDelay={200} closeDelay={100}>
-                <HoverCardTrigger asChild>{cardContent}</HoverCardTrigger>
-                <HoverCardContent className="w-52 p-1.5 shadow-lg" side="top" sideOffset={8}>
-                  <div className="overflow-hidden rounded-lg border border-border">
-                    <img
-                      src={f.screenshot}
-                      alt={`${f.title} preview`}
-                      className="h-80 w-full object-cover"
-                      style={{ objectPosition: "0 -30px" }}
-                    />
-                  </div>
-                  <p className="mt-1.5 text-center text-xs font-medium text-muted-foreground">{f.title}</p>
-                </HoverCardContent>
-              </HoverCard>
-            );
-          })}
-        </div>
-      </section>
+                return (
+                  <HoverCard key={f.title} openDelay={200} closeDelay={100}>
+                    <HoverCardTrigger asChild>{cardContent}</HoverCardTrigger>
+                    <HoverCardContent className="w-52 p-1.5 shadow-lg" side="top" sideOffset={8}>
+                      <div className="overflow-hidden rounded-lg border border-border">
+                        <img
+                          src={f.screenshot}
+                          alt={`${f.title} preview`}
+                          className="h-80 w-full object-cover"
+                          style={{ objectPosition: "0 -30px" }}
+                        />
+                      </div>
+                      <p className="mt-1.5 text-center text-xs font-medium text-muted-foreground">{f.title}</p>
+                    </HoverCardContent>
+                  </HoverCard>
+                );
+              })}
+            </div>
+          </section>
 
-      {/* How to Earn with Volt */}
-      <section className="border-y border-border bg-muted/30">
-        <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-          <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold md:text-4xl">How to Earn with Volt</h2>
-            <p className="mt-3 text-muted-foreground">
-              Multiple ways to earn — pick what works for you.
-            </p>
-          </div>
-          <div className="space-y-4 max-w-3xl mx-auto">
-            {rewards.map((r, i) => (
-              <div
-                key={r.title}
-                className="flex items-start gap-4 rounded-2xl border border-border/60 bg-card/80 p-5 transition-all hover:shadow-md"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
-                  {i + 1}
-                </div>
-                <div>
-                  <h3 className="font-display text-base font-semibold">{r.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{r.desc}</p>
-                </div>
+          {/* How to Earn with Volt */}
+          <section className="border-y border-border bg-muted/30">
+            <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+              <div className="mb-12 text-center">
+                <h2 className="font-display text-3xl font-bold md:text-4xl">How to Earn with Volt</h2>
+                <p className="mt-3 text-muted-foreground">
+                  Multiple ways to earn — pick what works for you.
+                </p>
               </div>
-            ))}
-          </div>
-          <div className="mt-12 text-center">
-            <p className="mb-4 text-lg font-semibold text-foreground">Find Your Niche</p>
-            <Button
-              asChild
-              size="lg"
-              className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90"
-            >
-              <Link to="/login?mode=signup">
-                Sign Up & Claim My ₦500 Bonus
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+              <div className="space-y-4 max-w-3xl mx-auto">
+                {rewards.map((r, i) => (
+                  <div
+                    key={r.title}
+                    className="flex items-start gap-4 rounded-2xl border border-border/60 bg-card/80 p-5 transition-all hover:shadow-md"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
+                      {i + 1}
+                    </div>
+                    <div>
+                      <h3 className="font-display text-base font-semibold">{r.title}</h3>
+                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{r.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-12 text-center">
+                <p className="mb-4 text-lg font-semibold text-foreground">Find Your Niche</p>
+                <Button
+                  asChild
+                  size="lg"
+                  className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90"
+                >
+                  <Link to="/login?mode=signup">
+                    Sign Up & Claim My ₦500 Bonus
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </section>
 
-      {/* CTA */}
-      <section className="volt-gradient">
-        <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
-          <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
-            Ready to Get Started?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
-            Whether you're a student looking to earn or a brand looking to grow — Volt is your launchpad.
-          </p>
-          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
-            >
-              <Link to="/login">Get Started Free</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+          {/* CTA */}
+          <section className="volt-gradient">
+            <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
+              <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
+                Ready to Get Started?
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+                Whether you're a student looking to earn or a brand looking to grow — Volt is your launchpad.
+              </p>
+              <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
+                >
+                  <Link to="/login">Get Started Free</Link>
+                </Button>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-border bg-background">
