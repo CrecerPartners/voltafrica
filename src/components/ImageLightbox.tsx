@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, X, Share2 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { shareContent, canNativeShare } from "@/lib/shareUtils";
 import { SharePopover } from "@/components/SharePopover";
+import { useModalBackHandler } from "@/hooks/useModalBackHandler";
 
 interface ImageLightboxProps {
   images: string[];
@@ -17,6 +18,8 @@ interface ImageLightboxProps {
 
 export function ImageLightbox({ images, initialIndex, open, onOpenChange, productName, referralLink }: ImageLightboxProps) {
   const [index, setIndex] = useState(initialIndex);
+  const handleClose = useCallback(() => onOpenChange(false), [onOpenChange]);
+  useModalBackHandler(open, handleClose);
 
   useEffect(() => {
     if (open) setIndex(initialIndex);
@@ -30,10 +33,11 @@ export function ImageLightbox({ images, initialIndex, open, onOpenChange, produc
     const handler = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
       else if (e.key === "ArrowRight") next();
+      else if (e.key === "Escape") onOpenChange(false);
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [open, prev, next]);
+  }, [open, prev, next, onOpenChange]);
 
   const handleShare = () => {
     const text = `Check out ${productName}!`;
@@ -63,7 +67,7 @@ export function ImageLightbox({ images, initialIndex, open, onOpenChange, produc
             ) : (
               <SharePopover text={shareText} url={referralLink} />
             )}
-            <Button size="icon" variant="ghost" className="text-white hover:bg-white/20 h-9 w-9" onClick={() => onOpenChange(false)}>
+            <Button size="icon" variant="ghost" className="text-white hover:bg-white/20 h-10 w-10 rounded-full bg-white/10" onClick={() => onOpenChange(false)}>
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -101,7 +105,7 @@ export function ImageLightbox({ images, initialIndex, open, onOpenChange, produc
             <Button
               size="icon"
               variant="ghost"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 h-10 w-10 rounded-full"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 bg-white/10 h-11 w-11 rounded-full"
               onClick={prev}
             >
               <ChevronLeft className="h-6 w-6" />
@@ -109,7 +113,7 @@ export function ImageLightbox({ images, initialIndex, open, onOpenChange, produc
             <Button
               size="icon"
               variant="ghost"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 h-10 w-10 rounded-full"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 bg-white/10 h-11 w-11 rounded-full"
               onClick={next}
             >
               <ChevronRight className="h-6 w-6" />

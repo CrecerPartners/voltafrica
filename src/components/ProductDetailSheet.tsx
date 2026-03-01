@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Product } from "@/hooks/useProducts";
 import { useProfile } from "@/hooks/useProfile";
 import { formatNaira } from "@/lib/utils";
+import { useModalBackHandler } from "@/hooks/useModalBackHandler";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +35,8 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const { data: profile } = useProfile();
+  const handleClose = useCallback(() => onOpenChange(false), [onOpenChange]);
+  useModalBackHandler(open, handleClose);
 
   if (!product) return null;
 
