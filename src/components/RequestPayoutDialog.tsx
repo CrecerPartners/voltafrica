@@ -1,0 +1,157 @@
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { formatNaira } from "@/lib/utils";
+import { Loader2, AlertCircle, Banknote } from "lucide-react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+
+interface RequestPayoutDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  availableBalance: number;
+}
+
+const MIN_PAYOUT = 1000;
+
+export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: RequestPayoutDialogProps) {
+  const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const queryClient = useQueryClient();
+  const [amount, setAmount] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const parsedAmount = parseFloat(amount) || 0;
+  const hasBankDetails = profile?.bank_name && profile?.account_number;
+
+  const error =
+    parsedAmount <= 0
+      ? null
+      : parsedAmount < MIN_PAYOUT
+        ? `Minimum payout is ${formatNaira(MIN_PAYOUT)}`
+        : parsedAmount > availableBalance
+          ? "Amount exceeds available balance"
+          : null;
+
+  const canSubmit = parsedAmount >= MIN_PAYOUT && parsedAmount <= availableBalance && hasBankDetails && !submitting;
+
+  const handleSubmit = async () => {
+    if (!canSubmit || !user || !profile) return;
+
+    setSubmitting(true);
+    try {
+      // Insert payout record
+      const { error: payoutError } = await supabase
+        .from("payouts" as any)
+        .insert({
+          user_id: user.id,
+          amount: parsedAmount,
+          status: "pending",
+          bank_name: profile.bank_name,
+          account_number: profile.account_number,
+        } as any);
+      if (payoutError) throw payoutError;
+
+      // Insert corresponding negative transaction
+      const { error: txError } = await supabase
+        .from("transactions" as any)
+        .insert({
+          user_id: user.id,
+          date: new Date().toISOString().split("T")[0],
+          type: "payout",
+          description: `Payout to ${profile.bank_name} ****${profile.account_number.slice(-4)}`,
+          amount: -parsedAmount,
+          status: "processing",
+        } as any);
+      if (txError) throw txError;
+
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      toast.success("Payout requested! You'll be paid within 24–48 hours.");
+      setAmount("");
+      onOpenChange(false);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to request payout");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Request Payout</DialogTitle>
+          <DialogDescription>
+            Withdraw your earnings to your bank account.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {/* Available balance */}
+          <div className="rounded-lg bg-secondary p-4 text-center">
+            <p className="text-xs text-muted-foreground mb-1">Available Balance</p>
+            <p className="text-2xl font-bold font-display">{formatNaira(availableBalance)}</p>
+          </div>
+
+          {/* Amount input */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Amount (₦)</label>
+            <Input
+              type="number"
+              min={MIN_PAYOUT}
+              max={availableBalance}
+              placeholder={`Min ${formatNaira(MIN_PAYOUT)}`}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            {error && (
+              <p className="text-xs text-destructive flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" /> {error}
+              </p>
+            )}
+          </div>
+
+          {/* Bank details */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Bank Details</label>
+            {hasBankDetails ? (
+              <div className="rounded-lg border border-border/50 p-3 flex items-center gap-3">
+                <Banknote className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm font-medium">{profile.bank_name}</p>
+                  <p className="text-xs text-muted-foreground">****{profile.account_number.slice(-4)}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 text-center">
+                <p className="text-xs text-muted-foreground mb-2">No bank details on file.</p>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/profile" onClick={() => onOpenChange(false)}>Add Bank Details</Link>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button className="volt-gradient" onClick={handleSubmit} disabled={!canSubmit}>
+            {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</> : "Request Payout"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

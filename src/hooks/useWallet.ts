@@ -11,8 +11,13 @@ export function useWallet() {
     let totalPaidOut = 0;
     let pendingEarnings = 0;
 
+    let processingPayouts = 0;
+
     for (const t of transactions) {
       if (t.type === "payout") {
+        if (t.status === "processing") {
+          processingPayouts += Math.abs(t.amount);
+        }
         totalPaidOut += Math.abs(t.amount);
       } else if (t.status === "pending") {
         pendingEarnings += t.amount;

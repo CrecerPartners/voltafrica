@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      payouts: {
+        Row: {
+          account_number: string
+          amount: number
+          bank_name: string
+          id: string
+          notes: string | null
+          processed_at: string | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          account_number?: string
+          amount?: number
+          bank_name?: string
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          requested_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          account_number?: string
+          amount?: number
+          bank_name?: string
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           assets: Json
