@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 
@@ -14,6 +15,7 @@ export function DashboardLayout() {
   const { signOut } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const location = useLocation();
 
   const initials = (profile?.name || "?").split(" ").map(n => n[0]).join("").toUpperCase();
 
@@ -52,9 +54,14 @@ export function DashboardLayout() {
                 <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-primary border-2 border-card" />
               </Button>
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary">
-                  {initials}
-                </div>
+                <Avatar className="h-8 w-8">
+                  {profile?.avatar_url ? (
+                    <AvatarImage src={profile.avatar_url} alt={profile.name} />
+                  ) : null}
+                  <AvatarFallback className="bg-primary/20 text-sm font-semibold text-primary">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               {/* Logout button — desktop only */}
               {!isMobile && (
@@ -65,7 +72,9 @@ export function DashboardLayout() {
             </div>
           </header>
           <main className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
-            <Outlet />
+            <div key={location.pathname} className="animate-page-in">
+              <Outlet />
+            </div>
           </main>
         </div>
 

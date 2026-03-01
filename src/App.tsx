@@ -20,6 +20,8 @@ import Calculator from "@/pages/Calculator";
 import Referrals from "@/pages/Referrals";
 import Sales from "@/pages/Sales";
 import Leaderboard from "@/pages/Leaderboard";
+import Training from "@/pages/Training";
+import TrainingCourse from "@/pages/TrainingCourse";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/NotFound";
 
@@ -48,6 +50,8 @@ const App = () => (
             <Route path="/referrals" element={<Referrals />} />
             <Route path="/sales" element={<Sales />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/training" element={<Training />} />
+            <Route path="/training/:courseId" element={<TrainingCourse />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="*" element={<NotFound />} />

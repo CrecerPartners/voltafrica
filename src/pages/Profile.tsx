@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, Building, Phone, CreditCard, Save, Loader2 } from "lucide-react";
+import { User, Building, Phone, CreditCard, Save, Loader2, Camera } from "lucide-react";
 import { toast } from "sonner";
 
 const Profile = () => {
   const { data: profile, isLoading } = useProfile();
   const updateProfile = useUpdateProfile();
+  const uploadAvatar = useUploadAvatar();
   const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -41,6 +44,23 @@ const Profile = () => {
       toast.success("Profile updated successfully!");
     } catch (err: any) {
       toast.error(err.message || "Failed to update profile");
+    }
+  };
+
+  const handleAvatarClick = () => fileInputRef.current?.click();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image must be under 2MB");
+      return;
+    }
+    try {
+      await uploadAvatar.mutateAsync(file);
+      toast.success("Avatar updated!");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to upload avatar");
     }
   };
 
@@ -77,8 +97,29 @@ const Profile = () => {
 
       <Card className="border-border/50">
         <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-          <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center text-2xl font-bold font-display text-primary">
-            {initials}
+          <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
+            <Avatar className="h-16 w-16 text-2xl">
+              {profile?.avatar_url ? (
+                <AvatarImage src={profile.avatar_url} alt={profile.name} />
+              ) : null}
+              <AvatarFallback className="bg-primary/20 text-primary font-bold font-display text-2xl">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              {uploadAvatar.isPending ? (
+                <Loader2 className="h-5 w-5 text-white animate-spin" />
+              ) : (
+                <Camera className="h-5 w-5 text-white" />
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
           </div>
           <div>
             <p className="font-semibold text-lg">{profile?.name || "—"}</p>
