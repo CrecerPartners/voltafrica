@@ -175,8 +175,28 @@ export default function LandingPage() {
         <LandingBrandsContent />
       ) : (
         <>
+          {/* Student Hero Images */}
+          <section className="mx-auto max-w-5xl px-4 py-12 md:py-16">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="overflow-hidden rounded-3xl border border-border/40 shadow-xl">
+                <img
+                  src="/images/hero-student-2.png"
+                  alt="Join Volt Squad — Earn while in school"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="overflow-hidden rounded-3xl border border-border/40 shadow-xl">
+                <img
+                  src="/images/hero-student-1.png"
+                  alt="Get ready to earn more while in school"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </section>
+
           {/* Features */}
-          <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+          <section className="mx-auto max-w-6xl px-4 pb-16 pt-4 md:pb-24 md:pt-8">
             <div className="mb-12 text-center">
               <h2 className="font-display text-3xl font-bold md:text-4xl">Start Earning with Volt</h2>
               <p className="mt-3 text-muted-foreground">

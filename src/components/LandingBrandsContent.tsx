@@ -99,8 +99,19 @@ export function LandingBrandsContent() {
 
   return (
     <>
+      {/* Brand Hero Image */}
+      <section className="mx-auto max-w-5xl px-4 py-12 md:py-16">
+        <div className="overflow-hidden rounded-3xl border border-border/40 shadow-xl">
+          <img
+            src="/images/hero-brands.png"
+            alt="Students don't buy from ads — they buy from people they trust"
+            className="w-full object-cover"
+          />
+        </div>
+      </section>
+
       {/* Why Brands Choose Volt */}
-      <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+      <section className="mx-auto max-w-6xl px-4 pb-16 pt-4 md:pb-24 md:pt-8">
         <div className="mb-12 text-center">
           <h2 className="font-display text-3xl font-bold md:text-4xl">Why Brands Choose Volt</h2>
         </div>
