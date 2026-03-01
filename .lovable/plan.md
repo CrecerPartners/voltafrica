@@ -1,107 +1,103 @@
 
-# Full Backend Setup with External Supabase
 
-## Overview
-Connect your Supabase project and replace all mock data with real authentication, database tables, file storage, and live queries. After this, users will sign up for real, their sales/earnings will persist, and proof-of-sale uploads will be stored in the cloud.
+# Wallet, Payouts & Manual Sales -- End-to-End Plan
 
----
+## Current State
 
-## Phase 1: Connect Supabase + Authentication
+- **Wallet page** shows balances and transaction history, has a "Request Payout" button that only shows a toast
+- **Manual Sale dialog** exists on the Wallet page -- inserts into both `sales` and `transactions` tables
+- **Sales page** shows sales list but has no "Log a Sale" button
+- **Profile page** collects bank name and account number
+- There is no `payouts` table or payout request flow
 
-### 1.1 Install Supabase client
-- Add `@supabase/supabase-js` dependency
-- Create `src/integrations/supabase/client.ts` with your project URL and anon key
+## What We'll Build
 
-### 1.2 Auth context
-- Create `src/contexts/AuthContext.tsx` with signup, login, logout, and session listener (`onAuthStateChange`)
-- Wrap the app in the auth provider
-- Protect dashboard routes: redirect to `/login` if not authenticated
-- Update `Login.tsx` to call `supabase.auth.signUp()` and `supabase.auth.signInWithPassword()`
-- Add logout button to sidebar/header
+### 1. Payouts Table (Database Migration)
 
-### 1.3 Profiles table
-- **Migration**: Create `profiles` table (id, user_id FK to auth.users, name, email, university, whatsapp, bank_name, account_number, tier, referral_code, avatar_url, created_at)
-- **Trigger**: Auto-create profile row on signup
-- **RLS**: Users can read/update only their own profile
-- Update `Profile.tsx` and `DashboardLayout.tsx` to fetch from `profiles` table instead of `currentUser` mock
+Create a `payouts` table to track payout requests:
 
----
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid | PK |
+| user_id | uuid | not null |
+| amount | numeric | requested amount |
+| status | text | `pending` / `processing` / `paid` / `rejected` |
+| bank_name | text | snapshot from profile |
+| account_number | text | snapshot from profile |
+| requested_at | timestamptz | default now() |
+| processed_at | timestamptz | nullable |
+| notes | text | nullable, admin notes |
 
-## Phase 2: Database Tables
+RLS: users can SELECT and INSERT their own rows.
 
-### 2.1 Products table
-- **Migration**: Create `products` table matching the current `Product` interface (id, name, brand, category, commission_rate, price, image_emoji, description, assets JSONB)
-- **RLS**: All authenticated users can read products (admin-only insert/update -- handled later)
-- **Seed**: Insert the 14 existing mock products via the insert tool
+Also insert a corresponding `payout` transaction (negative amount) when a payout is requested.
 
-### 2.2 Sales table
-- **Migration**: Create `sales` table (id, user_id FK, product_id FK, date, customer, quantity, amount, commission, status, proof_file_url, notes, created_at)
-- **RLS**: Users can insert and read their own sales only
+### 2. Request Payout Flow (Wallet Page)
 
-### 2.3 Transactions table
-- **Migration**: Create `transactions` table (id, user_id FK, date, type, description, amount, status, proof_file_name, created_at)
-- **RLS**: Users can read their own transactions; insert allowed for manual_sale type
+Replace the dummy toast with a real **Request Payout dialog** that:
+- Shows the user's available balance
+- Lets them enter the amount (validated against available balance, minimum threshold e.g. 1,000 naira)
+- Shows their bank details from profile (with a link to Profile if missing)
+- On submit: inserts into `payouts` table + inserts a `payout` transaction with negative amount and `processing` status
+- Invalidates queries so wallet updates immediately
 
-### 2.4 Referrals table
-- **Migration**: Create `referrals` table (id, referrer_id FK, referred_user_id FK, date, status, earnings)
-- **RLS**: Users can read referrals where they are the referrer
+### 3. Add "Log a Sale" Button to Sales Page
 
-### 2.5 Leaderboard view
-- **Migration**: Create a database view `leaderboard_view` that aggregates total earnings and sales count per user from the transactions/sales tables, joined with profiles for name and university
-- Public read access for all authenticated users
+The ManualSaleDialog already exists but is only accessible from the Wallet page. We'll add the same button + dialog to the Sales page so users can log sales from either place.
 
----
+### 4. Wallet Balance Logic Fix
 
-## Phase 3: File Storage (Proof of Sale)
-
-### 3.1 Storage bucket
-- **Migration**: Create a `sale-proofs` storage bucket (private)
-- **RLS**: Users can upload to their own folder (`user_id/filename`), read their own files
-
-### 3.2 Update ManualSaleDialog
-- On submit, upload the proof file to `sale-proofs/{user_id}/{timestamp}_{filename}` via Supabase Storage
-- Save the returned URL in the `sales` and `transactions` tables
-- Show upload progress indicator
+Update `useWallet` to also account for `processing` payouts (currently only counts `paid` earnings minus payouts). Ensure that when a payout is requested, the available balance decreases immediately.
 
 ---
 
-## Phase 4: Wire Up UI to Live Data
+## Technical Details
 
-### 4.1 React Query hooks
-- Create `src/hooks/useProfile.ts` -- fetch/update current user profile
-- Create `src/hooks/useProducts.ts` -- fetch products list
-- Create `src/hooks/useSales.ts` -- fetch user sales, submit manual sale
-- Create `src/hooks/useTransactions.ts` -- fetch user transactions
-- Create `src/hooks/useReferrals.ts` -- fetch user referrals
-- Create `src/hooks/useLeaderboard.ts` -- fetch leaderboard view
-- Create `src/hooks/useWallet.ts` -- compute wallet summary from transactions
+### Database Migration SQL
 
-### 4.2 Update pages
-- `Dashboard.tsx` -- use hooks instead of mock imports; compute stats from real data
-- `Marketplace.tsx` -- fetch products from DB
-- `WalletPage.tsx` -- use transactions hook, wallet summary hook
-- `Sales.tsx` -- use sales hook
-- `Referrals.tsx` -- use referrals hook
-- `Leaderboard.tsx` -- use leaderboard hook
-- `Profile.tsx` -- use profile hook for read/update
-- `Calculator.tsx` -- use products hook for commission rates
+```sql
+CREATE TABLE public.payouts (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  amount numeric NOT NULL DEFAULT 0,
+  status text NOT NULL DEFAULT 'pending',
+  bank_name text NOT NULL DEFAULT '',
+  account_number text NOT NULL DEFAULT '',
+  requested_at timestamptz NOT NULL DEFAULT now(),
+  processed_at timestamptz,
+  notes text
+);
 
-### 4.3 Signup bonus
-- On profile creation trigger, auto-insert a ₦500 `signup_bonus` transaction
+ALTER TABLE public.payouts ENABLE ROW LEVEL SECURITY;
 
----
+CREATE POLICY "Users can read own payouts" ON public.payouts
+  FOR SELECT USING (auth.uid() = user_id);
 
-## Technical Summary
+CREATE POLICY "Users can insert own payouts" ON public.payouts
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+```
 
-| Layer | What | Count |
-|-------|------|-------|
-| Migrations | profiles, products, sales, transactions, referrals, leaderboard_view, storage bucket, RLS policies, triggers | ~5 migrations |
-| New files | AuthContext, supabase client, 7 hooks | ~9 files |
-| Modified files | App.tsx, Login.tsx, DashboardLayout.tsx, Dashboard, Marketplace, Wallet, Sales, Referrals, Leaderboard, Profile, Calculator, ManualSaleDialog, AppSidebar | ~13 files |
-| Seeded data | 14 products inserted into products table | 1 insert |
+### New Files
+- `src/components/RequestPayoutDialog.tsx` -- dialog with amount input, bank details display, submit logic
 
-### Important Notes
-- The `mockData.ts` file will be kept temporarily for reference but all imports will be replaced with hook-based data
-- `formatNaira` utility will move to `src/lib/utils.ts` since it's not mock-specific
-- User roles table will be created (as required by security guidelines) but admin features are out of scope for this phase
-- All tables use RLS -- no public access to user data
+### Modified Files
+- `src/pages/WalletPage.tsx` -- wire up RequestPayoutDialog instead of toast
+- `src/pages/Sales.tsx` -- add "Log a Sale" button + ManualSaleDialog
+- `src/hooks/useWallet.ts` -- adjust balance calc to subtract processing payouts
+
+### Flow Summary
+
+```text
+User makes sale --> Logs via ManualSaleDialog (Sales or Wallet page)
+  --> Inserts into `sales` (pending) + `transactions` (pending, positive amount)
+
+Sale confirmed by admin --> transaction status updated to `paid`
+  --> Available balance increases
+
+User requests payout --> RequestPayoutDialog
+  --> Inserts into `payouts` (pending) + `transactions` (payout, negative amount, processing)
+  --> Available balance decreases
+
+Admin processes payout --> updates payout status to `paid`, transaction to `paid`
+```
+
