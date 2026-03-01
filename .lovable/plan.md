@@ -1,70 +1,51 @@
 
-
-# Landing Page with Dual-Audience Hero and About Pages
+# Landing Page Enhancements
 
 ## Overview
 
-Create a public-facing landing page at `/` with a Blakskill-style toggle hero (switching between "Brands" and "Students" messaging), a sticky navigation bar with menu items, and dedicated About pages for each audience. The current `/` redirect to `/login` will be replaced with this landing page.
+Three changes: add a "How to Earn with Volt" rewards card section, add hover-to-preview screenshots on feature cards, remove "For Students"/"For Brands" from the navbar, and update "Direct Sale" to "Direct Sales Commission -- up to 30% per product sold."
 
-## New Pages and Components
+## Changes
 
-### 1. Landing Page (`src/pages/LandingPage.tsx`)
+### 1. Add "How to Earn with Volt" Section (`src/pages/LandingPage.tsx`)
 
-A full marketing landing page with these sections:
+Insert a new section after the Features grid showing five reward cards in a responsive grid. Each card has an icon, bold title, and reward description:
 
-- **Sticky Navbar**: Volt logo on the left. Menu items: "For Students", "For Brands", "About". Right side: "Sign In" (ghost/outline) and "Get Started" (bold primary action button with volt-gradient).
-- **Hero Section** with a pill-shaped toggle (like Blakskill) to switch between two audiences:
-  - **Students tab**: "Join the Volt Squad" -- messaging about earning money as a campus ambassador, with a CTA to sign up.
-  - **Brands tab**: "Start Selling on Campus" -- messaging about reaching students through campus ambassadors, with a CTA to sign up as a brand.
-  - The hero background, headline, subtext, and CTA all animate/transition smoothly when switching tabs.
-- **Features/Benefits section**: Grid of cards highlighting key features (earn commissions, track sales, leaderboards, etc.)
-- **Social proof / stats section**: Numbers like "500+ campuses", "10,000+ ambassadors"
-- **Footer**: Links to About pages, social links, copyright.
+- **Signup Bonus** -- N500 Credit to your Volt account the moment you register
+- **Direct Sales Commission** -- Up to 30% per product sold
+- **Referral Bonus** -- N1,000 "Spark Bonus" for every friend you bring who makes their first 5 sales
+- **High-Volume Bonus** -- Extra Cash for Influencers who hit weekly targets
+- **Lead Base Pay** -- N5,000 - N30,000 monthly (Team Leads only)
 
-### 2. About Students Page (`src/pages/AboutStudents.tsx`)
+Below the cards: a "Find Your Niche" subheading and a bold **"Sign Up & Claim My N500 Bonus"** CTA button linking to signup.
 
-A clean page explaining how Volt works for students/ambassadors. Sections: how it works (3 steps), benefits, testimonials placeholder, CTA to sign up.
+New icons imported: `Gift, DollarSign, Flame, Target, Crown` from lucide-react.
 
-### 3. About Brands Page (`src/pages/AboutBrands.tsx`)
+### 2. Feature Cards with Screenshot Previews on Hover (`src/pages/LandingPage.tsx`)
 
-A clean page explaining how Volt works for brands. Sections: why campus marketing, how it works, pricing/plans placeholder, CTA to get started.
+- Add a `screenshot` field to each feature object (e.g., `/screenshots/commissions.png`)
+- Wrap each feature Card in a `HoverCardTrigger` from Radix UI
+- On hover, a `HoverCardContent` pops up showing a rounded placeholder screenshot image
+- Placeholder images used initially -- real screenshots can be swapped in later by uploading to `/public/screenshots/`
 
-### 4. Landing Navbar Component (`src/components/LandingNavbar.tsx`)
+### 3. Remove Nav Items from Navbar (`src/components/LandingNavbar.tsx`)
 
-Reusable sticky navbar for all public pages. Mobile: hamburger menu using Sheet/Drawer. Desktop: horizontal nav items. Includes the bold "Get Started" CTA button.
-
-## Route Changes (`src/App.tsx`)
-
-- `/` renders `LandingPage` (no longer redirects to `/login`)
-- `/about/students` renders `AboutStudents`
-- `/about/brands` renders `AboutBrands`
-- `/login` and `/forgot-password` remain as-is
+- Remove the `navItems` array and all desktop/mobile nav link rendering
+- Navbar becomes: **Volt logo | Sign In | Get Started**
+- "For Students" and "For Brands" links remain in the footer and hero toggle
 
 ## Technical Details
 
-### Hero Toggle Implementation
+### Modified: `src/pages/LandingPage.tsx`
+- Add `rewards` data array with 5 items (using updated "Direct Sales Commission" wording)
+- Add "How to Earn with Volt" section with responsive card grid (2 cols mobile, 3 cols desktop)
+- Import `HoverCard, HoverCardTrigger, HoverCardContent` from `@/components/ui/hover-card`
+- Add `screenshot` string to each feature entry
+- Wrap feature cards in HoverCard with image preview popup
+- Import additional lucide icons for reward cards
 
-The toggle uses two buttons inside a rounded pill container. Clicking a tab sets state and triggers a smooth CSS transition on the content below. Each tab has its own:
-- Headline text
-- Subtitle text
-- CTA button (links to `/login` with signup mode param)
-- Background gradient or decorative elements
-
-The active tab button gets `volt-gradient` styling; the inactive gets a ghost/transparent style. Content transitions use opacity and translateY with `transition-all duration-500`.
-
-### Files to Create
-- `src/pages/LandingPage.tsx` -- main landing page with hero toggle
-- `src/pages/AboutStudents.tsx` -- about page for students
-- `src/pages/AboutBrands.tsx` -- about page for brands
-- `src/components/LandingNavbar.tsx` -- shared public navbar
-
-### Files to Modify
-- `src/App.tsx` -- update routes: `/` to LandingPage, add `/about/students` and `/about/brands`
-
-### Design Notes
-- All pages use existing Tailwind theme tokens (primary, foreground, card, etc.)
-- Space Grotesk for headings, Inter for body (already configured)
-- Mobile-first responsive design
-- Smooth scroll-based animations using existing `animate-fade-in` utilities
-- The landing navbar collapses into a hamburger menu on mobile using the existing Sheet component
-
+### Modified: `src/components/LandingNavbar.tsx`
+- Remove `navItems` array
+- Remove desktop `<nav>` element
+- Remove nav links from mobile Sheet content
+- Keep logo, Sign In button, Get Started button, and mobile hamburger (for Sign In/Get Started only)
