@@ -48,12 +48,12 @@ const audiences = {
 };
 
 const features = [
-  { icon: TrendingUp, title: "Earn Commissions", desc: "Get paid for every sale you make — tracked in real time.", preview: "₦500 – ₦50k+ monthly" },
-  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse products students actually want, from top brands.", preview: "200+ products live" },
-  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth metrics.", preview: "Real-time analytics" },
-  { icon: Trophy, title: "Leaderboards", desc: "Compete with peers, climb the ranks, unlock rewards.", preview: "Weekly & all-time ranks" },
-  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales.", preview: "₦1,000 per referral" },
-  { icon: Star, title: "Tier Rewards", desc: "Level up from Bronze to Diamond with exclusive perks.", preview: "5 tiers to unlock" },
+  { icon: TrendingUp, title: "Earn Commissions", desc: "Get paid for every sale you make — tracked in real time.", screenshot: "/screenshots/sales.png" },
+  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse products students actually want, from top brands.", screenshot: "/screenshots/marketplace.png" },
+  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth metrics.", screenshot: "/screenshots/dashboard.png" },
+  { icon: Trophy, title: "Leaderboards", desc: "Compete with peers, climb the ranks, unlock rewards.", screenshot: "/screenshots/dashboard2.png" },
+  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales.", screenshot: "/screenshots/dashboard.png" },
+  { icon: Star, title: "Tier Rewards", desc: "Level up from Bronze to Diamond with exclusive perks.", screenshot: "/screenshots/wallet.png" },
 ];
 
 const rewards = [
@@ -183,14 +183,15 @@ export default function LandingPage() {
                   </CardContent>
                 </Card>
               </HoverCardTrigger>
-              <HoverCardContent className="w-56 p-3" side="top" sideOffset={8}>
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl volt-gradient">
-                    <f.icon className="h-5 w-5 text-primary-foreground" />
-                  </div>
-                  <p className="text-sm font-semibold text-foreground">{f.preview}</p>
-                  <p className="text-xs text-muted-foreground">{f.desc}</p>
+              <HoverCardContent className="w-48 p-1.5" side="top" sideOffset={8}>
+                <div className="overflow-hidden rounded-lg border border-border">
+                  <img
+                    src={f.screenshot}
+                    alt={`${f.title} preview`}
+                    className="h-72 w-full object-cover object-top"
+                  />
                 </div>
+                <p className="mt-1.5 text-center text-xs font-medium text-muted-foreground">{f.title}</p>
               </HoverCardContent>
             </HoverCard>
           ))}
