@@ -30,14 +30,16 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
   const queryClient = useQueryClient();
   const [productId, setProductId] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [price, setPrice] = useState<number | "">("");
   const [customer, setCustomer] = useState("");
   const [notes, setNotes] = useState("");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const selectedProduct = products.find((p) => p.id === productId);
+  const effectivePrice = typeof price === "number" ? price : (selectedProduct?.price ?? 0);
   const commission = selectedProduct
-    ? quantity * selectedProduct.price * (selectedProduct.commissionRate / 100)
+    ? quantity * effectivePrice * (selectedProduct.commissionRate / 100)
     : 0;
 
   const handleSubmit = async () => {
@@ -64,7 +66,7 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
           date: new Date().toISOString().split("T")[0],
           customer,
           quantity,
-          amount: selectedProduct!.price * quantity,
+          amount: effectivePrice * quantity,
           commission,
           status: "pending",
           proof_file_url: fileName,
@@ -88,7 +90,7 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
 
       queryClient.invalidateQueries({ queryKey: ["sales"] });
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      toast.success("Sale logged! It'll appear as pending until reviewed.");
+      toast.success("Sale logged! Verification and payment confirmation takes 3-7 working days.");
       resetForm();
       onOpenChange(false);
     } catch (err: any) {
@@ -101,6 +103,7 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
   const resetForm = () => {
     setProductId("");
     setQuantity(1);
+    setPrice("");
     setCustomer("");
     setNotes("");
     setProofFile(null);
@@ -112,14 +115,14 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
         <DialogHeader>
           <DialogTitle>Log a Sale</DialogTitle>
           <DialogDescription>
-            Record an offline sale. It will be marked as pending until verified.
+            Record an offline sale. It will be reviewed and payment confirmed within 3-7 working days.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">Product</label>
-            <Select value={productId} onValueChange={setProductId}>
+            <Select value={productId} onValueChange={(v) => { setProductId(v); const p = products.find(x => x.id === v); if (p) setPrice(p.price); }}>
               <SelectTrigger>
                 <SelectValue placeholder="Select product sold" />
               </SelectTrigger>
@@ -133,7 +136,7 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground">Quantity</label>
               <Input
@@ -141,6 +144,16 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
                 min={1}
                 value={quantity}
                 onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Price (₦)</label>
+              <Input
+                type="number"
+                min={0}
+                placeholder="0"
+                value={price}
+                onChange={(e) => setPrice(parseFloat(e.target.value) || "")}
               />
             </div>
             <div className="space-y-1.5">
@@ -186,12 +199,17 @@ export function ManualSaleDialog({ open, onOpenChange }: ManualSaleDialogProps) 
           </div>
 
           {selectedProduct && (
-            <div className="rounded-lg bg-secondary p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Calculator className="h-4 w-4" />
-                <span>Estimated Commission</span>
+            <div className="space-y-2">
+              <div className="rounded-lg bg-secondary p-3 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calculator className="h-4 w-4" />
+                  <span>Estimated Commission</span>
+                </div>
+                <p className="text-sm font-bold text-primary">{formatNaira(commission)}</p>
               </div>
-              <p className="text-sm font-bold text-primary">{formatNaira(commission)}</p>
+              <p className="text-[11px] text-muted-foreground text-center">
+                Commission will reflect in your wallet once the sale and payment are confirmed (3-7 working days)
+              </p>
             </div>
           )}
         </div>

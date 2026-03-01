@@ -66,7 +66,7 @@ const WalletPage = () => {
               <span className="text-xs text-muted-foreground">Pending Earnings</span>
             </div>
             <p className="text-2xl sm:text-3xl font-bold font-display">{formatNaira(summary.pendingEarnings)}</p>
-            <p className="text-xs text-muted-foreground mt-3">Clears every Friday</p>
+            <p className="text-xs text-muted-foreground mt-3">Confirmed in 3-7 working days</p>
           </CardContent>
         </Card>
         <Card className="border-border/50">
