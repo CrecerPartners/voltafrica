@@ -1,103 +1,65 @@
 
 
-# Wallet, Payouts & Manual Sales -- End-to-End Plan
+# Mobile-Native Bottom Navigation Bar
 
-## Current State
+## Overview
 
-- **Wallet page** shows balances and transaction history, has a "Request Payout" button that only shows a toast
-- **Manual Sale dialog** exists on the Wallet page -- inserts into both `sales` and `transactions` tables
-- **Sales page** shows sales list but has no "Log a Sale" button
-- **Profile page** collects bank name and account number
-- There is no `payouts` table or payout request flow
+Replace the collapsible sidebar with a **bottom tab bar** on mobile devices, creating a native app-like navigation experience. The sidebar remains for desktop/tablet. This follows the pattern shown in the reference image (Home, Feed, Members, Inbox tabs at the bottom).
 
-## What We'll Build
+## What Changes
 
-### 1. Payouts Table (Database Migration)
+### 1. New Component: `MobileBottomNav`
 
-Create a `payouts` table to track payout requests:
+A fixed bottom navigation bar visible only on mobile (`md:hidden`). It will show 5 primary tabs (the most-used routes) with icons and labels, plus a "More" menu for remaining pages. The active tab gets a highlighted style (filled icon + primary color). Uses `useLocation` for active state and `useNavigate` for instant transitions.
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid | PK |
-| user_id | uuid | not null |
-| amount | numeric | requested amount |
-| status | text | `pending` / `processing` / `paid` / `rejected` |
-| bank_name | text | snapshot from profile |
-| account_number | text | snapshot from profile |
-| requested_at | timestamptz | default now() |
-| processed_at | timestamptz | nullable |
-| notes | text | nullable, admin notes |
+**Primary tabs (bottom bar):**
+- Dashboard (home icon)
+- Marketplace (shopping bag)
+- Wallet (wallet icon)
+- Sales (chart icon)
+- More (menu icon -- opens a drawer/sheet with: Calculator, Referrals, Leaderboard, Profile, Logout)
 
-RLS: users can SELECT and INSERT their own rows.
+### 2. Update `DashboardLayout`
 
-Also insert a corresponding `payout` transaction (negative amount) when a payout is requested.
+- Hide the sidebar entirely on mobile (`hidden md:block`)
+- Hide the `SidebarTrigger` on mobile
+- Add `MobileBottomNav` component (only renders on mobile)
+- Add bottom padding to `<main>` on mobile so content doesn't get hidden behind the nav bar
+- Simplify the mobile header: show Volt logo on the left, notification + avatar on the right
 
-### 2. Request Payout Flow (Wallet Page)
+### 3. Update `AppSidebar`
 
-Replace the dummy toast with a real **Request Payout dialog** that:
-- Shows the user's available balance
-- Lets them enter the amount (validated against available balance, minimum threshold e.g. 1,000 naira)
-- Shows their bank details from profile (with a link to Profile if missing)
-- On submit: inserts into `payouts` table + inserts a `payout` transaction with negative amount and `processing` status
-- Invalidates queries so wallet updates immediately
+- Add `className="hidden md:flex"` so it only renders on desktop/tablet
 
-### 3. Add "Log a Sale" Button to Sales Page
+### 4. CSS/Styling Enhancements
 
-The ManualSaleDialog already exists but is only accessible from the Wallet page. We'll add the same button + dialog to the Sales page so users can log sales from either place.
-
-### 4. Wallet Balance Logic Fix
-
-Update `useWallet` to also account for `processing` payouts (currently only counts `paid` earnings minus payouts). Ensure that when a payout is requested, the available balance decreases immediately.
+- Add `safe-area-inset` padding for notched phones (env(safe-area-inset-bottom))
+- Smooth transitions on tab switches
+- Haptic-like active states with scale transforms
 
 ---
 
 ## Technical Details
 
-### Database Migration SQL
+### New File: `src/components/MobileBottomNav.tsx`
 
-```sql
-CREATE TABLE public.payouts (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL,
-  amount numeric NOT NULL DEFAULT 0,
-  status text NOT NULL DEFAULT 'pending',
-  bank_name text NOT NULL DEFAULT '',
-  account_number text NOT NULL DEFAULT '',
-  requested_at timestamptz NOT NULL DEFAULT now(),
-  processed_at timestamptz,
-  notes text
-);
+- Uses `useIsMobile()` hook to conditionally render
+- Fixed position at bottom, `z-50`, with backdrop blur and border-top
+- 5 tab buttons in a flex row
+- "More" tab opens a Drawer (vaul) with remaining nav items + logout
+- Active tab detection via `useLocation().pathname`
+- `pb-[env(safe-area-inset-bottom)]` for safe area on iOS
 
-ALTER TABLE public.payouts ENABLE ROW LEVEL SECURITY;
+### Modified: `src/components/DashboardLayout.tsx`
 
-CREATE POLICY "Users can read own payouts" ON public.payouts
-  FOR SELECT USING (auth.uid() = user_id);
+- Import `useIsMobile` and `MobileBottomNav`
+- Wrap `AppSidebar` in a div with `hidden md:block`
+- Hide `SidebarTrigger` on mobile, show Volt logo instead
+- Add `pb-20 md:pb-0` to main content area
+- Render `<MobileBottomNav />` at the end
 
-CREATE POLICY "Users can insert own payouts" ON public.payouts
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-```
+### Modified: `src/index.css`
 
-### New Files
-- `src/components/RequestPayoutDialog.tsx` -- dialog with amount input, bank details display, submit logic
-
-### Modified Files
-- `src/pages/WalletPage.tsx` -- wire up RequestPayoutDialog instead of toast
-- `src/pages/Sales.tsx` -- add "Log a Sale" button + ManualSaleDialog
-- `src/hooks/useWallet.ts` -- adjust balance calc to subtract processing payouts
-
-### Flow Summary
-
-```text
-User makes sale --> Logs via ManualSaleDialog (Sales or Wallet page)
-  --> Inserts into `sales` (pending) + `transactions` (pending, positive amount)
-
-Sale confirmed by admin --> transaction status updated to `paid`
-  --> Available balance increases
-
-User requests payout --> RequestPayoutDialog
-  --> Inserts into `payouts` (pending) + `transactions` (payout, negative amount, processing)
-  --> Available balance decreases
-
-Admin processes payout --> updates payout status to `paid`, transaction to `paid`
-```
+- Add utility class for safe-area bottom padding
+- Ensure smooth touch interactions (touch-action, -webkit-tap-highlight-color)
 
