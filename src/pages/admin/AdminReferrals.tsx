@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Search, Pencil } from "lucide-react";
+import { Search, Pencil, UserCheck, UserX } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const statusColors: Record<string, string> = {
   signed_up: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
@@ -48,13 +49,30 @@ export default function AdminReferrals() {
   };
 
   const totalEarnings = referrals?.reduce((sum, r: any) => sum + Number(r.earnings), 0) ?? 0;
+  const signedUpCount = referrals?.filter((r: any) => r.status === "signed_up").length ?? 0;
+  const activeCount = referrals?.filter((r: any) => r.status === "active").length ?? 0;
+  const inactiveCount = referrals?.filter((r: any) => r.status === "inactive").length ?? 0;
+
+  const quickStatusChange = (r: any, newStatus: string) => {
+    updateReferral.mutate({ referralId: r.id, updates: { status: newStatus } }, {
+      onSuccess: () => toast({ title: `Referral marked as ${newStatus}` }),
+      onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+    });
+  };
 
   return (
     <div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold">{referrals?.length ?? 0}</p><p className="text-xs text-muted-foreground">Total</p></CardContent></Card>
+        <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-blue-500">{signedUpCount}</p><p className="text-xs text-muted-foreground">Signed Up</p></CardContent></Card>
+        <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-green-500">{activeCount}</p><p className="text-xs text-muted-foreground">Active</p></CardContent></Card>
+        <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-muted-foreground">{inactiveCount}</p><p className="text-xs text-muted-foreground">Inactive</p></CardContent></Card>
+      </div>
+
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold">Referrals</h2>
-          <p className="text-sm text-muted-foreground">{referrals?.length ?? 0} total · ₦{totalEarnings.toLocaleString()} earned</p>
+          <p className="text-sm text-muted-foreground">₦{totalEarnings.toLocaleString()} total earned</p>
         </div>
         <Select value={filter} onValueChange={setFilter}>
           <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
@@ -84,7 +102,7 @@ export default function AdminReferrals() {
                 <TableHead>Referred</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Earnings</TableHead>
-                <TableHead className="w-16">Edit</TableHead>
+                <TableHead className="w-36">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -98,9 +116,21 @@ export default function AdminReferrals() {
                   </TableCell>
                   <TableCell>₦{Number(r.earnings).toLocaleString()}</TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(r)}>
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
+                    <div className="flex gap-0.5">
+                      {r.status === "signed_up" && (
+                        <Button variant="ghost" size="sm" className="text-xs text-green-600" onClick={() => quickStatusChange(r, "active")}>
+                          <UserCheck className="h-3.5 w-3.5 mr-1" /> Active
+                        </Button>
+                      )}
+                      {r.status === "active" && (
+                        <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => quickStatusChange(r, "inactive")}>
+                          <UserX className="h-3.5 w-3.5 mr-1" /> Inactive
+                        </Button>
+                      )}
+                      <Button variant="ghost" size="icon" onClick={() => openEdit(r)}>
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

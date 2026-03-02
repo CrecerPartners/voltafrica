@@ -5,8 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { useSales } from "@/hooks/useSales";
 import { formatNaira } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingCart, TrendingUp, Star, Loader2, PlusCircle } from "lucide-react";
+import { ShoppingCart, TrendingUp, Star, Loader2, PlusCircle, AlertCircle } from "lucide-react";
 import { ManualSaleDialog } from "@/components/ManualSaleDialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const statusColors: Record<string, string> = {
   confirmed: "text-success border-success/20",
@@ -49,6 +50,15 @@ const Sales = () => {
           <PlusCircle className="h-4 w-4 mr-2" /> Log a Sale
         </Button>
       </div>
+
+      {sales.filter(s => s.status === "pending").length > 0 && (
+        <Alert className="border-warning/50 bg-warning/10">
+          <AlertCircle className="h-4 w-4 text-warning" />
+          <AlertDescription className="text-warning">
+            You have {sales.filter(s => s.status === "pending").length} sale(s) pending verification. Commissions will be credited once confirmed by admin.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Card className="border-border/50">

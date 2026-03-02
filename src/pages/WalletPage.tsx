@@ -6,9 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWallet } from "@/hooks/useWallet";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatNaira } from "@/lib/utils";
-import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, PlusCircle, Loader2 } from "lucide-react";
+import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, PlusCircle, Loader2, AlertCircle } from "lucide-react";
 import { ManualSaleDialog } from "@/components/ManualSaleDialog";
 import { RequestPayoutDialog } from "@/components/RequestPayoutDialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const typeLabels: Record<string, string> = {
   commission: "Commission",
@@ -45,6 +46,15 @@ const WalletPage = () => {
           <PlusCircle className="h-4 w-4 mr-2" /> Log a Sale
         </Button>
       </div>
+
+      {allTransactions.some(t => t.type === "payout" && t.status === "processing") && (
+        <Alert className="border-warning/50 bg-warning/10">
+          <AlertCircle className="h-4 w-4 text-warning" />
+          <AlertDescription className="text-warning">
+            You have a payout being processed. You'll be notified once it's completed.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="border-primary/30 volt-glow">

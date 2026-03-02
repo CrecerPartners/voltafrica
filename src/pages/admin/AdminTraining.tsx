@@ -199,7 +199,10 @@ export default function AdminTraining() {
               <Input type="number" placeholder="Module #" value={lessonForm.module_number} onChange={(e) => setL("module_number", +e.target.value)} />
               <Input type="number" placeholder="Sort Order" value={lessonForm.sort_order} onChange={(e) => setL("sort_order", +e.target.value)} />
             </div>
-            <Input placeholder="YouTube URL (e.g. https://youtube.com/watch?v=...)" value={lessonForm.youtube_url} onChange={(e) => setL("youtube_url", e.target.value)} />
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">YouTube Embed / Video Link</label>
+              <Input placeholder="e.g. https://youtube.com/watch?v=... or embed URL" value={lessonForm.youtube_url} onChange={(e) => setL("youtube_url", e.target.value)} />
+            </div>
 
             {/* YouTube Preview */}
             {lessonVideoId && (
