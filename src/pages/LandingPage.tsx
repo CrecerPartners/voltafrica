@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
+import { BrandsContent } from "@/components/landing/BrandsContent";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -154,94 +155,69 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="border-y border-border bg-muted/30">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-4 py-12 md:grid-cols-4 md:py-16">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <p className="font-display text-3xl font-bold text-primary md:text-4xl">{s.value}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+      {tab === "students" && (
+        <>
+          <section className="border-y border-border bg-muted/30">
+            <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-4 py-12 md:grid-cols-4 md:py-16">
+              {stats.map((s) => (
+                <div key={s.label} className="text-center">
+                  <p className="font-display text-3xl font-bold text-primary md:text-4xl">{s.value}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
-
-
-      {/* Ways to Earn */}
-      <section className="border-y border-border bg-muted/30">
-        <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
-          <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold md:text-4xl">Multiple Ways to Earn on Volt</h2>
-            <p className="mt-3 text-muted-foreground">Start earning from day one — here's how.</p>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            {earnings.map((item, i) => (
-              <div
-                key={item.title}
-                className="flex items-start gap-4 rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
-              >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg volt-gradient text-sm font-bold text-primary-foreground">
-                  {i + 1}
-                </div>
-                <div>
-                  <h3 className="font-display text-base font-semibold">{item.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
-                </div>
+          </section>
+          <section className="border-y border-border bg-muted/30">
+            <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
+              <div className="mb-12 text-center">
+                <h2 className="font-display text-3xl font-bold md:text-4xl">Multiple Ways to Earn on Volt</h2>
+                <p className="mt-3 text-muted-foreground">Start earning from day one — here's how.</p>
               </div>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
-            <Button
-              asChild
-              size="lg"
-              className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90"
-            >
-              <Link to="/login?mode=signup">
-                Sign Up & Claim My ₦500 Bonus
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl font-bold md:text-4xl">Everything You Need to Succeed</h2>
-          <p className="mt-3 text-muted-foreground">
-            Powerful tools for ambassadors and brands alike.
-          </p>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <Card
-              key={f.title}
-              className="feature-card-hover group border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1 min-h-[220px]"
-            >
-              <CardContent className="card-content-fade flex flex-col gap-3 p-6 transition-opacity duration-300">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
-                  <f.icon className="h-5 w-5" />
-                </div>
-                <h3 className="font-display text-lg font-semibold">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
-              </CardContent>
-
-              {/* Screenshot preview on hover (desktop only) */}
-              <div className="screenshot-preview hidden md:flex items-center justify-center rounded-lg bg-card p-3">
-                <img
-                  src={f.screenshot}
-                  alt={`${f.title} preview`}
-                  className="w-full h-full object-cover object-[center_15%] rounded-lg"
-                  loading="lazy"
-                />
+              <div className="flex flex-col gap-4">
+                {earnings.map((item, i) => (
+                  <div key={item.title} className="flex items-start gap-4 rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg volt-gradient text-sm font-bold text-primary-foreground">{i + 1}</div>
+                    <div>
+                      <h3 className="font-display text-base font-semibold">{item.title}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </Card>
-          ))}
-        </div>
-      </section>
+              <div className="mt-10 text-center">
+                <Button asChild size="lg" className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90">
+                  <Link to="/login?mode=signup">Sign Up & Claim My ₦500 Bonus<ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+              </div>
+            </div>
+          </section>
+          <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+            <div className="mb-12 text-center">
+              <h2 className="font-display text-3xl font-bold md:text-4xl">Everything You Need to Succeed</h2>
+              <p className="mt-3 text-muted-foreground">Powerful tools for ambassadors and brands alike.</p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((f) => (
+                <Card key={f.title} className="feature-card-hover group border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1 min-h-[220px]">
+                  <CardContent className="card-content-fade flex flex-col gap-3 p-6 transition-opacity duration-300">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
+                      <f.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display text-lg font-semibold">{f.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+                  </CardContent>
+                  <div className="screenshot-preview hidden md:flex items-center justify-center rounded-lg bg-card p-3">
+                    <img src={f.screenshot} alt={`${f.title} preview`} className="w-full h-full object-cover object-[center_15%] rounded-lg" loading="lazy" />
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {tab === "brands" && <BrandsContent />}
+
 
       {/* CTA */}
       <section className="volt-gradient">
