@@ -43,7 +43,7 @@ const audiences = {
     subtitle:
       "Reach thousands of students through trusted campus ambassadors. Launch hyper-local campaigns that actually convert.",
     cta: "Partner with Volt",
-    ctaLink: "/login?mode=signup&role=brand",
+    ctaLink: "https://volt.crecerpartners.com/brand-form/",
     icon: Building2,
     image: heroBrands,
   },
@@ -136,10 +136,17 @@ export default function LandingPage() {
                 size="lg"
                 className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90"
               >
-                <Link to={active.ctaLink}>
-                  {active.cta}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                {active.ctaLink.startsWith("http") ? (
+                  <a href={active.ctaLink} target="_blank" rel="noopener noreferrer">
+                    {active.cta}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </a>
+                ) : (
+                  <Link to={active.ctaLink}>
+                    {active.cta}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                )}
               </Button>
               <Button variant="outline" size="lg" asChild className="px-8 text-base">
                 <Link to={tab === "students" ? "/about/students" : "/about/brands"}>
