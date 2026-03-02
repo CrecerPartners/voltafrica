@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { toast } from "@/hooks/use-toast";
 import { Search, Pencil, UserCheck, UserX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 
 const statusColors: Record<string, string> = {
   signed_up: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
@@ -16,11 +17,14 @@ const statusColors: Record<string, string> = {
   inactive: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
 };
 
+const PAGE_SIZE = 20;
+
 export default function AdminReferrals() {
   const { data: referrals, isLoading } = useAdminReferrals();
   const updateReferral = useUpdateReferral();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const [editRef, setEditRef] = useState<any>(null);
   const [editStatus, setEditStatus] = useState("");
   const [editEarnings, setEditEarnings] = useState(0);
@@ -28,17 +32,13 @@ export default function AdminReferrals() {
   let filtered = filter === "all" ? referrals : referrals?.filter((r: any) => r.status === filter);
   if (search) {
     const q = search.toLowerCase();
-    filtered = filtered?.filter((r: any) =>
-      r.referrer_name?.toLowerCase().includes(q) ||
-      r.referred_name?.toLowerCase().includes(q)
-    );
+    filtered = filtered?.filter((r: any) => r.referrer_name?.toLowerCase().includes(q) || r.referred_name?.toLowerCase().includes(q));
   }
 
-  const openEdit = (r: any) => {
-    setEditRef(r);
-    setEditStatus(r.status);
-    setEditEarnings(Number(r.earnings));
-  };
+  const totalPages = Math.max(1, Math.ceil((filtered?.length ?? 0) / PAGE_SIZE));
+  const paginated = paginateItems(filtered, page, PAGE_SIZE);
+
+  const openEdit = (r: any) => { setEditRef(r); setEditStatus(r.status); setEditEarnings(Number(r.earnings)); };
 
   const saveEdit = () => {
     if (!editRef) return;
@@ -48,17 +48,17 @@ export default function AdminReferrals() {
     });
   };
 
-  const totalEarnings = referrals?.reduce((sum, r: any) => sum + Number(r.earnings), 0) ?? 0;
-  const signedUpCount = referrals?.filter((r: any) => r.status === "signed_up").length ?? 0;
-  const activeCount = referrals?.filter((r: any) => r.status === "active").length ?? 0;
-  const inactiveCount = referrals?.filter((r: any) => r.status === "inactive").length ?? 0;
-
   const quickStatusChange = (r: any, newStatus: string) => {
     updateReferral.mutate({ referralId: r.id, updates: { status: newStatus } }, {
       onSuccess: () => toast({ title: `Referral marked as ${newStatus}` }),
       onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
     });
   };
+
+  const totalEarnings = referrals?.reduce((sum, r: any) => sum + Number(r.earnings), 0) ?? 0;
+  const signedUpCount = referrals?.filter((r: any) => r.status === "signed_up").length ?? 0;
+  const activeCount = referrals?.filter((r: any) => r.status === "active").length ?? 0;
+  const inactiveCount = referrals?.filter((r: any) => r.status === "inactive").length ?? 0;
 
   return (
     <div>
@@ -74,7 +74,7 @@ export default function AdminReferrals() {
           <h2 className="text-2xl font-bold">Referrals</h2>
           <p className="text-sm text-muted-foreground">₦{totalEarnings.toLocaleString()} total earned</p>
         </div>
-        <Select value={filter} onValueChange={setFilter}>
+        <Select value={filter} onValueChange={(v) => { setFilter(v); setPage(1); }}>
           <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
@@ -87,7 +87,7 @@ export default function AdminReferrals() {
 
       <div className="relative mb-4 max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Search referrals..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+        <Input placeholder="Search referrals..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9" />
       </div>
 
       {isLoading ? (
@@ -106,14 +106,12 @@ export default function AdminReferrals() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered?.map((r: any) => (
+              {paginated.map((r: any) => (
                 <TableRow key={r.id}>
                   <TableCell className="text-xs">{new Date(r.date).toLocaleDateString()}</TableCell>
                   <TableCell className="font-medium">{r.referrer_name}</TableCell>
                   <TableCell>{r.referred_name}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className={statusColors[r.status] || ""}>{r.status}</Badge>
-                  </TableCell>
+                  <TableCell><Badge variant="secondary" className={statusColors[r.status] || ""}>{r.status}</Badge></TableCell>
                   <TableCell>₦{Number(r.earnings).toLocaleString()}</TableCell>
                   <TableCell>
                     <div className="flex gap-0.5">
@@ -127,15 +125,14 @@ export default function AdminReferrals() {
                           <UserX className="h-3.5 w-3.5 mr-1" /> Inactive
                         </Button>
                       )}
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(r)}>
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => openEdit(r)}><Pencil className="h-3.5 w-3.5" /></Button>
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          <AdminTablePagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered?.length ?? 0} pageSize={PAGE_SIZE} />
         </div>
       )}
 

@@ -6,17 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Check, X, Download, Eye, Search } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { exportToCsv } from "@/lib/csvExport";
+import { DateRangeFilter } from "@/components/admin/DateRangeFilter";
+import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
   confirmed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
   cancelled: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
 };
+
+const PAGE_SIZE = 20;
 
 export default function AdminSales() {
   const { data: sales, isLoading } = useAdminSales();
@@ -30,31 +36,33 @@ export default function AdminSales() {
 
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [dateFrom, setDateFrom] = useState<Date>();
+  const [dateTo, setDateTo] = useState<Date>();
+  const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [detailSale, setDetailSale] = useState<any>(null);
   const [editNotes, setEditNotes] = useState("");
   const [editAmount, setEditAmount] = useState(0);
   const [editCommission, setEditCommission] = useState(0);
   const [proofUrl, setProofUrl] = useState<string | null>(null);
+  const [bulkProcessing, setBulkProcessing] = useState(false);
 
-  // Build user map for name lookup
   const userMap = Object.fromEntries((users || []).map((u) => [u.user_id, u]));
-
-  const getSellerName = (sale: any) => {
-    // Try joined profile first
-    if (sale.profiles?.name) return sale.profiles.name;
-    return userMap[sale.user_id]?.name || "Unknown";
-  };
+  const getSellerName = (sale: any) => sale.profiles?.name || userMap[sale.user_id]?.name || "Unknown";
 
   let filtered = filter === "all" ? sales : sales?.filter((s) => s.status === filter);
   if (userFilter) filtered = filtered?.filter((s) => s.user_id === userFilter);
   if (search) {
     const q = search.toLowerCase();
     filtered = filtered?.filter((s: any) =>
-      s.customer?.toLowerCase().includes(q) ||
-      s.products?.name?.toLowerCase().includes(q) ||
-      getSellerName(s).toLowerCase().includes(q)
+      s.customer?.toLowerCase().includes(q) || s.products?.name?.toLowerCase().includes(q) || getSellerName(s).toLowerCase().includes(q)
     );
   }
+  if (dateFrom) filtered = filtered?.filter((s) => new Date(s.date) >= dateFrom);
+  if (dateTo) { const end = new Date(dateTo); end.setHours(23, 59, 59); filtered = filtered?.filter((s) => new Date(s.date) <= end); }
+
+  const totalPages = Math.max(1, Math.ceil((filtered?.length ?? 0) / PAGE_SIZE));
+  const paginated = paginateItems(filtered, page, PAGE_SIZE);
 
   const findMatchingTransaction = (sale: any) => {
     return transactions?.find((t) =>
@@ -79,13 +87,27 @@ export default function AdminSales() {
     toast({ title: "Sale cancelled" });
   };
 
-  const openDetail = (s: any) => {
-    setDetailSale(s);
-    setEditNotes(s.notes || "");
-    setEditAmount(Number(s.amount));
-    setEditCommission(Number(s.commission));
+  const handleBulkConfirm = async () => {
+    setBulkProcessing(true);
+    const pendingSales = (filtered || []).filter(s => selected.has(s.id) && s.status === "pending");
+    for (const sale of pendingSales) {
+      try { await handleConfirm(sale); } catch {}
+    }
+    setSelected(new Set());
+    setBulkProcessing(false);
+    toast({ title: `${pendingSales.length} sale(s) confirmed` });
   };
 
+  const toggleSelect = (id: string) => {
+    setSelected(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleAll = () => {
+    const pendingIds = paginated.filter(s => s.status === "pending").map(s => s.id);
+    const allSelected = pendingIds.every(id => selected.has(id));
+    setSelected(prev => { const n = new Set(prev); pendingIds.forEach(id => allSelected ? n.delete(id) : n.add(id)); return n; });
+  };
+
+  const openDetail = (s: any) => { setDetailSale(s); setEditNotes(s.notes || ""); setEditAmount(Number(s.amount)); setEditCommission(Number(s.commission)); };
   const saveDetails = () => {
     if (!detailSale) return;
     updateDetails.mutate({ saleId: detailSale.id, updates: { notes: editNotes, amount: editAmount, commission: editCommission } }, {
@@ -109,28 +131,54 @@ export default function AdminSales() {
     a.click();
   };
 
+  const handleExport = () => {
+    if (!filtered?.length) return;
+    exportToCsv("sales", filtered.map(s => ({ ...s, seller: getSellerName(s), product: s.products?.name ?? "" })), [
+      { key: "date", label: "Date" }, { key: "seller", label: "Seller" }, { key: "customer", label: "Customer" },
+      { key: "product", label: "Product" }, { key: "amount", label: "Amount" }, { key: "commission", label: "Commission" }, { key: "status", label: "Status" },
+    ]);
+  };
+
+  const pendingCount = sales?.filter(s => s.status === "pending").length || 0;
+  const selectedPendingCount = [...selected].filter(id => (filtered || []).find(s => s.id === id && s.status === "pending")).length;
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-bold">Sales Verification</h2>
-          {(() => { const pending = sales?.filter(s => s.status === "pending").length || 0; return pending > 0 ? <Badge className="bg-yellow-500 text-white">{pending} pending</Badge> : null; })()}
+          {pendingCount > 0 && <Badge className="bg-yellow-500 text-white">{pendingCount} pending</Badge>}
         </div>
-        <Select value={filter} onValueChange={setFilter}>
-          <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="confirmed">Confirmed</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleExport} disabled={!filtered?.length}>Export CSV</Button>
+          <Select value={filter} onValueChange={(v) => { setFilter(v); setPage(1); }}>
+            <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="confirmed">Confirmed</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <div className="relative mb-4 max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Search by seller, customer, product..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+      <div className="flex flex-wrap gap-3 mb-4">
+        <div className="relative max-w-sm flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search seller, customer, product..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9" />
+        </div>
+        <DateRangeFilter from={dateFrom} to={dateTo} onChange={(f, t) => { setDateFrom(f); setDateTo(t); setPage(1); }} />
       </div>
+
+      {selectedPendingCount > 0 && (
+        <div className="flex items-center gap-3 mb-3 p-2 rounded-lg bg-muted">
+          <span className="text-sm">{selectedPendingCount} pending sale(s) selected</span>
+          <Button size="sm" onClick={handleBulkConfirm} disabled={bulkProcessing}>
+            <Check className="h-3.5 w-3.5 mr-1" /> Bulk Confirm
+          </Button>
+        </div>
+      )}
 
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
@@ -139,6 +187,9 @@ export default function AdminSales() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10">
+                  <Checkbox checked={paginated.filter(s => s.status === "pending").length > 0 && paginated.filter(s => s.status === "pending").every(s => selected.has(s.id))} onCheckedChange={toggleAll} />
+                </TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Seller</TableHead>
                 <TableHead>Customer</TableHead>
@@ -151,40 +202,33 @@ export default function AdminSales() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered?.map((s: any) => (
+              {paginated.map((s: any) => (
                 <TableRow key={s.id}>
+                  <TableCell>
+                    {s.status === "pending" && <Checkbox checked={selected.has(s.id)} onCheckedChange={() => toggleSelect(s.id)} />}
+                  </TableCell>
                   <TableCell className="text-xs">{new Date(s.date).toLocaleDateString()}</TableCell>
                   <TableCell className="text-sm">{getSellerName(s)}</TableCell>
                   <TableCell>{s.customer}</TableCell>
                   <TableCell>{s.products?.name ?? "—"}</TableCell>
                   <TableCell>₦{Number(s.amount).toLocaleString()}</TableCell>
                   <TableCell>₦{Number(s.commission).toLocaleString()}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className={statusColors[s.status] || ""}>{s.status}</Badge>
-                  </TableCell>
+                  <TableCell><Badge variant="secondary" className={statusColors[s.status] || ""}>{s.status}</Badge></TableCell>
                   <TableCell>
                     {s.proof_file_url ? (
                       <div className="flex gap-0.5">
-                        <Button variant="ghost" size="icon" onClick={() => viewProof(s.proof_file_url)} title="Preview">
-                          <Eye className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => downloadProof(s.proof_file_url)} title="Download">
-                          <Download className="h-3.5 w-3.5" />
-                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => viewProof(s.proof_file_url)}><Eye className="h-3.5 w-3.5" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => downloadProof(s.proof_file_url)}><Download className="h-3.5 w-3.5" /></Button>
                       </div>
                     ) : "—"}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-0.5">
-                      <Button variant="ghost" size="icon" onClick={() => openDetail(s)} title="Details"><Eye className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => openDetail(s)}><Eye className="h-4 w-4" /></Button>
                       {s.status === "pending" && (
                         <>
-                          <Button variant="ghost" size="icon" onClick={() => handleConfirm(s)} title="Confirm">
-                            <Check className="h-4 w-4 text-green-600" />
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleCancel(s)} title="Reject">
-                            <X className="h-4 w-4 text-destructive" />
-                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleConfirm(s)}><Check className="h-4 w-4 text-green-600" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleCancel(s)}><X className="h-4 w-4 text-destructive" /></Button>
                         </>
                       )}
                     </div>
@@ -193,6 +237,7 @@ export default function AdminSales() {
               ))}
             </TableBody>
           </Table>
+          <AdminTablePagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered?.length ?? 0} pageSize={PAGE_SIZE} />
         </div>
       )}
 
@@ -212,20 +257,11 @@ export default function AdminSales() {
               </div>
               {detailSale.status === "pending" && (
                 <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-xs text-muted-foreground">Amount</label>
-                    <Input type="number" value={editAmount} onChange={(e) => setEditAmount(+e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground">Commission</label>
-                    <Input type="number" value={editCommission} onChange={(e) => setEditCommission(+e.target.value)} />
-                  </div>
+                  <div><label className="text-xs text-muted-foreground">Amount</label><Input type="number" value={editAmount} onChange={(e) => setEditAmount(+e.target.value)} /></div>
+                  <div><label className="text-xs text-muted-foreground">Commission</label><Input type="number" value={editCommission} onChange={(e) => setEditCommission(+e.target.value)} /></div>
                 </div>
               )}
-              <div>
-                <label className="text-xs text-muted-foreground">Admin Notes</label>
-                <Textarea value={editNotes} onChange={(e) => setEditNotes(e.target.value)} placeholder="Add notes..." />
-              </div>
+              <div><label className="text-xs text-muted-foreground">Admin Notes</label><Textarea value={editNotes} onChange={(e) => setEditNotes(e.target.value)} placeholder="Add notes..." /></div>
             </div>
           )}
           <DialogFooter>
@@ -235,7 +271,6 @@ export default function AdminSales() {
         </DialogContent>
       </Dialog>
 
-      {/* Proof preview lightbox */}
       <Dialog open={!!proofUrl} onOpenChange={(o) => !o && setProofUrl(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader><DialogTitle>Proof of Sale</DialogTitle></DialogHeader>

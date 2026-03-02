@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon, Search } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 
 const empty = { name: "", brand: "", category: "", price: 0, commission_rate: 0, image: "", description: "", assets: { images: [] as string[], videos: [] as string[] } };
+const PAGE_SIZE = 20;
 
 export default function AdminProducts() {
   const { data: products, isLoading } = useAdminProducts();
@@ -19,7 +21,13 @@ export default function AdminProducts() {
   const [form, setForm] = useState<Record<string, any>>(empty);
   const [uploading, setUploading] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const filtered = products?.filter(p => !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.brand.toLowerCase().includes(search.toLowerCase()));
+  const totalPages = Math.max(1, Math.ceil((filtered?.length ?? 0) / PAGE_SIZE));
+  const paginated = paginateItems(filtered, page, PAGE_SIZE);
 
   const openNew = () => { setForm({ ...empty, assets: { images: [], videos: [] } }); setVideoUrl(""); setOpen(true); };
   const openEdit = (p: any) => {
@@ -104,6 +112,12 @@ export default function AdminProducts() {
         <h2 className="text-2xl font-bold">Products</h2>
         <Button onClick={openNew} size="sm"><Plus className="h-4 w-4 mr-1" /> Add Product</Button>
       </div>
+      <div className="flex flex-wrap gap-3 mb-4">
+        <div className="relative max-w-sm flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search products..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9" />
+        </div>
+      </div>
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
@@ -121,7 +135,7 @@ export default function AdminProducts() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products?.map((p) => (
+              {paginated?.map((p) => (
                 <TableRow key={p.id}>
                   <TableCell>
                     {p.image ? (
@@ -145,6 +159,7 @@ export default function AdminProducts() {
               ))}
             </TableBody>
           </Table>
+          <AdminTablePagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered?.length ?? 0} pageSize={PAGE_SIZE} />
         </div>
       )}
 
