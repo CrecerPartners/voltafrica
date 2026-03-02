@@ -32,6 +32,7 @@ import AdminProducts from "@/pages/admin/AdminProducts";
 import AdminSales from "@/pages/admin/AdminSales";
 import AdminPayouts from "@/pages/admin/AdminPayouts";
 import AdminTraining from "@/pages/admin/AdminTraining";
+import AdminLogin from "@/pages/admin/AdminLogin";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/about/students" element={<AboutStudents />} />
           <Route path="/about/brands" element={<AboutBrands />} />
           <Route path="/login" element={<Login />} />
