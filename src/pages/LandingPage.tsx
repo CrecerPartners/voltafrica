@@ -219,26 +219,27 @@ export default function LandingPage() {
       {tab === "brands" && <BrandsContent />}
 
 
-      {/* CTA */}
-      <section className="volt-gradient">
-        <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
-          <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
-            Ready to Get Started?
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
-            Whether you're a student looking to earn or a brand looking to grow — Volt is your launchpad.
-          </p>
-          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
-            >
-              <Link to="/login">Get Started Free</Link>
-            </Button>
+      {tab === "students" && (
+        <section className="volt-gradient">
+          <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
+            <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
+              Ready to Get Started?
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
+              Whether you're a student looking to earn or a brand looking to grow — Volt is your launchpad.
+            </p>
+            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+              <Button
+                asChild
+                size="lg"
+                className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
+              >
+                <Link to="/login">Get Started Free</Link>
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-border bg-background">
