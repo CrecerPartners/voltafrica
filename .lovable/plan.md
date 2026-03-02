@@ -1,77 +1,131 @@
 
-
-# Brands Section Content Overhaul
+# Admin Dashboard - Full End-to-End Build
 
 ## Overview
-When the "Brands" tab is selected on the landing page, replace the student-focused content (Ways to Earn, Features) with comprehensive brand-focused content below the hero image. The page will conditionally render different sections based on the active tab.
+Build a comprehensive admin dashboard at `/admin` with sub-pages to manage all aspects of the Volt platform: users, products, sales verification, payout processing, and training content. Access is restricted to users with the `admin` role via server-side RLS and a client-side `AdminProtectedRoute`.
 
-## Content Sections (Brands tab only, below hero image)
+---
 
-### 1. Brand Stats Bar
-Five key metrics in a styled row:
-- 2M+ active student buyers nationwide
-- 60k students per major campus
-- 100+ student sales agents per campus
-- 1000+ peer-driven interactions per campaign
-- 10 or fewer days to launch campus sales
+## Database Changes
 
-### 2. "Why Brands Choose Volt" - 7 benefit cards
-Grid of cards (2-col on desktop), each with title + description:
-- Zero-Stress Logistics
-- Sales Density, Not Surface Reach
-- Social-First Sales Content
-- Faster Time-to-Market
-- Repeat Buying & Community-Led Adoption
-- Vetted Campus Sales Force
-- Direct Peer-to-Peer Trust & Selling
-- Performance Tracking, Not Guesswork
+### 1. RLS Policy Updates
+Add admin-level policies to existing tables so admins can read/update all rows:
 
-### 3. "The Volt Advantage" - Comparison Table
-Side-by-side table comparing Traditional Ads vs The Volt Way across 5 dimensions: Reach, Cost, Engagement, Tracking, Sales.
+- **profiles**: Admin can SELECT and UPDATE all rows
+- **sales**: Admin can SELECT and UPDATE all rows (to verify/confirm/cancel sales)
+- **transactions**: Admin can SELECT and UPDATE all rows (to update status after payout)
+- **payouts**: Admin can SELECT and UPDATE all rows (to process payouts)
+- **products**: Admin can INSERT, UPDATE, and DELETE
+- **referrals**: Admin can SELECT all rows
+- **training_courses**: Admin can INSERT, UPDATE, DELETE
+- **training_lessons**: Admin can INSERT, UPDATE, DELETE
 
-### 4. "Product Verticals We Distribute" - Category List
-Six product verticals displayed as styled pills/cards:
-- Electronics & Gadgets
-- Telco & Utility Services
-- Fintech & Financial Services
-- Events & Access
-- Fashion & Lifestyle
-- Academic & Professional Tools
+All policies use the existing `has_role(auth.uid(), 'admin')` function.
 
-### 5. "The Volt Process" - 4-step timeline
-Numbered steps: List Your Brand, Campaign Activation, Campus Sales Go Live, Track Sales & Scale.
+---
 
-### 6. Final CTA
-"Distribution for the Next Generation" with the tagline: "This is campus distribution infrastructure."
+## New Files
 
-## Technical Approach
+### Components
 
-### File: `src/pages/LandingPage.tsx`
-- Wrap the existing "Ways to Earn", "Features", and student-focused sections in a conditional `{tab === "students" && ...}`
-- Add a `{tab === "brands" && ...}` block containing all the new brands content sections
-- The Stats bar, CTA, and Footer remain shared across both tabs
-- Update the shared stats section to show different stats based on the active tab (student stats vs brand stats)
+1. **`src/components/AdminProtectedRoute.tsx`**
+   - Wraps admin routes; checks `has_role` via a database query
+   - Redirects non-admin users to `/dashboard`
+   - Shows loading spinner while checking
 
-### Conditional rendering structure:
+2. **`src/components/AdminLayout.tsx`**
+   - Sidebar navigation with links: Overview, Users, Products, Sales, Payouts, Training
+   - Header with "Admin Panel" title and back-to-dashboard link
+   - Outlet for nested routes
+
+### Pages
+
+3. **`src/pages/admin/AdminDashboard.tsx`** - Overview
+   - Summary cards: total users, total sales, pending sales, pending payouts, total revenue
+   - Quick counts fetched via admin queries
+
+4. **`src/pages/admin/AdminUsers.tsx`** - User Management
+   - Table of all profiles with search/filter
+   - View user details, update tier, view their sales/transactions
+   - Columns: Name, Email, University, Tier, Joined, Sales Count
+
+5. **`src/pages/admin/AdminProducts.tsx`** - Product Management
+   - Table of all products with add/edit/delete
+   - Dialog form for creating/editing products (name, brand, category, price, commission rate, image URL, description, assets)
+
+6. **`src/pages/admin/AdminSales.tsx`** - Sales Verification
+   - Table of all sales across all users with status filter
+   - View proof file (download from storage)
+   - Approve (confirm) or reject (cancel) sales with one click
+   - On confirm: update sale status to "confirmed", update corresponding transaction to "paid"
+   - On cancel: update sale status to "cancelled", update corresponding transaction to "cancelled"
+
+7. **`src/pages/admin/AdminPayouts.tsx`** - Payout Processing
+   - Table of all payout requests with status filter
+   - Show bank details, amount, user name
+   - Mark as "processed" or "rejected"
+   - On process: update payout status, update corresponding transaction status
+
+8. **`src/pages/admin/AdminTraining.tsx`** - Training Content
+   - List all courses with add/edit/delete
+   - Expand a course to manage its lessons (add/edit/delete)
+   - Fields: title, description, category, level, cover color, YouTube URL, module info
+
+### Hooks
+
+9. **`src/hooks/useAdminRole.ts`**
+   - Calls `supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' })` 
+   - Returns `{ isAdmin, isLoading }`
+
+10. **`src/hooks/useAdminData.ts`**
+    - Admin-specific queries: all users, all sales, all payouts, all products, all courses/lessons
+    - Admin mutations: update sale status, update payout status, CRUD products, CRUD training
+
+---
+
+## Route Setup (App.tsx)
+
+Add admin routes nested under `AdminProtectedRoute` and `AdminLayout`:
+
 ```text
-Hero (shared, with toggle)
-  |-- Student image / Brand image (already done)
-  |
-  |-- tab === "students":
-  |     Stats bar (existing)
-  |     Ways to Earn (existing)
-  |     Features with screenshots (existing)
-  |
-  |-- tab === "brands":
-  |     Brand Stats (2M+, 60k, etc.)
-  |     Why Brands Choose Volt (8 cards)
-  |     The Volt Advantage (comparison table)
-  |     Product Verticals
-  |     The Volt Process (4 steps)
-  |
-  CTA (shared)
-  Footer (shared)
+/admin           -> AdminDashboard (overview)
+/admin/users     -> AdminUsers
+/admin/products  -> AdminProducts
+/admin/sales     -> AdminSales
+/admin/payouts   -> AdminPayouts
+/admin/training  -> AdminTraining
 ```
 
-No new files needed -- all changes in `src/pages/LandingPage.tsx`.
+---
 
+## Key Flows
+
+### Sale Verification Flow
+1. Admin views pending sales in AdminSales
+2. Clicks "View Proof" to download/preview the proof file from storage
+3. Clicks "Confirm" or "Reject"
+4. Sale status updates, corresponding transaction status updates accordingly
+
+### Payout Processing Flow
+1. Admin views pending payouts in AdminPayouts
+2. Reviews bank details and amount
+3. Clicks "Mark Processed" after completing bank transfer
+4. Payout status and transaction status update
+
+### Product Management Flow
+1. Admin adds/edits products in AdminProducts
+2. Changes are immediately visible in the student marketplace
+
+### Training Management Flow
+1. Admin creates courses, then adds lessons to each course
+2. Students see new content in the Training section
+
+---
+
+## Technical Notes
+
+- All admin queries bypass user-scoped RLS via admin policies using `has_role`
+- The `AdminProtectedRoute` performs a server-side role check, not client-side storage
+- Admin pages are completely separate from the student dashboard layout
+- File downloads for sale proofs use `supabase.storage.from('sale-proofs').download(path)`
+- Estimated total: ~10 new files, 1 modified file (App.tsx), 1 database migration
