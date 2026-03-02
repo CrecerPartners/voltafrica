@@ -10,10 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useProfile } from "@/hooks/useProfile";
+import { useSales } from "@/hooks/useSales";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { formatNaira } from "@/lib/utils";
-import { Loader2, AlertCircle, Banknote } from "lucide-react";
+import { Loader2, AlertCircle, Banknote, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -29,12 +30,14 @@ const MIN_PAYOUT = 1000;
 export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: RequestPayoutDialogProps) {
   const { user } = useAuth();
   const { data: profile } = useProfile();
+  const { data: sales } = useSales();
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const parsedAmount = parseFloat(amount) || 0;
   const hasBankDetails = profile?.bank_name && profile?.account_number;
+  const hasSales = sales && sales.length > 0;
 
   const error =
     parsedAmount <= 0
@@ -99,13 +102,31 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* No sales warning */}
+          {!hasSales && (
+            <div className="rounded-lg border border-warning/30 bg-warning/10 p-4 flex items-start gap-3">
+              <ShoppingCart className="h-5 w-5 text-warning mt-0.5 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-warning">Make your first sale to unlock payouts</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Your ₦500 signup bonus will be available for withdrawal after you complete your first sale. Head to the marketplace to get started!
+                </p>
+                <Button variant="outline" size="sm" className="mt-3" asChild>
+                  <Link to="/marketplace" onClick={() => onOpenChange(false)}>Browse Products</Link>
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Verification info banner */}
-          <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 flex items-start gap-2">
-            <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-            <p className="text-xs text-muted-foreground">
-              Only verified sales are eligible for payout. Sale verification and payment confirmation takes 3-7 working days.
-            </p>
-          </div>
+          {hasSales && (
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 flex items-start gap-2">
+              <AlertCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+              <p className="text-xs text-muted-foreground">
+                Only verified sales are eligible for payout. Sale verification and payment confirmation takes 3-7 working days.
+              </p>
+            </div>
+          )}
 
           {/* Available balance */}
           <div className="rounded-lg bg-secondary p-4 text-center">
@@ -155,7 +176,7 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button className="volt-gradient" onClick={handleSubmit} disabled={!canSubmit}>
+          <Button className="volt-gradient" onClick={handleSubmit} disabled={!canSubmit || !hasSales}>
             {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</> : "Request Payout"}
           </Button>
         </DialogFooter>
