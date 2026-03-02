@@ -1,31 +1,51 @@
 
 
-# Landing Page Updates
+# Landing Page Updates: Earnings Section, Screenshot Previews
 
 ## Overview
-Three changes to the landing page at `/`: remove "For Students" and "For Brands" nav links from the header, and force a dark theme on the landing page.
+Keep the hero section exactly as-is (with the Students/Brands toggle). Add an earnings section and screenshot hover previews on feature cards.
 
 ## Changes
 
-### 1. Remove nav links from header (`src/components/LandingNavbar.tsx`)
-- Remove the `navItems` array entirely
-- Remove the desktop `<nav>` section that renders the links
-- Remove the nav items from the mobile Sheet drawer (keep only Sign In / Get Started buttons)
-- Simplify layout: logo on left, Sign In + Get Started on right
+### 1. Add promotional image section (after Stats, before Features)
+- Display `IMG_2564-2.png` and `IMG_2890.png` as full-width promotional visuals
+- Simple layout: images centered with some padding
 
-### 2. Force dark theme on landing page (`src/pages/LandingPage.tsx`)
-- Wrap the entire landing page in a `<div className="dark">` wrapper so it uses the dark CSS variables regardless of the user's theme setting
-- Update the outer container to use explicit dark background colors (e.g., `bg-[#111]` or rely on the dark theme variables)
-- This keeps the rest of the app unaffected -- only the landing page will be dark
+### 2. Add "Ways to Earn" section (after promotional images, before Features)
+- Section heading: "Multiple ways to earn on Volt"
+- Simple numbered list (not a table), styled as dark cards:
+  1. **Signup Bonus** -- N500 Credit to your Volt account the moment you register.
+  2. **Direct Sales Commission** -- Up to 30%
+  3. **Referral Bonus** -- N1,000 "Spark Bonus" for every friend you bring who makes their first 5 sales.
+  4. **High-Volume Bonus** -- Extra Cash for Influencers who hit weekly targets.
+  5. **Lead Base Pay** -- N5,000 - N30,000 monthly (Team Leads only).
+- CTA button: "Sign Up & Claim My N500 Bonus" linking to signup
 
-### 3. Clean up footer links (`src/pages/LandingPage.tsx`)
-- Remove "For Students" and "For Brands" links from the footer nav as well
-- Keep just "Sign In" or simplify to just the logo + copyright
+### 3. Screenshot hover previews on Feature Cards
+- Copy uploaded screenshots to `src/assets/`:
+  - `IMG_2872-2.png` -> Earn Commissions
+  - `IMG_2874-2.png` -> Curated Marketplace
+  - `IMG_2875-2.png` -> Track Everything
+  - `IMG_2877.png` -> Leaderboards
+  - `IMG_2876-2.png` -> Refer & Earn
+  - `IMG_2873-2.png` -> Tier Rewards
+- On desktop hover: screenshot slides up from below the card content (CSS overflow hidden + transform transition)
+- Screenshots CSS-cropped to hide phone status bar and bottom nav
+- On mobile: no hover effect, cards stay as-is
+
+### 4. CSS additions (`src/index.css`)
+- Add hover reveal animation styles for the screenshot preview
 
 ## Files Modified
 
 | File | Change |
 |------|--------|
-| `src/components/LandingNavbar.tsx` | Remove nav items, keep only logo + auth buttons |
-| `src/pages/LandingPage.tsx` | Wrap in `dark` class for dark theme; remove about links from footer |
+| `src/pages/LandingPage.tsx` | Add promo images section, earnings list, screenshot hover on feature cards |
+| `src/index.css` | Add screenshot hover animation CSS |
+
+## What stays the same
+- Hero section with Students/Brands toggle -- **unchanged**
+- Stats section -- **unchanged**
+- Footer -- **unchanged**
+- Navbar -- **unchanged**
 
