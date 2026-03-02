@@ -235,10 +235,10 @@ export function BrandsContent() {
               size="lg"
               className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
             >
-              <Link to="/login?mode=signup&role=brand">
+              <a href="https://volt.crecerpartners.com/brand-form/" target="_blank" rel="noopener noreferrer">
                 Partner with Volt
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </a>
             </Button>
           </div>
         </div>
