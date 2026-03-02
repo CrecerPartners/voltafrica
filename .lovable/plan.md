@@ -1,131 +1,125 @@
 
-# Admin Dashboard - Full End-to-End Build
 
-## Overview
-Build a comprehensive admin dashboard at `/admin` with sub-pages to manage all aspects of the Volt platform: users, products, sales verification, payout processing, and training content. Access is restricted to users with the `admin` role via server-side RLS and a client-side `AdminProtectedRoute`.
+# Admin Dashboard Complete Overhaul
 
----
-
-## Database Changes
-
-### 1. RLS Policy Updates
-Add admin-level policies to existing tables so admins can read/update all rows:
-
-- **profiles**: Admin can SELECT and UPDATE all rows
-- **sales**: Admin can SELECT and UPDATE all rows (to verify/confirm/cancel sales)
-- **transactions**: Admin can SELECT and UPDATE all rows (to update status after payout)
-- **payouts**: Admin can SELECT and UPDATE all rows (to process payouts)
-- **products**: Admin can INSERT, UPDATE, and DELETE
-- **referrals**: Admin can SELECT all rows
-- **training_courses**: Admin can INSERT, UPDATE, DELETE
-- **training_lessons**: Admin can INSERT, UPDATE, DELETE
-
-All policies use the existing `has_role(auth.uid(), 'admin')` function.
+This is a large rework of the admin dashboard to make it a full end-to-end management hub. Here's the plan broken into sections:
 
 ---
 
-## New Files
+## 1. Overview Dashboard -- Make it Richer
 
-### Components
+**Current state**: 6 simple stat cards with numbers only.
 
-1. **`src/components/AdminProtectedRoute.tsx`**
-   - Wraps admin routes; checks `has_role` via a database query
-   - Redirects non-admin users to `/dashboard`
-   - Shows loading spinner while checking
-
-2. **`src/components/AdminLayout.tsx`**
-   - Sidebar navigation with links: Overview, Users, Products, Sales, Payouts, Training
-   - Header with "Admin Panel" title and back-to-dashboard link
-   - Outlet for nested routes
-
-### Pages
-
-3. **`src/pages/admin/AdminDashboard.tsx`** - Overview
-   - Summary cards: total users, total sales, pending sales, pending payouts, total revenue
-   - Quick counts fetched via admin queries
-
-4. **`src/pages/admin/AdminUsers.tsx`** - User Management
-   - Table of all profiles with search/filter
-   - View user details, update tier, view their sales/transactions
-   - Columns: Name, Email, University, Tier, Joined, Sales Count
-
-5. **`src/pages/admin/AdminProducts.tsx`** - Product Management
-   - Table of all products with add/edit/delete
-   - Dialog form for creating/editing products (name, brand, category, price, commission rate, image URL, description, assets)
-
-6. **`src/pages/admin/AdminSales.tsx`** - Sales Verification
-   - Table of all sales across all users with status filter
-   - View proof file (download from storage)
-   - Approve (confirm) or reject (cancel) sales with one click
-   - On confirm: update sale status to "confirmed", update corresponding transaction to "paid"
-   - On cancel: update sale status to "cancelled", update corresponding transaction to "cancelled"
-
-7. **`src/pages/admin/AdminPayouts.tsx`** - Payout Processing
-   - Table of all payout requests with status filter
-   - Show bank details, amount, user name
-   - Mark as "processed" or "rejected"
-   - On process: update payout status, update corresponding transaction status
-
-8. **`src/pages/admin/AdminTraining.tsx`** - Training Content
-   - List all courses with add/edit/delete
-   - Expand a course to manage its lessons (add/edit/delete)
-   - Fields: title, description, category, level, cover color, YouTube URL, module info
-
-### Hooks
-
-9. **`src/hooks/useAdminRole.ts`**
-   - Calls `supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' })` 
-   - Returns `{ isAdmin, isLoading }`
-
-10. **`src/hooks/useAdminData.ts`**
-    - Admin-specific queries: all users, all sales, all payouts, all products, all courses/lessons
-    - Admin mutations: update sale status, update payout status, CRUD products, CRUD training
+**Changes**:
+- Add recent activity feed (latest 5 sales, latest 5 signups)
+- Add quick-action buttons (e.g., "Review Pending Sales", "Process Payouts")
+- Add a simple revenue chart using Recharts (already installed) showing sales over the last 30 days
+- Show tier distribution breakdown (Bronze/Silver/Gold/Platinum user counts)
+- Add pending items alerts at the top when there are items requiring attention
 
 ---
 
-## Route Setup (App.tsx)
+## 2. Users -- Full Management
 
-Add admin routes nested under `AdminProtectedRoute` and `AdminLayout`:
+**Current state**: Table with name/email/university/tier/joined. Only action is changing tier.
 
-```text
-/admin           -> AdminDashboard (overview)
-/admin/users     -> AdminUsers
-/admin/products  -> AdminProducts
-/admin/sales     -> AdminSales
-/admin/payouts   -> AdminPayouts
-/admin/training  -> AdminTraining
-```
-
----
-
-## Key Flows
-
-### Sale Verification Flow
-1. Admin views pending sales in AdminSales
-2. Clicks "View Proof" to download/preview the proof file from storage
-3. Clicks "Confirm" or "Reject"
-4. Sale status updates, corresponding transaction status updates accordingly
-
-### Payout Processing Flow
-1. Admin views pending payouts in AdminPayouts
-2. Reviews bank details and amount
-3. Clicks "Mark Processed" after completing bank transfer
-4. Payout status and transaction status update
-
-### Product Management Flow
-1. Admin adds/edits products in AdminProducts
-2. Changes are immediately visible in the student marketplace
-
-### Training Management Flow
-1. Admin creates courses, then adds lessons to each course
-2. Students see new content in the Training section
+**Changes**:
+- Add a user detail sheet/dialog that shows full profile: avatar, name, email, university, WhatsApp, bank details, tier, referral code, join date
+- Add edit capability for key fields (name, university, WhatsApp, bank details)
+- Add delete user action (with confirmation) -- requires new RLS policy for admin DELETE on profiles
+- Add a "View Sales" / "View Transactions" quick link per user
+- Show avatar thumbnail in the table row
+- Add export/stats summary at the top
 
 ---
 
-## Technical Notes
+## 3. Products -- Image and Video Management
 
-- All admin queries bypass user-scoped RLS via admin policies using `has_role`
-- The `AdminProtectedRoute` performs a server-side role check, not client-side storage
-- Admin pages are completely separate from the student dashboard layout
-- File downloads for sale proofs use `supabase.storage.from('sale-proofs').download(path)`
-- Estimated total: ~10 new files, 1 modified file (App.tsx), 1 database migration
+**Current state**: Table + dialog with text fields only. Image is just a URL input.
+
+**Changes**:
+- Add file upload for product images using the existing storage (create a `product-images` bucket)
+- Support multiple images via the existing `assets` JSONB field (assets.images array)
+- Add video URL field in the product form (store in assets.videos)
+- Show image thumbnail in the table and in the edit dialog
+- Add image preview and remove functionality in the form
+
+---
+
+## 4. Sales -- Full Management
+
+**Current state**: Table with confirm/cancel actions for pending sales. Shows date, customer, product, amount, commission, status, proof.
+
+**Changes**:
+- Add sale detail dialog showing all info including notes, quantity, seller name (join with profiles)
+- Add ability to add/edit admin notes on a sale
+- Show the seller's name in the table (query profiles by user_id)
+- Add search/filter by seller name, product, date range
+- Add proof image preview (inline lightbox instead of just download)
+- Add ability to edit sale amount/commission before confirming
+
+---
+
+## 5. Payouts -- Full Management
+
+**Current state**: Table with process/reject for pending. Shows amount, bank, account, status, notes.
+
+**Changes**:
+- Show the requester's name (join with profiles)
+- Add a detail dialog with full bank info, requester profile, and transaction history
+- Allow admin to add custom notes when processing or rejecting (currently hardcoded "Rejected by admin")
+- Add a notes input dialog before reject/process actions
+- Add search and date range filtering
+
+---
+
+## 6. Training -- YouTube Embed + Cover
+
+**Current state**: Course form has title, description, category, level, color, sort order. Lesson form has title, module title, module number, sort order, YouTube URL.
+
+**Changes**:
+- In the lesson form, show a YouTube thumbnail preview auto-extracted from the URL (using `https://img.youtube.com/vi/{VIDEO_ID}/hqdefault.jpg`)
+- Use the YouTube thumbnail as the course cover when displaying courses (from first lesson's video)
+- Add a cover image upload option for courses (create storage or use URL)
+- Show YouTube embed preview in the lesson edit dialog
+- Show video thumbnails in the lesson list
+
+---
+
+## 7. New Admin Sections -- Leaderboard, Referrals, Marketplace Settings
+
+**Changes**:
+- **Admin Referrals page** (`/admin/referrals`): View all referrals across users, see referrer name, referred name, status, earnings. Ability to update referral status and earnings.
+- **Admin Leaderboard page** (`/admin/leaderboard`): View the leaderboard, ability to reset/manage it. Read-only view of current standings.
+- Update the `AdminLayout` nav to include the new sections.
+
+---
+
+## Technical Details
+
+### Database Changes
+- Migration to create `product-images` storage bucket (public)
+- Migration to add admin DELETE policy on `profiles` table
+- Migration to add admin UPDATE policy on `referrals` table (to manage referral status/earnings)
+- Migration to add admin INSERT policy on `referrals` (if needed)
+
+### New Files
+- `src/pages/admin/AdminReferrals.tsx` -- Referrals management page
+- `src/pages/admin/AdminLeaderboard.tsx` -- Leaderboard view page
+
+### Modified Files
+- `src/pages/admin/AdminDashboard.tsx` -- Rich overview with charts, activity feed, quick actions
+- `src/pages/admin/AdminUsers.tsx` -- User detail sheet, edit/delete, avatar display
+- `src/pages/admin/AdminProducts.tsx` -- Image upload, video URL, multi-image management
+- `src/pages/admin/AdminSales.tsx` -- Seller names, detail dialog, notes editing, proof preview
+- `src/pages/admin/AdminPayouts.tsx` -- Requester names, notes dialog, detail view
+- `src/pages/admin/AdminTraining.tsx` -- YouTube thumbnail preview, cover image from video
+- `src/components/AdminLayout.tsx` -- Add Referrals and Leaderboard nav items
+- `src/App.tsx` -- Add new admin routes
+- `src/hooks/useAdminData.ts` -- Update sales/payouts queries to join with profiles for names; add referral mutations
+
+### Data Joins for Names
+- Admin sales query: join `profiles` on `user_id` to get seller name
+- Admin payouts query: join `profiles` on `user_id` to get requester name
+- Admin referrals: already has `referred_name`, need to join profiles for referrer name
+
