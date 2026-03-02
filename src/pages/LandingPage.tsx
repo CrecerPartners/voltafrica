@@ -59,7 +59,7 @@ export default function LandingPage() {
   const Icon = active.icon;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="dark min-h-screen bg-background text-foreground">
       <LandingNavbar />
 
       {/* Hero */}
@@ -200,8 +200,6 @@ export default function LandingPage() {
             Volt
           </div>
           <nav className="flex gap-6 text-sm text-muted-foreground">
-            <Link to="/about/students" className="hover:text-foreground transition-colors">For Students</Link>
-            <Link to="/about/brands" className="hover:text-foreground transition-colors">For Brands</Link>
             <Link to="/login" className="hover:text-foreground transition-colors">Sign In</Link>
           </nav>
           <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Volt Africa. All rights reserved.</p>
