@@ -28,11 +28,12 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Loader2 } from "lucide-react";
+import { SignupBonusDialog } from "@/components/SignupBonusDialog";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -89,6 +90,20 @@ const Dashboard = () => {
   }, [transactions]);
 
   const firstName = profile?.name?.split(" ")[0] || "there";
+
+  // Show signup bonus dialog for new users
+  const [showBonusDialog, setShowBonusDialog] = useState(false);
+  useEffect(() => {
+    if (!profile || !transactions) return;
+    const hasSeenBonus = localStorage.getItem(`volt-bonus-seen-${profile.user_id}`);
+    if (!hasSeenBonus) {
+      const hasSignupBonus = transactions.some(t => t.type === "signup_bonus");
+      if (hasSignupBonus) {
+        setShowBonusDialog(true);
+        localStorage.setItem(`volt-bonus-seen-${profile.user_id}`, "true");
+      }
+    }
+  }, [profile, transactions]);
 
   const copyReferralCode = () => {
     if (profile?.referral_code) {
@@ -225,6 +240,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+      <SignupBonusDialog open={showBonusDialog} onOpenChange={setShowBonusDialog} name={firstName} />
     </div>
   );
 };
