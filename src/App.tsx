@@ -6,7 +6,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AdminProtectedRoute } from "@/components/AdminProtectedRoute";
 import { DashboardLayout } from "@/components/DashboardLayout";
+import { AdminLayout } from "@/components/AdminLayout";
 import LandingPage from "@/pages/LandingPage";
 import AboutStudents from "@/pages/AboutStudents";
 import AboutBrands from "@/pages/AboutBrands";
@@ -24,6 +26,12 @@ import Training from "@/pages/Training";
 import TrainingCourse from "@/pages/TrainingCourse";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/NotFound";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminProducts from "@/pages/admin/AdminProducts";
+import AdminSales from "@/pages/admin/AdminSales";
+import AdminPayouts from "@/pages/admin/AdminPayouts";
+import AdminTraining from "@/pages/admin/AdminTraining";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +61,14 @@ const App = () => (
             <Route path="/training" element={<Training />} />
             <Route path="/training/:courseId" element={<TrainingCourse />} />
             <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/sales" element={<AdminSales />} />
+            <Route path="/admin/payouts" element={<AdminPayouts />} />
+            <Route path="/admin/training" element={<AdminTraining />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

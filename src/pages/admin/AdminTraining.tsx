@@ -1,0 +1,172 @@
+import { useState } from "react";
+import {
+  useAdminCourses,
+  useUpsertCourse,
+  useDeleteCourse,
+  useUpsertLesson,
+  useDeleteLesson,
+} from "@/hooks/useAdminData";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { toast } from "@/hooks/use-toast";
+import { Plus, Pencil, Trash2, ChevronDown, GraduationCap } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+const emptyCourse = { title: "", description: "", category: "General", level: "Beginner", cover_color: "#3B82F6", sort_order: 0 };
+const emptyLesson = { title: "", module_title: "", module_number: 1, youtube_url: "", sort_order: 0, course_id: "" };
+
+export default function AdminTraining() {
+  const { data: courses, isLoading } = useAdminCourses();
+  const upsertCourse = useUpsertCourse();
+  const removeCourse = useDeleteCourse();
+  const upsertLesson = useUpsertLesson();
+  const removeLesson = useDeleteLesson();
+
+  const [courseOpen, setCourseOpen] = useState(false);
+  const [courseForm, setCourseForm] = useState<Record<string, any>>(emptyCourse);
+  const [lessonOpen, setLessonOpen] = useState(false);
+  const [lessonForm, setLessonForm] = useState<Record<string, any>>(emptyLesson);
+
+  const setC = (k: string, v: any) => setCourseForm((f) => ({ ...f, [k]: v }));
+  const setL = (k: string, v: any) => setLessonForm((f) => ({ ...f, [k]: v }));
+
+  const saveCourse = () => {
+    upsertCourse.mutate(courseForm, {
+      onSuccess: () => { toast({ title: "Course saved" }); setCourseOpen(false); },
+      onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+    });
+  };
+
+  const saveLesson = () => {
+    upsertLesson.mutate(lessonForm, {
+      onSuccess: () => { toast({ title: "Lesson saved" }); setLessonOpen(false); },
+      onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+    });
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">Training Content</h2>
+        <Button size="sm" onClick={() => { setCourseForm(emptyCourse); setCourseOpen(true); }}>
+          <Plus className="h-4 w-4 mr-1" /> Add Course
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <p className="text-muted-foreground">Loading...</p>
+      ) : (
+        <div className="space-y-3">
+          {courses?.map((course: any) => (
+            <Collapsible key={course.id}>
+              <Card>
+                <CardHeader className="py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded flex items-center justify-center" style={{ background: course.cover_color }}>
+                        <GraduationCap className="h-4 w-4 text-white" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-base">{course.title}</CardTitle>
+                        <p className="text-xs text-muted-foreground">{course.category} · {course.level} · {course.training_lessons?.length ?? 0} lessons</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => { setCourseForm({ ...course }); setCourseOpen(true); }}>
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete course?")) removeCourse.mutate(course.id); }}>
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                      </Button>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="icon"><ChevronDown className="h-4 w-4" /></Button>
+                      </CollapsibleTrigger>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-medium">Lessons</p>
+                      <Button variant="outline" size="sm" onClick={() => { setLessonForm({ ...emptyLesson, course_id: course.id }); setLessonOpen(true); }}>
+                        <Plus className="h-3 w-3 mr-1" /> Add Lesson
+                      </Button>
+                    </div>
+                    {course.training_lessons?.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">No lessons yet.</p>
+                    ) : (
+                      <div className="space-y-1">
+                        {course.training_lessons?.sort((a: any, b: any) => a.sort_order - b.sort_order).map((l: any) => (
+                          <div key={l.id} className="flex items-center justify-between p-2 rounded bg-muted/50 text-sm">
+                            <span>M{l.module_number}: {l.title}</span>
+                            <div className="flex gap-1">
+                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setLessonForm({ ...l }); setLessonOpen(true); }}>
+                                <Pencil className="h-3 w-3" />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { if (confirm("Delete lesson?")) removeLesson.mutate(l.id); }}>
+                                <Trash2 className="h-3 w-3 text-destructive" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+          ))}
+        </div>
+      )}
+
+      {/* Course Dialog */}
+      <Dialog open={courseOpen} onOpenChange={setCourseOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{courseForm.id ? "Edit Course" : "New Course"}</DialogTitle></DialogHeader>
+          <div className="grid gap-3">
+            <Input placeholder="Title" value={courseForm.title} onChange={(e) => setC("title", e.target.value)} />
+            <Textarea placeholder="Description" value={courseForm.description} onChange={(e) => setC("description", e.target.value)} />
+            <div className="grid grid-cols-2 gap-3">
+              <Input placeholder="Category" value={courseForm.category} onChange={(e) => setC("category", e.target.value)} />
+              <Input placeholder="Level" value={courseForm.level} onChange={(e) => setC("level", e.target.value)} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex items-center gap-2">
+                <label className="text-sm">Color</label>
+                <input type="color" value={courseForm.cover_color} onChange={(e) => setC("cover_color", e.target.value)} className="h-8 w-10 rounded border" />
+              </div>
+              <Input type="number" placeholder="Sort Order" value={courseForm.sort_order} onChange={(e) => setC("sort_order", +e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCourseOpen(false)}>Cancel</Button>
+            <Button onClick={saveCourse} disabled={upsertCourse.isPending}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Lesson Dialog */}
+      <Dialog open={lessonOpen} onOpenChange={setLessonOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{lessonForm.id ? "Edit Lesson" : "New Lesson"}</DialogTitle></DialogHeader>
+          <div className="grid gap-3">
+            <Input placeholder="Lesson Title" value={lessonForm.title} onChange={(e) => setL("title", e.target.value)} />
+            <Input placeholder="Module Title" value={lessonForm.module_title} onChange={(e) => setL("module_title", e.target.value)} />
+            <div className="grid grid-cols-2 gap-3">
+              <Input type="number" placeholder="Module #" value={lessonForm.module_number} onChange={(e) => setL("module_number", +e.target.value)} />
+              <Input type="number" placeholder="Sort Order" value={lessonForm.sort_order} onChange={(e) => setL("sort_order", +e.target.value)} />
+            </div>
+            <Input placeholder="YouTube URL" value={lessonForm.youtube_url} onChange={(e) => setL("youtube_url", e.target.value)} />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setLessonOpen(false)}>Cancel</Button>
+            <Button onClick={saveLesson} disabled={upsertLesson.isPending}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

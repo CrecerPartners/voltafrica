@@ -1,0 +1,232 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+// ── Queries ──
+
+export function useAdminUsers() {
+  return useQuery({
+    queryKey: ["admin-users"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useAdminSales() {
+  return useQuery({
+    queryKey: ["admin-sales"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sales")
+        .select("*, products(name, brand)")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useAdminPayouts() {
+  return useQuery({
+    queryKey: ["admin-payouts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payouts")
+        .select("*")
+        .order("requested_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useAdminProducts() {
+  return useQuery({
+    queryKey: ["admin-products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useAdminCourses() {
+  return useQuery({
+    queryKey: ["admin-courses"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("training_courses")
+        .select("*, training_lessons(*)")
+        .order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useAdminTransactions() {
+  return useQuery({
+    queryKey: ["admin-transactions"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("*")
+        .order("date", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useAdminReferrals() {
+  return useQuery({
+    queryKey: ["admin-referrals"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("referrals")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+// ── Mutations ──
+
+export function useUpdateSaleStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ saleId, status }: { saleId: string; status: string }) => {
+      const { error } = await supabase
+        .from("sales")
+        .update({ status })
+        .eq("id", saleId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-sales"] });
+      qc.invalidateQueries({ queryKey: ["admin-transactions"] });
+    },
+  });
+}
+
+export function useUpdateTransactionStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ transactionId, status }: { transactionId: string; status: string }) => {
+      const { error } = await supabase
+        .from("transactions")
+        .update({ status })
+        .eq("id", transactionId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-transactions"] }),
+  });
+}
+
+export function useUpdatePayoutStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ payoutId, status, notes }: { payoutId: string; status: string; notes?: string }) => {
+      const update: Record<string, unknown> = { status };
+      if (status === "processed") update.processed_at = new Date().toISOString();
+      if (notes) update.notes = notes;
+      const { error } = await supabase
+        .from("payouts")
+        .update(update)
+        .eq("id", payoutId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-payouts"] }),
+  });
+}
+
+export function useUpsertProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (product: Record<string, unknown>) => {
+      const { error } = await supabase.from("products").upsert(product as any);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-products"] }),
+  });
+}
+
+export function useDeleteProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("products").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-products"] }),
+  });
+}
+
+export function useUpsertCourse() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (course: Record<string, unknown>) => {
+      const { error } = await supabase.from("training_courses").upsert(course as any);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-courses"] }),
+  });
+}
+
+export function useDeleteCourse() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("training_courses").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-courses"] }),
+  });
+}
+
+export function useUpsertLesson() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (lesson: Record<string, unknown>) => {
+      const { error } = await supabase.from("training_lessons").upsert(lesson as any);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-courses"] }),
+  });
+}
+
+export function useDeleteLesson() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("training_lessons").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-courses"] }),
+  });
+}
+
+export function useUpdateUserTier() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ userId, tier }: { userId: string; tier: string }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ tier })
+        .eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-users"] }),
+  });
+}
