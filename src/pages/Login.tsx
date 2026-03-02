@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -9,7 +9,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const Login = () => {
-  const [isSignup, setIsSignup] = useState(false);
+  const location = useLocation();
+  const isJoinNow = location.pathname === "/join-now";
+  const [isSignup, setIsSignup] = useState(isJoinNow);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
