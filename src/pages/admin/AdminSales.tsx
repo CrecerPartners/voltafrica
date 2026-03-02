@@ -56,16 +56,25 @@ export default function AdminSales() {
     );
   }
 
+  const findMatchingTransaction = (sale: any) => {
+    return transactions?.find((t) =>
+      t.user_id === sale.user_id &&
+      (t.type === "commission" || t.type === "manual_sale") &&
+      t.status === "pending" &&
+      Math.abs(Number(t.amount) - Number(sale.commission)) < 0.01
+    );
+  };
+
   const handleConfirm = async (sale: any) => {
     await updateSale.mutateAsync({ saleId: sale.id, status: "confirmed" });
-    const tx = transactions?.find((t) => t.user_id === sale.user_id && t.type === "commission" && t.status === "pending");
+    const tx = findMatchingTransaction(sale);
     if (tx) await updateTx.mutateAsync({ transactionId: tx.id, status: "paid" });
-    toast({ title: "Sale confirmed" });
+    toast({ title: "Sale confirmed & commission credited to wallet" });
   };
 
   const handleCancel = async (sale: any) => {
     await updateSale.mutateAsync({ saleId: sale.id, status: "cancelled" });
-    const tx = transactions?.find((t) => t.user_id === sale.user_id && t.type === "commission" && t.status === "pending");
+    const tx = findMatchingTransaction(sale);
     if (tx) await updateTx.mutateAsync({ transactionId: tx.id, status: "cancelled" as any });
     toast({ title: "Sale cancelled" });
   };
@@ -103,7 +112,10 @@ export default function AdminSales() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Sales Verification</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-2xl font-bold">Sales Verification</h2>
+          {(() => { const pending = sales?.filter(s => s.status === "pending").length || 0; return pending > 0 ? <Badge className="bg-yellow-500 text-white">{pending} pending</Badge> : null; })()}
+        </div>
         <Select value={filter} onValueChange={setFilter}>
           <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
           <SelectContent>

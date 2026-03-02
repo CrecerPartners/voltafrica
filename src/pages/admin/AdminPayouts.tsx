@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAdminPayouts, useUpdatePayoutStatus } from "@/hooks/useAdminData";
+import { useAdminPayouts, useUpdatePayoutStatus, useAdminTransactions, useUpdateTransactionStatus } from "@/hooks/useAdminData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,9 @@ const statusColors: Record<string, string> = {
 
 export default function AdminPayouts() {
   const { data: payouts, isLoading } = useAdminPayouts();
+  const { data: transactions } = useAdminTransactions();
   const updatePayout = useUpdatePayoutStatus();
+  const updateTx = useUpdateTransactionStatus();
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [actionPayout, setActionPayout] = useState<any>(null);
@@ -42,16 +44,27 @@ export default function AdminPayouts() {
     setActionNotes(payout.notes || "");
   };
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     if (!actionPayout) return;
     const status = actionType === "process" ? "processed" : "rejected";
-    updatePayout.mutate({ payoutId: actionPayout.id, status, notes: actionNotes || undefined }, {
-      onSuccess: () => {
-        toast({ title: `Payout ${status}` });
-        setActionPayout(null);
-      },
-      onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
-    });
+    try {
+      await updatePayout.mutateAsync({ payoutId: actionPayout.id, status, notes: actionNotes || undefined });
+      // Sync matching payout transaction
+      const tx = transactions?.find((t) =>
+        t.user_id === actionPayout.user_id &&
+        t.type === "payout" &&
+        (t.status === "processing" || t.status === "pending") &&
+        Math.abs(Math.abs(Number(t.amount)) - Number(actionPayout.amount)) < 0.01
+      );
+      if (tx) {
+        const txStatus = actionType === "process" ? "paid" : "cancelled";
+        await updateTx.mutateAsync({ transactionId: tx.id, status: txStatus });
+      }
+      toast({ title: `Payout ${status}` });
+      setActionPayout(null);
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
   };
 
   return (
