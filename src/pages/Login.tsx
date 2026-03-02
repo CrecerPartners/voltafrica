@@ -31,6 +31,7 @@ const Login = () => {
           toast.error(error.message);
         } else {
           toast.success("Account created! Check your email to verify.");
+          navigate("/login");
         }
       } else {
         const { error } = await signIn(email, password);
