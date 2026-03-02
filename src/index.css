@@ -145,6 +145,25 @@
   .animate-page-in {
     animation: pageIn 0.25s ease-out;
   }
+
+  /* Feature card screenshot hover reveal */
+  .feature-card-hover {
+    @apply relative overflow-hidden;
+  }
+
+  .feature-card-hover .screenshot-preview {
+    @apply absolute inset-0 opacity-0 transition-all duration-500 ease-out;
+    transform: translateY(100%);
+  }
+
+  .feature-card-hover:hover .screenshot-preview {
+    @apply opacity-100;
+    transform: translateY(0);
+  }
+
+  .feature-card-hover:hover .card-content-fade {
+    @apply opacity-0 transition-opacity duration-300;
+  }
 }
 
 @keyframes pageIn {
