@@ -220,30 +220,41 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* Find Your Niche */}
-          <section className="border-y border-border bg-muted/30">
-            <div className="mx-auto max-w-5xl px-4 py-16 md:py-24">
-              <div className="mb-10 text-center">
+          <section className="relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute top-0 left-1/4 h-[300px] w-[300px] rounded-full bg-primary/5 blur-3xl" />
+              <div className="absolute bottom-0 right-1/4 h-[250px] w-[250px] rounded-full bg-primary/5 blur-3xl" />
+            </div>
+            <div className="relative mx-auto max-w-5xl px-4 py-16 md:py-24">
+              <div className="mb-12 text-center">
+                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Categories</span>
                 <h2 className="font-display text-3xl font-bold md:text-4xl">Find Your Niche</h2>
                 <p className="mt-3 text-muted-foreground">Pick a category and start selling what you love.</p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {[
-                  { icon: Smartphone, title: "Gadgets", examples: "Power banks, Bluetooth devices, fast chargers, AirPods" },
-                  { icon: Wifi, title: "Telco Services", examples: "Discounted data bundles, airtime deals" },
-                  { icon: Landmark, title: "Banking & Fintech", examples: "App signups, account referrals, fintech tools" },
-                  { icon: Ticket, title: "Events", examples: "Concert tickets, party passes, career fair registration, cinema tickets" },
-                  { icon: Shirt, title: "Fashion & Lifestyle", examples: "Hoodies, tote bags, tops, shoes, skincare essentials" },
-                  { icon: BookOpen, title: "Courses", examples: "Tech courses, fashion courses, skill-building programs" },
+                  { icon: Smartphone, title: "Gadgets", examples: ["Power banks", "Bluetooth devices", "Fast chargers", "AirPods"], gradient: "from-blue-500/20 to-cyan-500/20" },
+                  { icon: Wifi, title: "Telco Services", examples: ["Discounted data bundles", "Airtime deals"], gradient: "from-green-500/20 to-emerald-500/20" },
+                  { icon: Landmark, title: "Banking & Fintech", examples: ["App signups", "Account referrals", "Fintech tools"], gradient: "from-amber-500/20 to-orange-500/20" },
+                  { icon: Ticket, title: "Events", examples: ["Concert tickets", "Party passes", "Career fair registration", "Cinema tickets"], gradient: "from-purple-500/20 to-pink-500/20" },
+                  { icon: Shirt, title: "Fashion & Lifestyle", examples: ["Hoodies", "Tote bags", "Shoes", "Skincare essentials"], gradient: "from-rose-500/20 to-red-500/20" },
+                  { icon: BookOpen, title: "Courses", examples: ["Tech courses", "Fashion courses", "Skill-building programs"], gradient: "from-indigo-500/20 to-violet-500/20" },
                 ].map((cat) => (
-                  <div key={cat.title} className="group rounded-xl border border-border/60 bg-card/80 p-5 transition-all hover:border-primary/30 hover:shadow-md">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
-                        <cat.icon className="h-5 w-5" />
+                  <div key={cat.title} className="group relative rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:-translate-y-1">
+                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${cat.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+                    <div className="relative">
+                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl volt-gradient shadow-lg">
+                        <cat.icon className="h-6 w-6 text-primary-foreground" />
                       </div>
-                      <h3 className="font-display text-lg font-semibold">{cat.title}</h3>
+                      <h3 className="font-display text-lg font-bold mb-3">{cat.title}</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {cat.examples.map((ex) => (
+                          <span key={ex} className="rounded-full border border-border/60 bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
+                            {ex}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{cat.examples}</p>
                   </div>
                 ))}
               </div>
