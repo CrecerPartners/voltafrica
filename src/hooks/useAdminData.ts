@@ -23,9 +23,17 @@ export function useAdminSales() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("sales")
-        .select("*, products(name, brand)")
+        .select("*, products(name, brand), profiles!sales_user_id_fkey(name, email)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) {
+        // Fallback without profile join if FK doesn't exist
+        const { data: d2, error: e2 } = await supabase
+          .from("sales")
+          .select("*, products(name, brand)")
+          .order("created_at", { ascending: false });
+        if (e2) throw e2;
+        return d2;
+      }
       return data;
     },
   });
@@ -40,7 +48,14 @@ export function useAdminPayouts() {
         .select("*")
         .order("requested_at", { ascending: false });
       if (error) throw error;
-      return data;
+      // Fetch profile names for each unique user_id
+      const userIds = [...new Set(data.map((p) => p.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, name, email")
+        .in("user_id", userIds);
+      const profileMap = Object.fromEntries((profiles || []).map((p) => [p.user_id, p]));
+      return data.map((p) => ({ ...p, profile: profileMap[p.user_id] || null }));
     },
   });
 }
@@ -96,6 +111,27 @@ export function useAdminReferrals() {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
+      // Fetch referrer names
+      const referrerIds = [...new Set(data.map((r) => r.referrer_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, name")
+        .in("user_id", referrerIds);
+      const profileMap = Object.fromEntries((profiles || []).map((p) => [p.user_id, p]));
+      return data.map((r) => ({ ...r, referrer_name: profileMap[r.referrer_id]?.name || "Unknown" }));
+    },
+  });
+}
+
+export function useAdminLeaderboard() {
+  return useQuery({
+    queryKey: ["admin-leaderboard"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("leaderboard_view")
+        .select("*")
+        .order("rank");
+      if (error) throw error;
       return data;
     },
   });
@@ -107,10 +143,7 @@ export function useUpdateSaleStatus() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ saleId, status }: { saleId: string; status: string }) => {
-      const { error } = await supabase
-        .from("sales")
-        .update({ status })
-        .eq("id", saleId);
+      const { error } = await supabase.from("sales").update({ status }).eq("id", saleId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -120,14 +153,22 @@ export function useUpdateSaleStatus() {
   });
 }
 
+export function useUpdateSaleDetails() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ saleId, updates }: { saleId: string; updates: Record<string, unknown> }) => {
+      const { error } = await supabase.from("sales").update(updates).eq("id", saleId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-sales"] }),
+  });
+}
+
 export function useUpdateTransactionStatus() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ transactionId, status }: { transactionId: string; status: string }) => {
-      const { error } = await supabase
-        .from("transactions")
-        .update({ status })
-        .eq("id", transactionId);
+      const { error } = await supabase.from("transactions").update({ status }).eq("id", transactionId);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-transactions"] }),
@@ -140,11 +181,8 @@ export function useUpdatePayoutStatus() {
     mutationFn: async ({ payoutId, status, notes }: { payoutId: string; status: string; notes?: string }) => {
       const update: Record<string, unknown> = { status };
       if (status === "processed") update.processed_at = new Date().toISOString();
-      if (notes) update.notes = notes;
-      const { error } = await supabase
-        .from("payouts")
-        .update(update)
-        .eq("id", payoutId);
+      if (notes !== undefined) update.notes = notes;
+      const { error } = await supabase.from("payouts").update(update).eq("id", payoutId);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-payouts"] }),
@@ -221,12 +259,42 @@ export function useUpdateUserTier() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ userId, tier }: { userId: string; tier: string }) => {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ tier })
-        .eq("user_id", userId);
+      const { error } = await supabase.from("profiles").update({ tier }).eq("user_id", userId);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-users"] }),
+  });
+}
+
+export function useUpdateProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ userId, updates }: { userId: string; updates: Record<string, unknown> }) => {
+      const { error } = await supabase.from("profiles").update(updates).eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-users"] }),
+  });
+}
+
+export function useDeleteProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase.from("profiles").delete().eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-users"] }),
+  });
+}
+
+export function useUpdateReferral() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ referralId, updates }: { referralId: string; updates: Record<string, unknown> }) => {
+      const { error } = await supabase.from("referrals").update(updates).eq("id", referralId);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-referrals"] }),
   });
 }

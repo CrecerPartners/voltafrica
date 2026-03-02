@@ -17,6 +17,8 @@ const navItems = [
   { label: "Sales", path: "/admin/sales", icon: ShoppingCart },
   { label: "Payouts", path: "/admin/payouts", icon: Wallet },
   { label: "Training", path: "/admin/training", icon: GraduationCap },
+  { label: "Referrals", path: "/admin/referrals", icon: Users },
+  { label: "Leaderboard", path: "/admin/leaderboard", icon: LayoutDashboard },
 ];
 
 export function AdminLayout() {
