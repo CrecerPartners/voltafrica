@@ -12,6 +12,7 @@ import {
   Zap,
   Users,
 } from "lucide-react";
+import heroBrands from "@/assets/hero-brands.png";
 
 const steps = [
   { icon: Rocket, title: "List Your Products", desc: "Upload your catalog and set commission rates for ambassadors." },
@@ -45,6 +46,13 @@ export default function AboutBrands() {
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
             Plug into Africa's largest student ambassador network. Volt connects your brand with campus reps who drive real sales.
           </p>
+        </div>
+      </section>
+
+      {/* Promo Image */}
+      <section className="mx-auto max-w-4xl px-4 py-12">
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <img src={heroBrands} alt="Volt brand partnerships" className="w-full h-auto object-cover" />
         </div>
       </section>
 

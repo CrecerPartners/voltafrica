@@ -23,7 +23,7 @@ import screenshotLeaderboard from "@/assets/screenshot-leaderboard.png";
 import screenshotReferrals from "@/assets/screenshot-referrals.png";
 import screenshotSales from "@/assets/screenshot-sales.png";
 import heroStudent from "@/assets/hero-student.png";
-import heroBrands from "@/assets/hero-brands.png";
+
 
 const audiences = {
   students: {
@@ -162,13 +162,8 @@ export default function LandingPage() {
 
       {/* Promotional Images */}
       <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="overflow-hidden rounded-2xl border border-border">
-            <img src={heroStudent} alt="Volt student ambassador" className="w-full h-auto object-cover" />
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-border">
-            <img src={heroBrands} alt="Volt brand partnerships" className="w-full h-auto object-cover" />
-          </div>
+        <div className="overflow-hidden rounded-2xl border border-border max-w-3xl mx-auto">
+          <img src={heroStudent} alt="Volt student ambassador" className="w-full h-auto object-cover" />
         </div>
       </section>
 
