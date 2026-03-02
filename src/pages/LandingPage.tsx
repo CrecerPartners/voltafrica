@@ -16,6 +16,15 @@ import {
   Star,
 } from "lucide-react";
 
+import screenshotWallet from "@/assets/screenshot-wallet.png";
+import screenshotMarketplace from "@/assets/screenshot-marketplace.png";
+import screenshotDashboard from "@/assets/screenshot-dashboard.png";
+import screenshotLeaderboard from "@/assets/screenshot-leaderboard.png";
+import screenshotReferrals from "@/assets/screenshot-referrals.png";
+import screenshotSales from "@/assets/screenshot-sales.png";
+import heroStudent from "@/assets/hero-student.png";
+import heroBrands from "@/assets/hero-brands.png";
+
 const audiences = {
   students: {
     badge: "For Students",
@@ -38,12 +47,12 @@ const audiences = {
 };
 
 const features = [
-  { icon: TrendingUp, title: "Earn Commissions", desc: "Get paid for every sale you make — tracked in real time." },
-  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse products students actually want, from top brands." },
-  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth metrics." },
-  { icon: Trophy, title: "Leaderboards", desc: "Compete with peers, climb the ranks, unlock rewards." },
-  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales." },
-  { icon: Star, title: "Tier Rewards", desc: "Level up from Bronze to Diamond with exclusive perks." },
+  { icon: TrendingUp, title: "Earn Commissions", desc: "Get paid for every sale you make — tracked in real time.", screenshot: screenshotWallet },
+  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse products students actually want, from top brands.", screenshot: screenshotMarketplace },
+  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth metrics.", screenshot: screenshotDashboard },
+  { icon: Trophy, title: "Leaderboards", desc: "Compete with peers, climb the ranks, unlock rewards.", screenshot: screenshotLeaderboard },
+  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales.", screenshot: screenshotReferrals },
+  { icon: Star, title: "Tier Rewards", desc: "Level up from Bronze to Diamond with exclusive perks.", screenshot: screenshotSales },
 ];
 
 const stats = [
@@ -51,6 +60,14 @@ const stats = [
   { value: "10,000+", label: "Ambassadors" },
   { value: "₦50M+", label: "Commissions Paid" },
   { value: "200+", label: "Brand Partners" },
+];
+
+const earnings = [
+  { title: "Signup Bonus", desc: "₦500 Credit to your Volt account the moment you register." },
+  { title: "Direct Sales Commission", desc: "Up to 30%" },
+  { title: "Referral Bonus", desc: "₦1,000 \"Spark Bonus\" for every friend you bring who makes their first 5 sales." },
+  { title: "High-Volume Bonus", desc: "Extra Cash for Influencers who hit weekly targets." },
+  { title: "Lead Base Pay", desc: "₦5,000 – ₦30,000 monthly (Team Leads only)." },
 ];
 
 export default function LandingPage() {
@@ -64,14 +81,12 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Background decoration */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute -bottom-40 -left-40 h-[400px] w-[400px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
         <div className="relative mx-auto max-w-5xl px-4 pb-20 pt-16 text-center md:pb-28 md:pt-24">
-          {/* Toggle pill */}
           <div className="mx-auto mb-10 inline-flex rounded-full border border-border bg-muted/60 p-1 backdrop-blur-sm">
             <button
               onClick={() => setTab("students")}
@@ -95,7 +110,6 @@ export default function LandingPage() {
             </button>
           </div>
 
-          {/* Animated content */}
           <div key={tab} className="animate-fade-in">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl volt-gradient shadow-lg">
               <Icon className="h-7 w-7 text-primary-foreground" />
@@ -146,6 +160,58 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Promotional Images */}
+      <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <img src={heroStudent} alt="Volt student ambassador" className="w-full h-auto object-cover" />
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <img src={heroBrands} alt="Volt brand partnerships" className="w-full h-auto object-cover" />
+          </div>
+        </div>
+      </section>
+
+      {/* Ways to Earn */}
+      <section className="border-y border-border bg-muted/30">
+        <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
+          <div className="mb-12 text-center">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">Multiple Ways to Earn on Volt</h2>
+            <p className="mt-3 text-muted-foreground">Start earning from day one — here's how.</p>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {earnings.map((item, i) => (
+              <div
+                key={item.title}
+                className="flex items-start gap-4 rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg volt-gradient text-sm font-bold text-primary-foreground">
+                  {i + 1}
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-semibold">{item.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Button
+              asChild
+              size="lg"
+              className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90"
+            >
+              <Link to="/login?mode=signup">
+                Sign Up & Claim My ₦500 Bonus
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
         <div className="mb-12 text-center">
@@ -156,14 +222,27 @@ export default function LandingPage() {
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
-            <Card key={f.title} className="group border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1">
-              <CardContent className="flex flex-col gap-3 p-6">
+            <Card
+              key={f.title}
+              className="feature-card-hover group border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1 min-h-[220px]"
+            >
+              <CardContent className="card-content-fade flex flex-col gap-3 p-6 transition-opacity duration-300">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
                   <f.icon className="h-5 w-5" />
                 </div>
                 <h3 className="font-display text-lg font-semibold">{f.title}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
               </CardContent>
+
+              {/* Screenshot preview on hover (desktop only) */}
+              <div className="screenshot-preview hidden md:flex items-center justify-center rounded-lg bg-card p-3">
+                <img
+                  src={f.screenshot}
+                  alt={`${f.title} preview`}
+                  className="w-full h-full object-cover object-[center_15%] rounded-lg"
+                  loading="lazy"
+                />
+              </div>
             </Card>
           ))}
         </div>
