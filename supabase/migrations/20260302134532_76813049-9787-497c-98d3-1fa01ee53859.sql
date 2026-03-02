@@ -1,0 +1,1 @@
+ALTER TABLE products ADD CONSTRAINT products_category_check CHECK (category IN ('gadgets', 'telco', 'fintech', 'events', 'fashion', 'courses'));

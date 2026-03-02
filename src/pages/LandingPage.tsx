@@ -32,7 +32,7 @@ const audiences = {
     subtitle:
       "Become a campus ambassador, promote products you love, and earn real commissions — all while you study.",
     cta: "Start Earning Today",
-    ctaLink: "/login?mode=signup&role=student",
+    ctaLink: "/join-now",
     icon: GraduationCap,
     image: heroStudent,
   },
@@ -195,7 +195,7 @@ export default function LandingPage() {
               </div>
               <div className="mt-10 text-center">
                 <Button asChild size="lg" className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90">
-                  <Link to="/login?mode=signup">Sign Up & Claim My ₦500 Bonus<ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/join-now">Sign Up & Claim My ₦500 Bonus<ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function LandingPage() {
                 size="lg"
                 className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
               >
-                <Link to="/login">Get Started Free</Link>
+                <Link to="/join-now">Get Started Free</Link>
               </Button>
             </div>
           </div>

@@ -5,7 +5,7 @@ export interface DbProduct {
   id: string;
   name: string;
   brand: string;
-  category: "physical" | "digital" | "fintech" | "events";
+  category: "gadgets" | "telco" | "fintech" | "events" | "fashion" | "courses";
   commission_rate: number;
   price: number;
   image: string;
@@ -26,7 +26,7 @@ export interface Product {
   id: string;
   name: string;
   brand: string;
-  category: "physical" | "digital" | "fintech" | "events";
+  category: "gadgets" | "telco" | "fintech" | "events" | "fashion" | "courses";
   commissionRate: number;
   price: number;
   image: string;

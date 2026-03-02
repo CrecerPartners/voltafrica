@@ -12,20 +12,24 @@ import { ProductDetailSheet } from "@/components/ProductDetailSheet";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ImageLightbox } from "@/components/ImageLightbox";
 
-type ProductCategory = "physical" | "digital" | "fintech" | "events";
+type ProductCategory = "gadgets" | "telco" | "fintech" | "events" | "fashion" | "courses";
 
 const categoryLabels: Record<ProductCategory, string> = {
-  physical: "Physical",
-  digital: "Digital",
+  gadgets: "Gadgets",
+  telco: "Telco",
   fintech: "Fintech",
   events: "Events",
+  fashion: "Fashion",
+  courses: "Courses",
 };
 
 const categoryColors: Record<ProductCategory, string> = {
-  physical: "bg-warning/10 text-warning border-warning/20",
-  digital: "bg-primary/10 text-primary border-primary/20",
-  fintech: "bg-success/10 text-success border-success/20",
+  gadgets: "bg-primary/10 text-primary border-primary/20",
+  telco: "bg-success/10 text-success border-success/20",
+  fintech: "bg-warning/10 text-warning border-warning/20",
   events: "bg-destructive/10 text-destructive border-destructive/20",
+  fashion: "bg-pink-500/10 text-pink-500 border-pink-500/20",
+  courses: "bg-violet-500/10 text-violet-500 border-violet-500/20",
 };
 
 const Marketplace = () => {
@@ -64,7 +68,7 @@ const Marketplace = () => {
     setSheetOpen(true);
   };
 
-  const categories: (ProductCategory | "all")[] = ["all", "physical", "digital", "fintech", "events"];
+  const categories: (ProductCategory | "all")[] = ["all", "gadgets", "telco", "fintech", "events", "fashion", "courses"];
 
   if (isLoading) {
     return (
