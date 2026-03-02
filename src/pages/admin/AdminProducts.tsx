@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAdminProducts, useUpsertProduct, useDeleteProduct } from "@/hooks/useAdminData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
 
-const empty = { name: "", brand: "", category: "", price: 0, commission_rate: 0, image: "", description: "" };
+const empty = { name: "", brand: "", category: "", price: 0, commission_rate: 0, image: "", description: "", assets: { images: [] as string[], videos: [] as string[] } };
 
 export default function AdminProducts() {
   const { data: products, isLoading } = useAdminProducts();
@@ -16,12 +17,25 @@ export default function AdminProducts() {
   const remove = useDeleteProduct();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Record<string, any>>(empty);
+  const [uploading, setUploading] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const openNew = () => { setForm(empty); setOpen(true); };
-  const openEdit = (p: any) => { setForm({ ...p }); setOpen(true); };
+  const openNew = () => { setForm({ ...empty, assets: { images: [], videos: [] } }); setVideoUrl(""); setOpen(true); };
+  const openEdit = (p: any) => {
+    const assets = typeof p.assets === "object" && p.assets ? p.assets : { images: [], videos: [] };
+    setForm({ ...p, assets: { images: assets.images || [], videos: assets.videos || [] } });
+    setVideoUrl("");
+    setOpen(true);
+  };
 
   const save = () => {
-    upsert.mutate(form, {
+    const toSave = { ...form };
+    // Set first image as main image if not set
+    if (!toSave.image && toSave.assets?.images?.length > 0) {
+      toSave.image = toSave.assets.images[0];
+    }
+    upsert.mutate(toSave, {
       onSuccess: () => { toast({ title: "Product saved" }); setOpen(false); },
       onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
     });
@@ -29,12 +43,60 @@ export default function AdminProducts() {
 
   const handleDelete = (id: string) => {
     if (!confirm("Delete this product?")) return;
-    remove.mutate(id, {
-      onSuccess: () => toast({ title: "Product deleted" }),
-    });
+    remove.mutate(id, { onSuccess: () => toast({ title: "Product deleted" }) });
   };
 
   const set = (key: string, value: any) => setForm((f) => ({ ...f, [key]: value }));
+
+  const uploadImage = async (file: File) => {
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file);
+    if (error) {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
+    const url = urlData.publicUrl;
+    setForm((f) => ({
+      ...f,
+      assets: { ...f.assets, images: [...(f.assets?.images || []), url] },
+      image: f.image || url,
+    }));
+    setUploading(false);
+    toast({ title: "Image uploaded" });
+  };
+
+  const removeImage = (idx: number) => {
+    setForm((f) => {
+      const images = [...(f.assets?.images || [])];
+      const removed = images.splice(idx, 1)[0];
+      return {
+        ...f,
+        assets: { ...f.assets, images },
+        image: f.image === removed ? (images[0] || "") : f.image,
+      };
+    });
+  };
+
+  const addVideo = () => {
+    if (!videoUrl.trim()) return;
+    setForm((f) => ({
+      ...f,
+      assets: { ...f.assets, videos: [...(f.assets?.videos || []), videoUrl.trim()] },
+    }));
+    setVideoUrl("");
+  };
+
+  const removeVideo = (idx: number) => {
+    setForm((f) => {
+      const videos = [...(f.assets?.videos || [])];
+      videos.splice(idx, 1);
+      return { ...f, assets: { ...f.assets, videos } };
+    });
+  };
 
   return (
     <div>
@@ -49,6 +111,7 @@ export default function AdminProducts() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Brand</TableHead>
                 <TableHead>Category</TableHead>
@@ -60,6 +123,13 @@ export default function AdminProducts() {
             <TableBody>
               {products?.map((p) => (
                 <TableRow key={p.id}>
+                  <TableCell>
+                    {p.image ? (
+                      <img src={p.image} alt={p.name} className="h-10 w-10 rounded object-cover" />
+                    ) : (
+                      <div className="h-10 w-10 rounded bg-muted flex items-center justify-center"><ImageIcon className="h-4 w-4 text-muted-foreground" /></div>
+                    )}
+                  </TableCell>
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell>{p.brand}</TableCell>
                   <TableCell>{p.category}</TableCell>
@@ -79,7 +149,7 @@ export default function AdminProducts() {
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{form.id ? "Edit Product" : "New Product"}</DialogTitle></DialogHeader>
           <div className="grid gap-3">
             <Input placeholder="Name" value={form.name} onChange={(e) => set("name", e.target.value)} />
@@ -89,8 +159,41 @@ export default function AdminProducts() {
               <Input type="number" placeholder="Price" value={form.price} onChange={(e) => set("price", +e.target.value)} />
               <Input type="number" placeholder="Commission %" value={form.commission_rate} onChange={(e) => set("commission_rate", +e.target.value)} />
             </div>
-            <Input placeholder="Image URL" value={form.image} onChange={(e) => set("image", e.target.value)} />
             <Textarea placeholder="Description" value={form.description} onChange={(e) => set("description", e.target.value)} />
+
+            {/* Image management */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Product Images</p>
+              <div className="flex flex-wrap gap-2">
+                {(form.assets?.images || []).map((url: string, i: number) => (
+                  <div key={i} className="relative group">
+                    <img src={url} alt="" className="h-20 w-20 rounded object-cover border" />
+                    <button onClick={() => removeImage(i)} className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0])} />
+              <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={uploading}>
+                <Upload className="h-3.5 w-3.5 mr-1" /> {uploading ? "Uploading..." : "Upload Image"}
+              </Button>
+            </div>
+
+            {/* Video management */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Product Videos</p>
+              {(form.assets?.videos || []).map((url: string, i: number) => (
+                <div key={i} className="flex items-center gap-2 text-sm">
+                  <span className="flex-1 truncate text-muted-foreground">{url}</span>
+                  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeVideo(i)}><X className="h-3 w-3" /></Button>
+                </div>
+              ))}
+              <div className="flex gap-2">
+                <Input placeholder="Video URL (YouTube, etc.)" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} />
+                <Button type="button" variant="outline" size="sm" onClick={addVideo}>Add</Button>
+              </div>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
