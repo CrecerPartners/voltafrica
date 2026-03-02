@@ -3,26 +3,25 @@ import { Link } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { BrandsContent } from "@/components/landing/BrandsContent";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Zap,
   TrendingUp,
   Users,
-  Trophy,
+  
   ShoppingBag,
   BarChart3,
   GraduationCap,
   Building2,
   ArrowRight,
   Star,
+  BookOpen,
+  Smartphone,
+  Wifi,
+  Landmark,
+  Ticket,
+  Shirt,
 } from "lucide-react";
 
-import screenshotWallet from "@/assets/screenshot-wallet.png";
-import screenshotMarketplace from "@/assets/screenshot-marketplace.png";
-import screenshotDashboard from "@/assets/screenshot-dashboard.png";
-import screenshotLeaderboard from "@/assets/screenshot-leaderboard.png";
-import screenshotReferrals from "@/assets/screenshot-referrals.png";
-import screenshotSales from "@/assets/screenshot-sales.png";
 import heroStudent from "@/assets/hero-student.png";
 import heroBrands from "@/assets/hero-brands.png";
 
@@ -49,20 +48,23 @@ const audiences = {
   },
 };
 
-const features = [
-  { icon: TrendingUp, title: "Earn Commissions", desc: "Get paid for every sale you make — tracked in real time.", screenshot: screenshotWallet },
-  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse products students actually want, from top brands.", screenshot: screenshotMarketplace },
-  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth metrics.", screenshot: screenshotDashboard },
-  { icon: Trophy, title: "Leaderboards", desc: "Compete with peers, climb the ranks, unlock rewards.", screenshot: screenshotLeaderboard },
-  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales.", screenshot: screenshotReferrals },
-  { icon: Star, title: "Tier Rewards", desc: "Level up from Bronze to Diamond with exclusive perks.", screenshot: screenshotSales },
+const whyJoin = [
+  { icon: Zap, title: "Zero Startup Capital", desc: "Start selling immediately — no investment needed." },
+  { icon: ShoppingBag, title: "Vetted Products", desc: "Only quality, in-demand products from trusted brands." },
+  { icon: TrendingUp, title: "High Commissions", desc: "Earn competitive rates on every sale you close." },
+  { icon: Star, title: "Weekly Payouts", desc: "Get paid every Friday — straight to your bank." },
+  { icon: GraduationCap, title: "Career Advantage", desc: "Build real sales and marketing skills while in school." },
+  { icon: BookOpen, title: "Free Training", desc: "Access courses and resources to sharpen your skills." },
+  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse and pick products students actually want." },
+  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales." },
+  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth." },
 ];
 
 const stats = [
-  { value: "500+", label: "Campuses" },
-  { value: "10,000+", label: "Ambassadors" },
-  { value: "₦50M+", label: "Commissions Paid" },
-  { value: "200+", label: "Brand Partners" },
+  { value: "100+", label: "Campuses" },
+  { value: "5,000+", label: "Sales Agents" },
+  { value: "₦500K+", label: "Commissions Paid" },
+  { value: "50+", label: "Products Listed" },
 ];
 
 const earnings = [
@@ -200,24 +202,51 @@ export default function LandingPage() {
           </section>
           <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
             <div className="mb-12 text-center">
-              <h2 className="font-display text-3xl font-bold md:text-4xl">Everything You Need to Succeed</h2>
-              <p className="mt-3 text-muted-foreground">Powerful tools for ambassadors and brands alike.</p>
+              <h2 className="font-display text-3xl font-bold md:text-4xl">Why Join the Volt Squad?</h2>
+              <p className="mt-3 text-muted-foreground">Everything you need to start earning on campus.</p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((f) => (
-                <Card key={f.title} className="feature-card-hover group border-border/60 bg-card/80 transition-all hover:shadow-lg hover:-translate-y-1 min-h-[220px]">
-                  <CardContent className="card-content-fade flex flex-col gap-3 p-6 transition-opacity duration-300">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
-                      <f.icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="font-display text-lg font-semibold">{f.title}</h3>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
-                  </CardContent>
-                  <div className="screenshot-preview hidden md:flex items-center justify-center rounded-lg bg-card p-3">
-                    <img src={f.screenshot} alt={`${f.title} preview`} className="w-full h-full object-cover object-[center_15%] rounded-lg" loading="lazy" />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {whyJoin.map((f) => (
+                <div key={f.title} className="group flex items-start gap-4 rounded-xl border border-border/60 bg-card/80 p-5 transition-all hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
+                    <f.icon className="h-5 w-5" />
                   </div>
-                </Card>
+                  <div>
+                    <h3 className="font-display text-base font-semibold">{f.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+                  </div>
+                </div>
               ))}
+            </div>
+          </section>
+
+          {/* Find Your Niche */}
+          <section className="border-y border-border bg-muted/30">
+            <div className="mx-auto max-w-5xl px-4 py-16 md:py-24">
+              <div className="mb-10 text-center">
+                <h2 className="font-display text-3xl font-bold md:text-4xl">Find Your Niche</h2>
+                <p className="mt-3 text-muted-foreground">Pick a category and start selling what you love.</p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  { icon: Smartphone, title: "Gadgets", examples: "Power banks, Bluetooth devices, fast chargers, AirPods" },
+                  { icon: Wifi, title: "Telco Services", examples: "Discounted data bundles, airtime deals" },
+                  { icon: Landmark, title: "Banking & Fintech", examples: "App signups, account referrals, fintech tools" },
+                  { icon: Ticket, title: "Events", examples: "Concert tickets, party passes, career fair registration, cinema tickets" },
+                  { icon: Shirt, title: "Fashion & Lifestyle", examples: "Hoodies, tote bags, tops, shoes, skincare essentials" },
+                  { icon: BookOpen, title: "Courses", examples: "Tech courses, fashion courses, skill-building programs" },
+                ].map((cat) => (
+                  <div key={cat.title} className="group rounded-xl border border-border/60 bg-card/80 p-5 transition-all hover:border-primary/30 hover:shadow-md">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:volt-gradient group-hover:text-primary-foreground">
+                        <cat.icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="font-display text-lg font-semibold">{cat.title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{cat.examples}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         </>
