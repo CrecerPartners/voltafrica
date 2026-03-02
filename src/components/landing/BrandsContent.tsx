@@ -1,0 +1,248 @@
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  ArrowRight,
+  Package,
+  Target,
+  Share2,
+  Rocket,
+  RefreshCw,
+  ShieldCheck,
+  Handshake,
+  BarChart3,
+  Cpu,
+  Phone,
+  Landmark,
+  Ticket,
+  Shirt,
+  BookOpen,
+  CheckCircle2,
+  X,
+} from "lucide-react";
+
+const brandStats = [
+  { value: "2M+", label: "active student buyers nationwide" },
+  { value: "60k", label: "students per major campus" },
+  { value: "100+", label: "student sales agents per campus" },
+  { value: "1000+", label: "peer-driven interactions per campaign" },
+  { value: "≤10", label: "days to launch campus sales" },
+];
+
+const benefits = [
+  {
+    icon: Package,
+    title: "Zero-Stress Logistics",
+    desc: "We handle recruitment, coordination, tracking, and weekly payouts to students. You focus on your product. We focus on distribution and movement.",
+  },
+  {
+    icon: Target,
+    title: "Sales Density, Not Surface Reach",
+    desc: "Volt deploys 100+ student sales agents per campus, ensuring saturation across hostels, classes, and departments — not one-off visibility from a few creators.",
+  },
+  {
+    icon: Share2,
+    title: "Social-First Sales Content",
+    desc: "Students buy on WhatsApp, Telegram & TikTok. Volt converts your product assets into high-conversion flyers, stickers, and status-ready content designed for campus sharing.",
+  },
+  {
+    icon: Rocket,
+    title: "Faster Time-to-Market",
+    desc: "Campus campaigns can go live in days, not months. Volt eliminates the long setup cycles of traditional field marketing and influencer campaigns.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Repeat Buying & Community-Led Adoption",
+    desc: "Campus communities are tight-knit. Once a product gains traction, repeat purchases and organic referrals follow, turning single campaigns into ongoing demand.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Vetted Campus Sales Force",
+    desc: "Volt recruits and manages trusted students & student leaders — class governors, hostel reps, campus influencers and student sales agents who already influence real buying decisions.",
+  },
+  {
+    icon: Handshake,
+    title: "Direct Peer-to-Peer Trust & Selling",
+    desc: "Students don't buy from ads; they buy from people they know. Volt leverages peer-to-peer recommendation, demos, and everyday conversations to drive faster adoption.",
+  },
+  {
+    icon: BarChart3,
+    title: "Performance Tracking, Not Guesswork",
+    desc: "Track exactly which campuses, products, and student reps are driving sales in real time.",
+  },
+];
+
+const comparisonRows = [
+  { dim: "Reach", trad: "Passive Scrolling", volt: "Direct Peer-To-Peer Trust" },
+  { dim: "Cost", trad: "Pay-Per-Impression (High Risk)", volt: "Pay-Per-Sale (ROI Focused)" },
+  { dim: "Engagement", trad: "One-off Clicks", volt: "Community-Led Adoption" },
+  { dim: "Tracking", trad: "Vanity Metrics", volt: "Campus & Agent-Level Data" },
+  { dim: "Sales", trad: "Uncertain", volt: "Performance Based" },
+];
+
+const verticals = [
+  { icon: Cpu, label: "Electronics & Gadgets" },
+  { icon: Phone, label: "Telco & Utility Services" },
+  { icon: Landmark, label: "Fintech & Financial Services" },
+  { icon: Ticket, label: "Events & Access" },
+  { icon: Shirt, label: "Fashion & Lifestyle" },
+  { icon: BookOpen, label: "Academic & Professional Tools" },
+];
+
+const processSteps = [
+  { step: 1, title: "List Your Brand", desc: "Submit your product and campaign details through our onboarding form." },
+  { step: 2, title: "Campaign Activation", desc: "We recruit and assign student sales agents and campus ambassadors based on your target schools." },
+  { step: 3, title: "Campus Sales Go Live", desc: "Your campaign launches across selected campuses with WhatsApp-first content and referral tracking." },
+  { step: 4, title: "Track Sales & Scale", desc: "Monitor performance by campus and agent. Scale into more schools as demand grows." },
+];
+
+export function BrandsContent() {
+  return (
+    <>
+      {/* Brand Stats */}
+      <section className="border-y border-border bg-muted/30">
+        <div className="mx-auto max-w-6xl px-4 py-12 md:py-16">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-5">
+            {brandStats.map((s) => (
+              <div key={s.label} className="text-center">
+                <p className="font-display text-3xl font-bold text-primary md:text-4xl">{s.value}</p>
+                <p className="mt-1 text-xs text-muted-foreground md:text-sm">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Brands Choose Volt */}
+      <section className="mx-auto max-w-5xl px-4 py-16 md:py-24">
+        <div className="mb-12 text-center">
+          <h2 className="font-display text-3xl font-bold md:text-4xl">Why Brands Choose Volt</h2>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          {benefits.map((b) => (
+            <Card key={b.title} className="border-border/60 bg-card/80 transition-all hover:border-primary/30 hover:shadow-md">
+              <CardContent className="flex flex-col gap-3 p-6">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <b.icon className="h-5 w-5" />
+                </div>
+                <h3 className="font-display text-lg font-semibold">{b.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* The Volt Advantage */}
+      <section className="border-y border-border bg-muted/30">
+        <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
+          <div className="mb-12 text-center">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">The Volt Advantage</h2>
+          </div>
+          <div className="overflow-hidden rounded-xl border border-border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/60">
+                  <th className="px-4 py-3 text-left font-semibold text-muted-foreground" />
+                  <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Traditional Ads</th>
+                  <th className="px-4 py-3 text-left font-semibold text-primary">The Volt Way</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonRows.map((r) => (
+                  <tr key={r.dim} className="border-b border-border last:border-0">
+                    <td className="px-4 py-3.5 font-medium">{r.dim}</td>
+                    <td className="px-4 py-3.5 text-muted-foreground">
+                      <span className="flex items-center gap-2">
+                        <X className="h-4 w-4 shrink-0 text-destructive" />
+                        {r.trad}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span className="flex items-center gap-2 text-primary">
+                        <CheckCircle2 className="h-4 w-4 shrink-0" />
+                        {r.volt}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Verticals */}
+      <section className="mx-auto max-w-5xl px-4 py-16 md:py-24">
+        <div className="mb-4 text-center">
+          <h2 className="font-display text-3xl font-bold md:text-4xl">Product Verticals We Distribute</h2>
+          <p className="mt-3 text-muted-foreground">
+            Volt focuses on fast-moving, high-demand products that students already buy.
+          </p>
+        </div>
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {verticals.map((v) => (
+            <div
+              key={v.label}
+              className="flex items-center gap-3 rounded-xl border border-border bg-card/80 p-4 transition-all hover:border-primary/30 hover:shadow-md"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <v.icon className="h-5 w-5" />
+              </div>
+              <span className="text-sm font-medium">{v.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* The Volt Process */}
+      <section className="border-y border-border bg-muted/30">
+        <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
+          <div className="mb-12 text-center">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">The Volt Process</h2>
+          </div>
+          <div className="flex flex-col gap-6">
+            {processSteps.map((s) => (
+              <div key={s.step} className="flex items-start gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full volt-gradient text-base font-bold text-primary-foreground">
+                  {s.step}
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-semibold">{s.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Brand CTA */}
+      <section className="volt-gradient">
+        <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
+          <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
+            Distribution for the Next Generation
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/80">
+            Students don't buy from ads — they buy from people they trust. Volt turns campuses into structured sales environments powered by peer influence and real incentives. This is not influencer marketing.
+          </p>
+          <p className="mt-4 text-lg font-semibold text-primary-foreground">
+            This is campus distribution infrastructure.
+          </p>
+          <div className="mt-8">
+            <Button
+              asChild
+              size="lg"
+              className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
+            >
+              <Link to="/login?mode=signup&role=brand">
+                Partner with Volt
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
