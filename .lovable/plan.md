@@ -1,125 +1,80 @@
 
 
-# Admin Dashboard Complete Overhaul
+# Fixes for Sales Verification, Payout Processing, Training Embeds, and Referral Actions
 
-This is a large rework of the admin dashboard to make it a full end-to-end management hub. Here's the plan broken into sections:
+## Issues Identified
 
----
-
-## 1. Overview Dashboard -- Make it Richer
-
-**Current state**: 6 simple stat cards with numbers only.
-
-**Changes**:
-- Add recent activity feed (latest 5 sales, latest 5 signups)
-- Add quick-action buttons (e.g., "Review Pending Sales", "Process Payouts")
-- Add a simple revenue chart using Recharts (already installed) showing sales over the last 30 days
-- Show tier distribution breakdown (Bronze/Silver/Gold/Platinum user counts)
-- Add pending items alerts at the top when there are items requiring attention
+After reviewing the code, here's what needs fixing:
 
 ---
 
-## 2. Users -- Full Management
+## 1. Sales Verification -- Transaction Status Update (Backend Fix)
 
-**Current state**: Table with name/email/university/tier/joined. Only action is changing tier.
+**Current behavior**: When admin confirms a sale, it tries to find a matching "commission" transaction with "pending" status. But when a user logs a sale via ManualSaleDialog, the transaction is created with type `"manual_sale"`, not `"commission"`. So the `handleConfirm` function never finds the matching transaction to update.
 
-**Changes**:
-- Add a user detail sheet/dialog that shows full profile: avatar, name, email, university, WhatsApp, bank details, tier, referral code, join date
-- Add edit capability for key fields (name, university, WhatsApp, bank details)
-- Add delete user action (with confirmation) -- requires new RLS policy for admin DELETE on profiles
-- Add a "View Sales" / "View Transactions" quick link per user
-- Show avatar thumbnail in the table row
-- Add export/stats summary at the top
+**Fix**: Update `AdminSales.tsx` `handleConfirm` to search for the transaction matching the sale more reliably -- match by `user_id` AND look for both `"commission"` and `"manual_sale"` types with `"pending"` status. Also match by amount to be precise.
+
+**User-side pending indicator**: The Sales page and Wallet page already show pending status. Add a more prominent "Pending Verification" banner on the user's Sales page when they have pending sales.
 
 ---
 
-## 3. Products -- Image and Video Management
+## 2. Payout Processing -- Update Transaction on Completion
 
-**Current state**: Table + dialog with text fields only. Image is just a URL input.
+**Current behavior**: When admin marks a payout as "processed", only the `payouts` table is updated. The user's corresponding payout transaction (negative amount, status "processing") is never updated to reflect completion.
 
-**Changes**:
-- Add file upload for product images using the existing storage (create a `product-images` bucket)
-- Support multiple images via the existing `assets` JSONB field (assets.images array)
-- Add video URL field in the product form (store in assets.videos)
-- Show image thumbnail in the table and in the edit dialog
-- Add image preview and remove functionality in the form
+**Fix**: In `AdminPayouts.tsx`, when processing a payout:
+- Find the user's payout transaction (type "payout", status "processing", matching user_id and amount) and update its status to "paid"
+- When rejecting a payout, update the transaction status to "cancelled" so the balance is restored
 
----
-
-## 4. Sales -- Full Management
-
-**Current state**: Table with confirm/cancel actions for pending sales. Shows date, customer, product, amount, commission, status, proof.
-
-**Changes**:
-- Add sale detail dialog showing all info including notes, quantity, seller name (join with profiles)
-- Add ability to add/edit admin notes on a sale
-- Show the seller's name in the table (query profiles by user_id)
-- Add search/filter by seller name, product, date range
-- Add proof image preview (inline lightbox instead of just download)
-- Add ability to edit sale amount/commission before confirming
+This requires:
+- Import `useAdminTransactions` and `useUpdateTransactionStatus` in AdminPayouts
+- Add logic in `confirmAction` to find and update the matching transaction
 
 ---
 
-## 5. Payouts -- Full Management
+## 3. Training -- YouTube Embed Link Field
 
-**Current state**: Table with process/reject for pending. Shows amount, bank, account, status, notes.
+**Current behavior**: The lesson dialog already has a YouTube URL field with an embedded video preview. However, looking at the code more carefully, the field label says "YouTube URL" but the user wants an explicit "Embed Link" field.
 
-**Changes**:
-- Show the requester's name (join with profiles)
-- Add a detail dialog with full bank info, requester profile, and transaction history
-- Allow admin to add custom notes when processing or rejecting (currently hardcoded "Rejected by admin")
-- Add a notes input dialog before reject/process actions
-- Add search and date range filtering
+**Fix**: Rename the field label to "YouTube Embed / Video Link" for clarity. The embed preview is already working. No functional change needed -- just a label update.
 
 ---
 
-## 6. Training -- YouTube Embed + Cover
+## 4. Referral Actions -- Add Quick Actions
 
-**Current state**: Course form has title, description, category, level, color, sort order. Lesson form has title, module title, module number, sort order, YouTube URL.
+**Current behavior**: The referrals page only has an "Edit" button per row. No bulk or quick actions.
 
-**Changes**:
-- In the lesson form, show a YouTube thumbnail preview auto-extracted from the URL (using `https://img.youtube.com/vi/{VIDEO_ID}/hqdefault.jpg`)
-- Use the YouTube thumbnail as the course cover when displaying courses (from first lesson's video)
-- Add a cover image upload option for courses (create storage or use URL)
-- Show YouTube embed preview in the lesson edit dialog
-- Show video thumbnails in the lesson list
+**Fix**: Add quick action buttons directly in each row:
+- A "Mark Active" button for "signed_up" referrals
+- A "Mark Inactive" button for "active" referrals  
+- These act as one-click status changes without opening the edit dialog
 
 ---
 
-## 7. New Admin Sections -- Leaderboard, Referrals, Marketplace Settings
+## Technical Changes
 
-**Changes**:
-- **Admin Referrals page** (`/admin/referrals`): View all referrals across users, see referrer name, referred name, status, earnings. Ability to update referral status and earnings.
-- **Admin Leaderboard page** (`/admin/leaderboard`): View the leaderboard, ability to reset/manage it. Read-only view of current standings.
-- Update the `AdminLayout` nav to include the new sections.
+### Files to Modify
 
----
+1. **`src/pages/admin/AdminSales.tsx`**
+   - Fix `handleConfirm` to match transactions by both `"commission"` and `"manual_sale"` types, and by matching amount
+   - Fix `handleCancel` similarly
+   - Add a count badge showing pending sales in the header
 
-## Technical Details
+2. **`src/pages/admin/AdminPayouts.tsx`**
+   - Import `useAdminTransactions` and `useUpdateTransactionStatus` from useAdminData
+   - In `confirmAction` when processing: find the matching payout transaction and update status to "paid"
+   - In `confirmAction` when rejecting: find the matching payout transaction and update status to "cancelled"
 
-### Database Changes
-- Migration to create `product-images` storage bucket (public)
-- Migration to add admin DELETE policy on `profiles` table
-- Migration to add admin UPDATE policy on `referrals` table (to manage referral status/earnings)
-- Migration to add admin INSERT policy on `referrals` (if needed)
+3. **`src/pages/admin/AdminTraining.tsx`**
+   - Change YouTube URL field label to "YouTube Embed / Video Link"
 
-### New Files
-- `src/pages/admin/AdminReferrals.tsx` -- Referrals management page
-- `src/pages/admin/AdminLeaderboard.tsx` -- Leaderboard view page
+4. **`src/pages/admin/AdminReferrals.tsx`**
+   - Add inline quick-action buttons (Mark Active / Mark Inactive) in each table row
+   - Add summary stats cards at the top (total signed up, active, inactive counts)
 
-### Modified Files
-- `src/pages/admin/AdminDashboard.tsx` -- Rich overview with charts, activity feed, quick actions
-- `src/pages/admin/AdminUsers.tsx` -- User detail sheet, edit/delete, avatar display
-- `src/pages/admin/AdminProducts.tsx` -- Image upload, video URL, multi-image management
-- `src/pages/admin/AdminSales.tsx` -- Seller names, detail dialog, notes editing, proof preview
-- `src/pages/admin/AdminPayouts.tsx` -- Requester names, notes dialog, detail view
-- `src/pages/admin/AdminTraining.tsx` -- YouTube thumbnail preview, cover image from video
-- `src/components/AdminLayout.tsx` -- Add Referrals and Leaderboard nav items
-- `src/App.tsx` -- Add new admin routes
-- `src/hooks/useAdminData.ts` -- Update sales/payouts queries to join with profiles for names; add referral mutations
+5. **`src/pages/Sales.tsx`**
+   - Add a pending verification alert banner when there are pending sales
 
-### Data Joins for Names
-- Admin sales query: join `profiles` on `user_id` to get seller name
-- Admin payouts query: join `profiles` on `user_id` to get requester name
-- Admin referrals: already has `referred_name`, need to join profiles for referrer name
+6. **`src/pages/WalletPage.tsx`**
+   - Show a notification banner when there are processing payouts that haven't been completed yet
 
