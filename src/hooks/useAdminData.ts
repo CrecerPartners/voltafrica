@@ -23,18 +23,18 @@ export function useAdminSales() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("sales")
-        .select("*, products(name, brand), profiles!sales_user_id_fkey(name, email)")
+        .select("*, products(name, brand)")
         .order("created_at", { ascending: false });
-      if (error) {
-        // Fallback without profile join if FK doesn't exist
-        const { data: d2, error: e2 } = await supabase
-          .from("sales")
-          .select("*, products(name, brand)")
-          .order("created_at", { ascending: false });
-        if (e2) throw e2;
-        return d2;
-      }
-      return data;
+      if (error) throw error;
+      // Fetch seller names
+      const userIds = [...new Set(data.map((s) => s.user_id))];
+      if (userIds.length === 0) return data;
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, name, email")
+        .in("user_id", userIds);
+      const profileMap = Object.fromEntries((profiles || []).map((p) => [p.user_id, p]));
+      return data.map((s) => ({ ...s, profiles: profileMap[s.user_id] || null }));
     },
   });
 }
