@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useProduct } from "@/hooks/useProduct";
 import { useProducts } from "@/hooks/useProducts";
 import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/contexts/AuthContext";
 import { formatNaira } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ import { SharePopover } from "@/components/SharePopover";
 import { shareContent, canNativeShare, copyToClipboard } from "@/lib/shareUtils";
 import {
   Link2, Share2, Lightbulb, Copy, MessageCircle, Instagram, Twitter,
-  ChevronLeft, Loader2, ExternalLink, PackageCheck
+  ChevronLeft, Loader2, ExternalLink, PackageCheck, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,6 +32,7 @@ const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const refCode = searchParams.get("ref");
+  const { user } = useAuth();
 
   const { data: product, isLoading, error } = useProduct(slug);
   const { data: products = [] } = useProducts();
@@ -39,8 +41,16 @@ const ProductPage = () => {
   const [activeThumb, setActiveThumb] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
+  const isLoggedIn = !!user;
   const userRefCode = profile?.referral_code || refCode || "VOLT";
   const referralLink = product ? `https://voltafrica.lovable.app/product/${product.slug}?ref=${userRefCode}` : "";
+
+  // Store referral code for attribution on sign-up
+  useEffect(() => {
+    if (refCode) {
+      localStorage.setItem("volt_ref_code", refCode);
+    }
+  }, [refCode]);
 
   const related = products.filter(p => product && p.category === product.category && p.id !== product.id).slice(0, 4);
 
@@ -147,19 +157,36 @@ const ProductPage = () => {
 
           {/* CTA */}
           <div className="space-y-3 pt-2">
-            <Button className="w-full volt-gradient h-12 text-base" onClick={() => copyToClipboard(referralLink, "Referral link")}>
-              <Link2 className="h-5 w-5 mr-2" /> Get Referral Link
-            </Button>
-            {canNativeShare() ? (
-              <Button variant="outline" className="w-full h-10" onClick={() => shareContent(product.name, shareText, referralLink)}>
-                <Share2 className="h-4 w-4 mr-2" /> Share Product
-              </Button>
+            {isLoggedIn ? (
+              <>
+                <Button className="w-full volt-gradient h-12 text-base" onClick={() => copyToClipboard(referralLink, "Referral link")}>
+                  <Link2 className="h-5 w-5 mr-2" /> Get Referral Link
+                </Button>
+                {canNativeShare() ? (
+                  <Button variant="outline" className="w-full h-10" onClick={() => shareContent(product.name, shareText, referralLink)}>
+                    <Share2 className="h-4 w-4 mr-2" /> Share Product
+                  </Button>
+                ) : (
+                  <SharePopover
+                    text={shareText}
+                    url={referralLink}
+                    triggerClassName="w-full h-10 border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md gap-2"
+                  />
+                )}
+              </>
             ) : (
-              <SharePopover
-                text={shareText}
-                url={referralLink}
-                triggerClassName="w-full h-10 border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md gap-2"
-              />
+              <>
+                {(product.assets as any)?.purchaseUrl && (
+                  <Button className="w-full volt-gradient h-12 text-base" onClick={() => window.open((product.assets as any).purchaseUrl, "_blank")}>
+                    <ExternalLink className="h-5 w-5 mr-2" /> Buy Now
+                  </Button>
+                )}
+                <Button variant="outline" className="w-full h-10" asChild>
+                  <Link to="/login">
+                    <Zap className="h-4 w-4 mr-2" /> Join as Seller & Earn {product.commissionRate}%
+                  </Link>
+                </Button>
+              </>
             )}
           </div>
 
@@ -170,28 +197,33 @@ const ProductPage = () => {
             </Button>
           )}
 
-          {/* Social Captions */}
-          <div className="space-y-3 pt-2">
-            <h3 className="text-sm font-semibold text-foreground">Ready-made Captions</h3>
-            <CaptionCard icon={<MessageCircle className="h-4 w-4" />} label="WhatsApp" text={product.assets.whatsappMessage} link={referralLink} productName={product.name} />
-            <CaptionCard icon={<Instagram className="h-4 w-4" />} label="Instagram" text={product.assets.instagramCaption} link={referralLink} productName={product.name} />
-            <CaptionCard icon={<Twitter className="h-4 w-4" />} label="Twitter / X" text={product.assets.twitterCaption} link={referralLink} productName={product.name} />
-          </div>
+          {/* Seller-only tools */}
+          {isLoggedIn && (
+            <>
+              {/* Social Captions */}
+              <div className="space-y-3 pt-2">
+                <h3 className="text-sm font-semibold text-foreground">Ready-made Captions</h3>
+                <CaptionCard icon={<MessageCircle className="h-4 w-4" />} label="WhatsApp" text={product.assets.whatsappMessage} link={referralLink} productName={product.name} />
+                <CaptionCard icon={<Instagram className="h-4 w-4" />} label="Instagram" text={product.assets.instagramCaption} link={referralLink} productName={product.name} />
+                <CaptionCard icon={<Twitter className="h-4 w-4" />} label="Twitter / X" text={product.assets.twitterCaption} link={referralLink} productName={product.name} />
+              </div>
 
-          {/* Selling Tips */}
-          {product.assets.sellingTips?.length > 0 && (
-            <div className="space-y-2 pt-2">
-              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <Lightbulb className="h-4 w-4 text-warning" /> Selling Tips
-              </h3>
-              <ul className="space-y-2">
-                {product.assets.sellingTips.map((tip, i) => (
-                  <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                    <span className="text-primary font-bold mt-0.5">•</span> {tip}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {/* Selling Tips */}
+              {product.assets.sellingTips?.length > 0 && (
+                <div className="space-y-2 pt-2">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <Lightbulb className="h-4 w-4 text-warning" /> Selling Tips
+                  </h3>
+                  <ul className="space-y-2">
+                    {product.assets.sellingTips.map((tip, i) => (
+                      <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <span className="text-primary font-bold mt-0.5">•</span> {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

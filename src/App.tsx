@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminProtectedRoute } from "@/components/AdminProtectedRoute";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { AdminLayout } from "@/components/AdminLayout";
+import { PublicProductLayout } from "@/components/PublicProductLayout";
 import LandingPage from "@/pages/LandingPage";
 import AboutStudents from "@/pages/AboutStudents";
 import AboutBrands from "@/pages/AboutBrands";
@@ -57,10 +58,12 @@ const App = () => (
           <Route path="/join-now" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route element={<PublicProductLayout />}>
+            <Route path="/product/:slug" element={<ProductPage />} />
+          </Route>
           <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/product/:slug" element={<ProductPage />} />
             <Route path="/calculator" element={<Calculator />} />
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/referrals" element={<Referrals />} />
