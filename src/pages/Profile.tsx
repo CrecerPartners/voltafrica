@@ -39,7 +39,7 @@ const Profile = () => {
   const idDocInputRef = useRef<HTMLInputElement>(null);
 
   const [profileForm, setProfileForm] = useState({
-    name: "", email: "", university: "", whatsapp: "",
+    name: "", email: "", whatsapp: "",
     bank_name: "", account_number: "",
     account_type: "", social_links: { tiktok: "", snapchat: "", instagram: "", twitter: "" },
   });
@@ -49,13 +49,24 @@ const Profile = () => {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
 
+  const deriveAccountType = (university: string): string => {
+    const raw = university?.split(" — ")[0]?.trim() || "";
+    const map: Record<string, string> = {
+      "Student": "student", "NYSC member": "nysc", "Fresh grad": "graduate",
+      "Corporate": "corporate", "Micro-influencer": "creator",
+      "Content creator": "creator", "Young urban youth seller": "creator",
+    };
+    return map[raw] || "";
+  };
+
   if (profile && !initialized) {
     const sl = profile.social_links || {};
+    const accountType = profile.account_type || deriveAccountType(profile.university);
     setProfileForm({
       name: profile.name || "", email: profile.email || "",
-      university: profile.university || "", whatsapp: profile.whatsapp || "",
+      whatsapp: profile.whatsapp || "",
       bank_name: profile.bank_name || "", account_number: profile.account_number || "",
-      account_type: profile.account_type || "",
+      account_type: accountType,
       social_links: { tiktok: sl.tiktok || "", snapchat: sl.snapchat || "", instagram: sl.instagram || "", twitter: sl.twitter || "" },
     });
     setShopForm({
@@ -147,7 +158,11 @@ const Profile = () => {
   const initials = (profile?.name || "").split(" ").map(n => n[0]).join("").toUpperCase() || "?";
   const isVerified = profile?.verification_status === "verified";
   const isPendingVerification = profile?.verification_status === "pending";
-  const needsIdUpload = profileForm.account_type === "student" || profileForm.account_type === "corporate";
+  const needsIdUpload = ["student", "corporate", "nysc"].includes(profileForm.account_type);
+  const accountTypeLabels: Record<string, string> = {
+    student: "Student", nysc: "NYSC Member", graduate: "Fresh Graduate",
+    corporate: "Corporate", creator: "Creator / Influencer",
+  };
 
   const ProfileField = ({ label, icon: Icon, name, type = "text" }: { label: string; icon: any; name: keyof typeof profileForm; type?: string }) => (
     <div className="space-y-2">
@@ -202,7 +217,6 @@ const Profile = () => {
               <h3 className="text-base font-display font-semibold">Personal Information</h3>
               <ProfileField label="Full Name" icon={User} name="name" />
               <ProfileField label="Email" icon={User} name="email" type="email" />
-              <ProfileField label="University" icon={Building} name="university" />
               <ProfileField label="WhatsApp Number" icon={Phone} name="whatsapp" type="tel" />
             </CardContent>
           </Card>
@@ -222,21 +236,21 @@ const Profile = () => {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">What best describes you?</label>
-                <Select value={profileForm.account_type} onValueChange={(v) => setProfileForm({ ...profileForm, account_type: v })}>
-                  <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder="Select type" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="student">Student</SelectItem>
-                    <SelectItem value="corporate">Corporate</SelectItem>
-                    <SelectItem value="creator">Creator</SelectItem>
-                  </SelectContent>
-                </Select>
+                <label className="text-sm font-medium">Account Type</label>
+                {profileForm.account_type ? (
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-sm py-1 px-3">{accountTypeLabels[profileForm.account_type] || profileForm.account_type}</Badge>
+                    <span className="text-xs text-muted-foreground">Set during signup</span>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">Not set — will be derived from your signup info</p>
+                )}
               </div>
 
               {needsIdUpload && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium">
-                    Upload {profileForm.account_type === "student" ? "Student ID" : "Corporate ID"}
+                    Upload {profileForm.account_type === "student" ? "Student ID" : profileForm.account_type === "nysc" ? "NYSC ID / Call-up Letter" : "Corporate ID"}
                   </label>
                   <div className="flex items-center gap-3">
                     <Button size="sm" variant="outline" onClick={() => idDocInputRef.current?.click()} disabled={uploadingDoc}>
