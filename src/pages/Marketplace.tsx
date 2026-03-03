@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,11 +7,9 @@ import { Input } from "@/components/ui/input";
 import { useProducts, Product } from "@/hooks/useProducts";
 import { useProfile } from "@/hooks/useProfile";
 import { formatNaira } from "@/lib/utils";
-import { Link2, Filter, Search, PackageOpen, Loader2 } from "lucide-react";
+import { Link2, Filter, Search, PackageOpen, Loader2, Eye } from "lucide-react";
 import { toast } from "sonner";
-import { ProductDetailSheet } from "@/components/ProductDetailSheet";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { ImageLightbox } from "@/components/ImageLightbox";
 
 type ProductCategory = "gadgets" | "telco" | "fintech" | "events" | "fashion" | "courses";
 
@@ -38,18 +37,6 @@ const Marketplace = () => {
   const [activeCategory, setActiveCategory] = useState<ProductCategory | "all">("all");
   const [sortBy, setSortBy] = useState<"commission" | "name">("commission");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [lightboxProduct, setLightboxProduct] = useState<Product | null>(null);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-
-  const openImageLightbox = (e: React.MouseEvent, product: Product) => {
-    e.stopPropagation();
-    if (product.assets?.images?.length > 0) {
-      setLightboxProduct(product);
-      setLightboxOpen(true);
-    }
-  };
 
   const filtered = products
     .filter((p) => activeCategory === "all" || p.category === activeCategory)
@@ -57,18 +44,20 @@ const Marketplace = () => {
     .sort((a, b) => sortBy === "commission" ? b.commissionRate - a.commissionRate : a.name.localeCompare(b.name));
 
   const getLink = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
     e.stopPropagation();
     const code = profile?.referral_code || "VOLT";
-    navigator.clipboard.writeText(`https://volt.ng/ref/${code}/${product.id}`);
+    navigator.clipboard.writeText(`https://voltafrica.lovable.app/product/${product.slug}?ref=${code}`);
     toast.success(`Link copied for ${product.name}!`);
   };
 
-  const openDetail = (product: Product) => {
-    setSelectedProduct(product);
-    setSheetOpen(true);
-  };
-
   const categories: (ProductCategory | "all")[] = ["all", "gadgets", "telco", "fintech", "events", "fashion", "courses"];
+
+  // Category counts
+  const categoryCounts = products.reduce((acc, p) => {
+    acc[p.category] = (acc[p.category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   if (isLoading) {
     return (
@@ -94,7 +83,7 @@ const Marketplace = () => {
           {categories.map((cat) => (
             <Button key={cat} variant={activeCategory === cat ? "default" : "outline"} size="sm" onClick={() => setActiveCategory(cat)}
               className={activeCategory === cat ? "volt-gradient h-8 text-xs" : "h-8 text-xs"}>
-              {cat === "all" ? "All" : categoryLabels[cat]}
+              {cat === "all" ? `All (${products.length})` : `${categoryLabels[cat]} (${categoryCounts[cat] || 0})`}
             </Button>
           ))}
           <div className="ml-auto">
@@ -112,63 +101,59 @@ const Marketplace = () => {
           <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map((product) => (
-            <Card key={product.id} className="border-border/50 group hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer overflow-hidden" onClick={() => openDetail(product)}>
-              {/* Hero image */}
-              <div className="relative overflow-hidden">
-                <AspectRatio ratio={4 / 3}>
-                  {product.assets?.images?.length > 0 ? (
-                    <img
-                      src={product.assets.images[0]}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                      onClick={(e) => openImageLightbox(e, product)}
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <span className="text-4xl">{product.image}</span>
+            <Link key={product.id} to={`/product/${product.slug}`} className="block">
+              <Card className="border-border/50 group hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden h-full">
+                {/* Hero image with overlay */}
+                <div className="relative overflow-hidden">
+                  <AspectRatio ratio={4 / 3}>
+                    {product.assets?.images?.length > 0 ? (
+                      <img
+                        src={product.assets.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <span className="text-5xl">{product.image}</span>
+                      </div>
+                    )}
+                  </AspectRatio>
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="flex gap-2">
+                      <div className="bg-background/90 backdrop-blur-sm rounded-full p-2.5 shadow-lg">
+                        <Eye className="h-4 w-4 text-foreground" />
+                      </div>
                     </div>
-                  )}
-                </AspectRatio>
-                <Badge variant="outline" className={`${categoryColors[product.category]} text-[10px] px-1.5 py-0 absolute top-2 right-2 backdrop-blur-sm bg-background/70`}>
-                  {categoryLabels[product.category]}
-                </Badge>
-              </div>
-              {/* Details */}
-              <CardContent className="p-3.5 space-y-2">
-                <div>
-                  <h3 className="font-semibold text-sm leading-tight">{product.name}</h3>
-                  <p className="text-xs text-muted-foreground">{product.brand}</p>
-                </div>
-                <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
-                <div className="flex items-center justify-between pt-0.5">
-                  <div>
-                    {product.price > 0 && <p className="text-xs text-muted-foreground">{formatNaira(product.price)}</p>}
-                    <p className="text-sm font-bold text-primary">{product.commissionRate}%</p>
                   </div>
-                  <Button size="sm" onClick={(e) => getLink(e, product)} className="volt-gradient text-xs h-7 px-2.5">
-                    <Link2 className="h-3 w-3 mr-1" /> Link
-                  </Button>
+                  <Badge variant="outline" className={`${categoryColors[product.category]} text-[10px] px-1.5 py-0 absolute top-2 right-2 backdrop-blur-sm bg-background/70`}>
+                    {categoryLabels[product.category]}
+                  </Badge>
                 </div>
-              </CardContent>
-            </Card>
+                {/* Details */}
+                <CardContent className="p-4 space-y-2.5">
+                  <div>
+                    <h3 className="font-semibold text-sm leading-tight line-clamp-1">{product.name}</h3>
+                    <p className="text-xs text-muted-foreground">{product.brand}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground line-clamp-2 min-h-[2rem]">{product.description}</p>
+                  <div className="flex items-center justify-between pt-1">
+                    <div>
+                      {product.price > 0 && <p className="text-xs text-muted-foreground">{formatNaira(product.price)}</p>}
+                      <p className="text-sm font-bold text-primary">{product.commissionRate}%</p>
+                    </div>
+                    <Button size="sm" onClick={(e) => getLink(e, product)} className="volt-gradient text-xs h-8 px-3 shadow-md hover:shadow-lg transition-shadow">
+                      <Link2 className="h-3 w-3 mr-1" /> Get Link
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
-      )}
-
-      <ProductDetailSheet product={selectedProduct} open={sheetOpen} onOpenChange={setSheetOpen} />
-
-      {lightboxProduct && (
-        <ImageLightbox
-          images={lightboxProduct.assets.images}
-          initialIndex={0}
-          open={lightboxOpen}
-          onOpenChange={setLightboxOpen}
-          productName={lightboxProduct.name}
-          referralLink={`https://volt.ng/ref/${profile?.referral_code || "VOLT"}/${lightboxProduct.id}`}
-        />
       )}
     </div>
   );

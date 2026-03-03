@@ -17,6 +17,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Dashboard from "@/pages/Dashboard";
 import Marketplace from "@/pages/Marketplace";
+import ProductPage from "@/pages/ProductPage";
 import WalletPage from "@/pages/WalletPage";
 import Calculator from "@/pages/Calculator";
 import Referrals from "@/pages/Referrals";
@@ -59,6 +60,7 @@ const App = () => (
           <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/product/:slug" element={<ProductPage />} />
             <Route path="/calculator" element={<Calculator />} />
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/referrals" element={<Referrals />} />

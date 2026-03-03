@@ -18,6 +18,7 @@ export interface DbProduct {
     twitterCaption: string;
     sellingTips: string[];
   };
+  slug: string;
   created_at: string;
 }
 
@@ -32,6 +33,7 @@ export interface Product {
   image: string;
   description: string;
   assets: DbProduct["assets"];
+  slug: string;
 }
 
 function mapProduct(db: DbProduct): Product {
@@ -45,6 +47,7 @@ function mapProduct(db: DbProduct): Product {
     image: db.image,
     description: db.description,
     assets: db.assets,
+    slug: db.slug,
   };
 }
 
