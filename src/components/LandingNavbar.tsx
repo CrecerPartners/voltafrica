@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Menu, Zap } from "lucide-react";
+import { Menu, Zap, LayoutDashboard } from "lucide-react";
 import { CartDrawer } from "@/components/CartDrawer";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function LandingNavbar() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
@@ -20,12 +23,20 @@ export function LandingNavbar() {
 
         <div className="hidden items-center gap-3 md:flex">
           <CartDrawer />
-          <Button variant="ghost" asChild>
-            <Link to="/login">Sign In</Link>
-          </Button>
-          <Button asChild className="volt-gradient border-0 font-semibold shadow-lg hover:opacity-90">
-            <Link to="/login">Get Started</Link>
-          </Button>
+          {isLoggedIn ? (
+            <Button asChild className="volt-gradient border-0 font-semibold shadow-lg hover:opacity-90">
+              <Link to="/dashboard"><LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/login">Sign In</Link>
+              </Button>
+              <Button asChild className="volt-gradient border-0 font-semibold shadow-lg hover:opacity-90">
+                <Link to="/login">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
@@ -40,12 +51,20 @@ export function LandingNavbar() {
           <SheetContent side="right" className="w-72">
             <SheetTitle className="sr-only">Navigation</SheetTitle>
             <div className="flex flex-col gap-6 pt-8">
-              <Button variant="outline" asChild className="w-full" onClick={() => setOpen(false)}>
-                <Link to="/login">Sign In</Link>
-              </Button>
-              <Button asChild className="w-full volt-gradient border-0 font-semibold" onClick={() => setOpen(false)}>
-                <Link to="/login">Get Started</Link>
-              </Button>
+              {isLoggedIn ? (
+                <Button asChild className="w-full volt-gradient border-0 font-semibold" onClick={() => setOpen(false)}>
+                  <Link to="/dashboard"><LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" asChild className="w-full" onClick={() => setOpen(false)}>
+                    <Link to="/login">Sign In</Link>
+                  </Button>
+                  <Button asChild className="w-full volt-gradient border-0 font-semibold" onClick={() => setOpen(false)}>
+                    <Link to="/login">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </SheetContent>
         </Sheet>
