@@ -7,15 +7,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfile";
 import { useMyShopItems, useRemoveFromShop } from "@/hooks/useSellerShop";
 import { useProducts } from "@/hooks/useProducts";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { formatNaira } from "@/lib/utils";
 import {
   User, Building, Phone, CreditCard, Save, Loader2, Camera,
   Store, Link2, Trash2, ExternalLink, ShoppingBag, Copy,
-  CircleCheck, CircleAlert, Settings,
+  CircleCheck, CircleAlert, Settings, Upload, ShieldCheck,
+  Instagram, AtSign, Globe,
 } from "lucide-react";
 import { toast } from "sonner";
 import { copyToClipboard } from "@/lib/shareUtils";
@@ -32,28 +35,28 @@ const Profile = () => {
   const removeFromShop = useRemoveFromShop();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const idDocInputRef = useRef<HTMLInputElement>(null);
 
-  // Profile form state
   const [profileForm, setProfileForm] = useState({
     name: "", email: "", university: "", whatsapp: "",
     bank_name: "", account_number: "",
+    account_type: "", social_links: { tiktok: "", snapchat: "", instagram: "", twitter: "" },
   });
 
-  // Shop form state
-  const [shopForm, setShopForm] = useState({
-    shop_name: "", shop_slug: "", bio: "",
-  });
-
+  const [shopForm, setShopForm] = useState({ shop_name: "", shop_slug: "", bio: "" });
   const [initialized, setInitialized] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   if (profile && !initialized) {
+    const sl = profile.social_links || {};
     setProfileForm({
-      name: profile.name || "",
-      email: profile.email || "",
-      university: profile.university || "",
-      whatsapp: profile.whatsapp || "",
-      bank_name: profile.bank_name || "",
-      account_number: profile.account_number || "",
+      name: profile.name || "", email: profile.email || "",
+      university: profile.university || "", whatsapp: profile.whatsapp || "",
+      bank_name: profile.bank_name || "", account_number: profile.account_number || "",
+      account_type: profile.account_type || "",
+      social_links: { tiktok: sl.tiktok || "", snapchat: sl.snapchat || "", instagram: sl.instagram || "", twitter: sl.twitter || "" },
     });
     setShopForm({
       shop_name: profile.shop_name || "",
@@ -63,7 +66,6 @@ const Profile = () => {
     setInitialized(true);
   }
 
-  // Auto-generate slug from shop_name only if user hasn't customized it
   const [slugTouched, setSlugTouched] = useState(false);
   useEffect(() => {
     if (!slugTouched && shopForm.shop_name) {
@@ -79,28 +81,20 @@ const Profile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      await updateProfile.mutateAsync(profileForm as any);
+      await updateProfile.mutateAsync({
+        ...profileForm,
+        social_links: profileForm.social_links,
+      } as any);
       toast.success("Profile saved!");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to save");
-    }
+    } catch (err: any) { toast.error(err.message || "Failed to save"); }
   };
 
   const handleSaveShop = async () => {
-    if (!shopForm.shop_slug) {
-      toast.error("Please set a shop URL slug");
-      return;
-    }
+    if (!shopForm.shop_slug) { toast.error("Please set a shop URL slug"); return; }
     try {
-      await updateProfile.mutateAsync({
-        shop_name: shopForm.shop_name,
-        shop_slug: shopForm.shop_slug,
-        bio: shopForm.bio,
-      } as any);
+      await updateProfile.mutateAsync({ shop_name: shopForm.shop_name, shop_slug: shopForm.shop_slug, bio: shopForm.bio } as any);
       toast.success("Shop settings saved!");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to save");
-    }
+    } catch (err: any) { toast.error(err.message || "Failed to save"); }
   };
 
   const handleAvatarClick = () => fileInputRef.current?.click();
@@ -108,35 +102,57 @@ const Profile = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) { toast.error("Image must be under 2MB"); return; }
+    try { await uploadAvatar.mutateAsync(file); toast.success("Avatar updated!"); }
+    catch (err: any) { toast.error(err.message || "Failed to upload avatar"); }
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 2 * 1024 * 1024) { toast.error("Image must be under 2MB"); return; }
+    setUploadingLogo(true);
     try {
-      await uploadAvatar.mutateAsync(file);
-      toast.success("Avatar updated!");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to upload avatar");
-    }
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/logo.${ext}`;
+      const { error } = await supabase.storage.from("shop-logos").upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("shop-logos").getPublicUrl(path);
+      const shop_logo_url = urlData.publicUrl + "?t=" + Date.now();
+      await updateProfile.mutateAsync({ shop_logo_url } as any);
+      toast.success("Shop logo updated!");
+    } catch (err: any) { toast.error(err.message || "Failed to upload logo"); }
+    finally { setUploadingLogo(false); }
+  };
+
+  const handleIdDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 5 * 1024 * 1024) { toast.error("File must be under 5MB"); return; }
+    setUploadingDoc(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/id-doc.${ext}`;
+      const { error } = await supabase.storage.from("verification-docs").upload(path, file, { upsert: true });
+      if (error) throw error;
+      await updateProfile.mutateAsync({ id_document_url: path, verification_status: "pending" } as any);
+      toast.success("ID document uploaded! Verification pending.");
+    } catch (err: any) { toast.error(err.message || "Failed to upload document"); }
+    finally { setUploadingDoc(false); }
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
   const initials = (profile?.name || "").split(" ").map(n => n[0]).join("").toUpperCase() || "?";
+  const isVerified = profile?.verification_status === "verified";
+  const isPendingVerification = profile?.verification_status === "pending";
+  const needsIdUpload = profileForm.account_type === "student" || profileForm.account_type === "corporate";
 
   const ProfileField = ({ label, icon: Icon, name, type = "text" }: { label: string; icon: any; name: keyof typeof profileForm; type?: string }) => (
     <div className="space-y-2">
-      <label className="text-sm font-medium flex items-center gap-2">
-        <Icon className="h-3 w-3 text-muted-foreground" /> {label}
-      </label>
-      <Input
-        type={type}
-        value={profileForm[name]}
-        onChange={(e) => setProfileForm({ ...profileForm, [name]: e.target.value })}
-        className="bg-secondary border-border"
-      />
+      <label className="text-sm font-medium flex items-center gap-2"><Icon className="h-3 w-3 text-muted-foreground" /> {label}</label>
+      <Input type={type} value={profileForm[name] as string} onChange={(e) => setProfileForm({ ...profileForm, [name]: e.target.value })} className="bg-secondary border-border" />
     </div>
   );
 
@@ -163,14 +179,16 @@ const Profile = () => {
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
           </div>
           <div>
-            <p className="font-semibold text-lg">{profile?.name || "—"}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-lg">{profile?.name || "—"}</p>
+              {isVerified && <ShieldCheck className="h-4 w-4 text-primary" />}
+            </div>
             <p className="text-sm text-muted-foreground">{profile?.university || "—"}</p>
             <p className="text-xs text-primary font-medium mt-1">Tier: {profile?.tier || "Bronze"}</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Tabs */}
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList className="w-full">
           <TabsTrigger value="profile" className="flex-1"><User className="h-3.5 w-3.5 mr-1.5" /> Profile</TabsTrigger>
@@ -186,6 +204,80 @@ const Profile = () => {
               <ProfileField label="Email" icon={User} name="email" type="email" />
               <ProfileField label="University" icon={Building} name="university" />
               <ProfileField label="WhatsApp Number" icon={Phone} name="whatsapp" type="tel" />
+            </CardContent>
+          </Card>
+
+          {/* Account Type & Verification */}
+          <Card className="border-border/50">
+            <CardContent className="p-6 space-y-4">
+              <h3 className="text-base font-display font-semibold flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4" /> Verification
+              </h3>
+
+              {isVerified && (
+                <Badge className="bg-primary/10 text-primary border-primary/20"><ShieldCheck className="h-3 w-3 mr-1" /> Verified</Badge>
+              )}
+              {isPendingVerification && (
+                <Badge variant="outline" className="text-warning border-warning/30"><CircleAlert className="h-3 w-3 mr-1" /> Pending Verification</Badge>
+              )}
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">What best describes you?</label>
+                <Select value={profileForm.account_type} onValueChange={(v) => setProfileForm({ ...profileForm, account_type: v })}>
+                  <SelectTrigger className="bg-secondary border-border"><SelectValue placeholder="Select type" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="student">Student</SelectItem>
+                    <SelectItem value="corporate">Corporate</SelectItem>
+                    <SelectItem value="creator">Creator</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {needsIdUpload && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Upload {profileForm.account_type === "student" ? "Student ID" : "Corporate ID"}
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <Button size="sm" variant="outline" onClick={() => idDocInputRef.current?.click()} disabled={uploadingDoc}>
+                      {uploadingDoc ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Upload className="h-3.5 w-3.5 mr-1.5" />}
+                      {profile?.id_document_url ? "Re-upload" : "Upload ID"}
+                    </Button>
+                    {profile?.id_document_url && <span className="text-xs text-muted-foreground">Document uploaded</span>}
+                    <input ref={idDocInputRef} type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdDocUpload} />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Social Links */}
+          <Card className="border-border/50">
+            <CardContent className="p-6 space-y-4">
+              <h3 className="text-base font-display font-semibold flex items-center gap-2">
+                <Globe className="h-4 w-4" /> Social Links
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { key: "tiktok" as const, label: "TikTok", icon: AtSign },
+                  { key: "snapchat" as const, label: "Snapchat", icon: AtSign },
+                  { key: "instagram" as const, label: "Instagram", icon: Instagram },
+                  { key: "twitter" as const, label: "Twitter / X", icon: AtSign },
+                ].map(({ key, label, icon: Icon }) => (
+                  <div key={key} className="space-y-1">
+                    <label className="text-sm font-medium flex items-center gap-1.5"><Icon className="h-3 w-3 text-muted-foreground" /> {label}</label>
+                    <Input
+                      value={profileForm.social_links[key]}
+                      onChange={(e) => setProfileForm({
+                        ...profileForm,
+                        social_links: { ...profileForm.social_links, [key]: e.target.value },
+                      })}
+                      placeholder={`Your ${label} link or handle`}
+                      className="bg-secondary border-border"
+                    />
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
@@ -207,89 +299,56 @@ const Profile = () => {
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-5">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-display font-semibold flex items-center gap-2">
-                  <Store className="h-4 w-4" /> Shop Details
-                </h3>
-                <Badge
-                  variant={isShopLive ? "default" : "outline"}
-                  className={isShopLive ? "bg-green-500/15 text-green-600 border-green-500/30 text-xs" : "text-xs"}
-                >
-                  {isShopLive
-                    ? <><CircleCheck className="h-3 w-3 mr-1" /> Live</>
-                    : <><CircleAlert className="h-3 w-3 mr-1" /> Not set up</>}
+                <h3 className="text-base font-display font-semibold flex items-center gap-2"><Store className="h-4 w-4" /> Shop Details</h3>
+                <Badge variant={isShopLive ? "default" : "outline"} className={isShopLive ? "bg-green-500/15 text-green-600 border-green-500/30 text-xs" : "text-xs"}>
+                  {isShopLive ? <><CircleCheck className="h-3 w-3 mr-1" /> Live</> : <><CircleAlert className="h-3 w-3 mr-1" /> Not set up</>}
                 </Badge>
               </div>
 
-              {/* Shop Name */}
+              {/* Shop Logo */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Shop Name</label>
-                <Input
-                  value={shopForm.shop_name}
-                  onChange={(e) => setShopForm({ ...shopForm, shop_name: e.target.value })}
-                  placeholder="e.g. Ada's Picks"
-                  className="bg-secondary border-border"
-                />
+                <label className="text-sm font-medium">Shop Logo / Picture</label>
+                <div className="flex items-center gap-4">
+                  {profile?.shop_logo_url ? (
+                    <img src={profile.shop_logo_url} alt="Shop logo" className="h-16 w-16 rounded-lg object-cover border border-border" />
+                  ) : (
+                    <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center border border-dashed border-border">
+                      <Store className="h-6 w-6 text-muted-foreground/40" />
+                    </div>
+                  )}
+                  <Button size="sm" variant="outline" onClick={() => logoInputRef.current?.click()} disabled={uploadingLogo}>
+                    {uploadingLogo ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Upload className="h-3.5 w-3.5 mr-1.5" />}
+                    {profile?.shop_logo_url ? "Change Logo" : "Upload Logo"}
+                  </Button>
+                  <input ref={logoInputRef} type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                </div>
               </div>
 
-              {/* Custom Slug */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Shop Name</label>
+                <Input value={shopForm.shop_name} onChange={(e) => setShopForm({ ...shopForm, shop_name: e.target.value })} placeholder="e.g. Ada's Picks" className="bg-secondary border-border" />
+              </div>
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Shop URL Slug</label>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground whitespace-nowrap">/s/</span>
-                  <Input
-                    value={shopForm.shop_slug}
-                    onChange={(e) => {
-                      setSlugTouched(true);
-                      setShopForm({ ...shopForm, shop_slug: toSlug(e.target.value) });
-                    }}
-                    placeholder="my-shop"
-                    className="bg-secondary border-border font-mono text-sm"
-                  />
+                  <Input value={shopForm.shop_slug} onChange={(e) => { setSlugTouched(true); setShopForm({ ...shopForm, shop_slug: toSlug(e.target.value) }); }} placeholder="my-shop" className="bg-secondary border-border font-mono text-sm" />
                 </div>
-                {shopSlug && (
-                  <p className="text-xs text-muted-foreground font-mono truncate">
-                    {window.location.origin}/s/{shopSlug}
-                  </p>
-                )}
+                {shopSlug && <p className="text-xs text-muted-foreground font-mono truncate">{window.location.origin}/s/{shopSlug}</p>}
               </div>
 
-              {/* Bio */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">Bio</label>
-                <Textarea
-                  value={shopForm.bio}
-                  onChange={(e) => setShopForm({ ...shopForm, bio: e.target.value })}
-                  placeholder="Tell buyers about yourself..."
-                  className="bg-secondary border-border resize-none"
-                  rows={3}
-                />
+                <Textarea value={shopForm.bio} onChange={(e) => setShopForm({ ...shopForm, bio: e.target.value })} placeholder="Tell buyers about yourself..." className="bg-secondary border-border resize-none" rows={3} />
               </div>
 
-              {/* Quick Actions */}
               {shopSlug && (
                 <div className="flex flex-wrap gap-2 pt-1">
-                  <Button size="sm" variant="outline" onClick={() => copyToClipboard(shopLink, "Shop link")}>
-                    <Copy className="h-3 w-3 mr-1.5" /> Copy Link
-                  </Button>
-                  <Button size="sm" variant="outline" asChild>
-                    <a href={`/s/${shopSlug}`} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-3 w-3 mr-1.5" /> Preview Shop
-                    </a>
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({ title: shopForm.shop_name || "My Shop", url: shopLink });
-                    } else {
-                      copyToClipboard(shopLink, "Shop link");
-                    }
-                  }}>
-                    <Link2 className="h-3 w-3 mr-1.5" /> Share
-                  </Button>
-                  <Button size="sm" variant="outline" asChild>
-                    <Link to="/marketplace">
-                      <ShoppingBag className="h-3 w-3 mr-1.5" /> Add Products
-                    </Link>
-                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => copyToClipboard(shopLink, "Shop link")}><Copy className="h-3 w-3 mr-1.5" /> Copy Link</Button>
+                  <Button size="sm" variant="outline" asChild><a href={`/s/${shopSlug}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 mr-1.5" /> Preview</a></Button>
+                  <Button size="sm" variant="outline" onClick={() => { if (navigator.share) navigator.share({ title: shopForm.shop_name || "My Shop", url: shopLink }); else copyToClipboard(shopLink, "Shop link"); }}><Link2 className="h-3 w-3 mr-1.5" /> Share</Button>
+                  <Button size="sm" variant="outline" asChild><Link to="/marketplace"><ShoppingBag className="h-3 w-3 mr-1.5" /> Add Products</Link></Button>
                 </div>
               )}
             </CardContent>
@@ -298,22 +357,12 @@ const Profile = () => {
           {/* Products List */}
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-3">
-              <h3 className="text-base font-display font-semibold">
-                Shop Products
-                {shopProducts.length > 0 && (
-                  <span className="ml-2 text-xs font-normal text-muted-foreground">
-                    ({shopProducts.length})
-                  </span>
-                )}
-              </h3>
-
+              <h3 className="text-base font-display font-semibold">Shop Products{shopProducts.length > 0 && <span className="ml-2 text-xs font-normal text-muted-foreground">({shopProducts.length})</span>}</h3>
               {shopProducts.length === 0 ? (
                 <div className="flex flex-col items-center py-8 text-center border border-dashed border-border rounded-lg">
                   <Store className="h-10 w-10 text-muted-foreground/30 mb-2" />
-                  <p className="text-sm text-muted-foreground mb-3">Add products from the marketplace to start your shop</p>
-                  <Button size="sm" variant="default" className="volt-gradient" asChild>
-                    <Link to="/marketplace"><ShoppingBag className="h-3.5 w-3.5 mr-1.5" /> Browse Marketplace</Link>
-                  </Button>
+                  <p className="text-sm text-muted-foreground mb-3">Add products from the marketplace</p>
+                  <Button size="sm" variant="default" className="volt-gradient" asChild><Link to="/marketplace"><ShoppingBag className="h-3.5 w-3.5 mr-1.5" /> Browse Marketplace</Link></Button>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -336,16 +385,8 @@ const Profile = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-1 flex-shrink-0">
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => copyToClipboard(productLink, "Product link")}>
-                            <Copy className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button size="sm" variant="ghost" className="text-destructive h-8 w-8 p-0" onClick={() => {
-                            removeFromShop.mutate(p.id, {
-                              onSuccess: () => toast.success(`Removed ${p.name} from shop`),
-                            });
-                          }}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => copyToClipboard(productLink, "Product link")}><Copy className="h-3.5 w-3.5" /></Button>
+                          <Button size="sm" variant="ghost" className="text-destructive h-8 w-8 p-0" onClick={() => { removeFromShop.mutate(p.id, { onSuccess: () => toast.success(`Removed ${p.name}`) }); }}><Trash2 className="h-3.5 w-3.5" /></Button>
                         </div>
                       </div>
                     );

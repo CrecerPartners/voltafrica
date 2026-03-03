@@ -17,6 +17,11 @@ export interface Profile {
   bio: string;
   shop_name: string;
   shop_slug: string | null;
+  shop_logo_url: string;
+  account_type: string;
+  id_document_url: string;
+  verification_status: string;
+  social_links: { tiktok?: string; snapchat?: string; instagram?: string; twitter?: string };
   created_at: string;
   updated_at: string;
 }

@@ -58,7 +58,7 @@ export function usePublicSellerShop(shopSlug: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("name, bio, shop_name, shop_slug, avatar_url, referral_code, user_id")
+        .select("name, bio, shop_name, shop_slug, avatar_url, referral_code, user_id, shop_logo_url, verification_status")
         .eq("shop_slug", shopSlug!)
         .maybeSingle();
       if (error) throw error;

@@ -188,56 +188,71 @@ export type Database = {
       profiles: {
         Row: {
           account_number: string | null
+          account_type: string | null
           avatar_url: string | null
           bank_name: string | null
           bio: string | null
           created_at: string
           email: string
           id: string
+          id_document_url: string | null
           name: string
           referral_code: string | null
+          shop_logo_url: string | null
           shop_name: string | null
           shop_slug: string | null
+          social_links: Json | null
           tier: string
           university: string
           updated_at: string
           user_id: string
+          verification_status: string | null
           whatsapp: string | null
         }
         Insert: {
           account_number?: string | null
+          account_type?: string | null
           avatar_url?: string | null
           bank_name?: string | null
           bio?: string | null
           created_at?: string
           email?: string
           id?: string
+          id_document_url?: string | null
           name?: string
           referral_code?: string | null
+          shop_logo_url?: string | null
           shop_name?: string | null
           shop_slug?: string | null
+          social_links?: Json | null
           tier?: string
           university?: string
           updated_at?: string
           user_id: string
+          verification_status?: string | null
           whatsapp?: string | null
         }
         Update: {
           account_number?: string | null
+          account_type?: string | null
           avatar_url?: string | null
           bank_name?: string | null
           bio?: string | null
           created_at?: string
           email?: string
           id?: string
+          id_document_url?: string | null
           name?: string
           referral_code?: string | null
+          shop_logo_url?: string | null
           shop_name?: string | null
           shop_slug?: string | null
+          social_links?: Json | null
           tier?: string
           university?: string
           updated_at?: string
           user_id?: string
+          verification_status?: string | null
           whatsapp?: string | null
         }
         Relationships: []
@@ -274,6 +289,44 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          product_id: string
+          rating: number
+          reviewer_name: string
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          product_id: string
+          rating: number
+          reviewer_name?: string
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string
+          rating?: number
+          reviewer_name?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sales: {
         Row: {

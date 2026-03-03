@@ -17,8 +17,9 @@ import { SharePopover } from "@/components/SharePopover";
 import { shareContent, canNativeShare, copyToClipboard } from "@/lib/shareUtils";
 import {
   Link2, Share2, Lightbulb, Copy, MessageCircle, Instagram, Twitter,
-  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check
+  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check, Download
 } from "lucide-react";
+import { ReviewSection } from "@/components/ReviewSection";
 import { toast } from "sonner";
 
 const categoryColors: Record<string, string> = {
@@ -259,6 +260,37 @@ const ProductPage = () => {
           )}
         </div>
       </div>
+
+      {/* Reviews Section */}
+      <ReviewSection productId={product.id} />
+
+      {/* Media Kit (seller-only) */}
+      {isLoggedIn && images.length > 0 && (
+        <Card className="border-border/50">
+          <CardContent className="p-4 space-y-3">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <Download className="h-4 w-4 text-primary" /> Media Kit
+            </h3>
+            <p className="text-xs text-muted-foreground">Download product images and copy descriptions for your social posts.</p>
+            <div className="flex flex-wrap gap-2">
+              {images.map((url: string, i: number) => (
+                <a key={i} href={url} download={`${product.slug}-${i + 1}.jpg`} target="_blank" rel="noopener noreferrer">
+                  <Button size="sm" variant="outline" className="text-xs h-7">
+                    <Download className="h-3 w-3 mr-1" /> Image {i + 1}
+                  </Button>
+                </a>
+              ))}
+              <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => {
+                const kit = `${product.name}\n${product.description}\n\nPrice: ₦${product.price}\n\n${referralLink}`;
+                navigator.clipboard.writeText(kit);
+                toast.success("Media kit text copied!");
+              }}>
+                <Copy className="h-3 w-3 mr-1" /> Copy All Text
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Related Products */}
       {related.length > 0 && (

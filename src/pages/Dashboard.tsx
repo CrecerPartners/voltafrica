@@ -16,6 +16,7 @@ import {
   UserCog,
   Banknote,
   Trophy,
+  BarChart3,
 } from "lucide-react";
 import {
   AreaChart,
@@ -240,6 +241,39 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Performance Analytics */}
+      <Card className="border-border/50">
+        <CardContent className="p-4 md:p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4 text-primary" />
+            <h3 className="text-sm font-semibold">Performance Analytics</h3>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="text-center p-3 rounded-lg bg-secondary/50">
+              <p className="text-xl font-bold font-display">{dashboardStats.totalSales}</p>
+              <p className="text-xs text-muted-foreground">Total Sales</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-secondary/50">
+              <p className="text-xl font-bold font-display">{formatNaira(dashboardStats.totalEarnings)}</p>
+              <p className="text-xs text-muted-foreground">Total Earnings</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-secondary/50">
+              <p className="text-xl font-bold font-display">{dashboardStats.referralCount}</p>
+              <p className="text-xs text-muted-foreground">Referrals</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-secondary/50">
+              <p className="text-xl font-bold font-display">
+                {dashboardStats.totalSales > 0
+                  ? `${((dashboardStats.totalEarnings / (sales?.reduce((s, sl) => s + sl.amount, 0) || 1)) * 100).toFixed(1)}%`
+                  : "—"}
+              </p>
+              <p className="text-xs text-muted-foreground">Avg Commission Rate</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <SignupBonusDialog open={showBonusDialog} onOpenChange={setShowBonusDialog} name={firstName} />
     </div>
   );
