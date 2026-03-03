@@ -26,8 +26,9 @@ export function useProduct(slug: string | undefined) {
         .from("products" as any)
         .select("*")
         .eq("slug", slug)
-        .single();
+        .maybeSingle();
       if (error) throw error;
+      if (!data) throw new Error("Product not found");
       return mapProduct(data as unknown as DbProduct);
     },
     enabled: !!slug,
