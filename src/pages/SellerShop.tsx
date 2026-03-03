@@ -59,10 +59,14 @@ const SellerShop = () => {
       </div>
 
       {/* Products Grid */}
+      <div>
+        <h2 className="text-lg font-display font-semibold mb-4">Shop {displayName}'s Picks</h2>
+      </div>
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <PackageOpen className="h-12 w-12 text-muted-foreground/40 mb-3" />
-          <p className="text-muted-foreground font-medium">No products in this shop yet</p>
+          <p className="text-muted-foreground font-medium">{displayName} hasn't added products yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Check back soon!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

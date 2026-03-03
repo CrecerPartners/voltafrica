@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,8 @@ import { useProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfil
 import { useMyShopItems, useRemoveFromShop } from "@/hooks/useSellerShop";
 import { useProducts } from "@/hooks/useProducts";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, Building, Phone, CreditCard, Save, Loader2, Camera, Store, Link2, Trash2 } from "lucide-react";
+import { formatNaira } from "@/lib/utils";
+import { User, Building, Phone, CreditCard, Save, Loader2, Camera, Store, Link2, Trash2, ExternalLink, ShoppingBag, Copy, CircleCheck, CircleAlert } from "lucide-react";
 import { toast } from "sonner";
 import { copyToClipboard } from "@/lib/shareUtils";
 
@@ -56,6 +58,8 @@ const Profile = () => {
   const shopSlug = generateSlug(form.shop_name || form.name || "");
   const shopLink = shopSlug ? `${window.location.origin}/s/${shopSlug}` : "";
   const shopProducts = allProducts.filter(p => shopItemIds.includes(p.id));
+  const referralCode = profile?.referral_code || "VOLT";
+  const isShopLive = !!shopSlug && shopProducts.length > 0;
 
   const handleSave = async () => {
     try {
@@ -117,6 +121,7 @@ const Profile = () => {
         <p className="text-muted-foreground mt-1">Manage your account details</p>
       </div>
 
+      {/* Avatar & Info */}
       <Card className="border-border/50">
         <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
           <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
@@ -151,6 +156,7 @@ const Profile = () => {
         </CardContent>
       </Card>
 
+      {/* Personal Info */}
       <Card className="border-border/50">
         <CardContent className="p-6 space-y-4">
           <h3 className="text-base font-display font-semibold">Personal Information</h3>
@@ -161,12 +167,19 @@ const Profile = () => {
         </CardContent>
       </Card>
 
-      {/* Shop Settings */}
+      {/* My Shop */}
       <Card className="border-border/50">
-        <CardContent className="p-6 space-y-4">
-          <h3 className="text-base font-display font-semibold flex items-center gap-2">
-            <Store className="h-4 w-4" /> My Shop
-          </h3>
+        <CardContent className="p-6 space-y-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-display font-semibold flex items-center gap-2">
+              <Store className="h-4 w-4" /> My Shop
+            </h3>
+            <Badge variant={isShopLive ? "default" : "outline"} className={isShopLive ? "bg-green-500/15 text-green-600 border-green-500/30 text-xs" : "text-xs"}>
+              {isShopLive ? <><CircleCheck className="h-3 w-3 mr-1" /> Live</> : <><CircleAlert className="h-3 w-3 mr-1" /> Not set up</>}
+            </Badge>
+          </div>
+
+          {/* Shop Name */}
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <Store className="h-3 w-3 text-muted-foreground" /> Shop Name
@@ -178,6 +191,8 @@ const Profile = () => {
               className="bg-secondary border-border"
             />
           </div>
+
+          {/* Bio */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Bio</label>
             <Textarea
@@ -188,46 +203,102 @@ const Profile = () => {
               rows={3}
             />
           </div>
-          {shopSlug && (
-            <div className="flex items-center gap-2">
-              <Input value={shopLink} readOnly className="bg-muted text-xs font-mono" />
-              <Button size="sm" variant="outline" onClick={() => copyToClipboard(shopLink, "Shop link")}>
-                <Link2 className="h-3 w-3" />
-              </Button>
-            </div>
-          )}
 
-          {/* My Shop Products */}
-          {shopProducts.length > 0 && (
-            <div className="space-y-2 pt-2">
-              <p className="text-sm font-medium text-muted-foreground">{shopProducts.length} product{shopProducts.length !== 1 ? "s" : ""} in your shop</p>
-              <div className="space-y-2">
-                {shopProducts.map((p) => (
-                  <div key={p.id} className="flex items-center gap-3 p-2 rounded-lg border border-border/50 bg-card">
-                    {p.assets?.images?.[0] ? (
-                      <img src={p.assets.images[0]} alt={p.name} className="h-10 w-10 rounded object-cover" />
-                    ) : (
-                      <span className="text-2xl">{p.image}</span>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{p.name}</p>
-                      <p className="text-xs text-muted-foreground">{p.brand}</p>
-                    </div>
-                    <Button size="sm" variant="ghost" className="text-destructive h-8 w-8 p-0" onClick={() => {
-                      removeFromShop.mutate(p.id, {
-                        onSuccess: () => toast.success(`Removed ${p.name} from shop`),
-                      });
-                    }}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                ))}
+          {/* Shop URL & Quick Actions */}
+          {shopSlug && (
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Shop URL</label>
+              <div className="flex items-center gap-2">
+                <Input value={shopLink} readOnly className="bg-muted text-xs font-mono" />
+                <Button size="sm" variant="outline" onClick={() => copyToClipboard(shopLink, "Shop link")}>
+                  <Copy className="h-3 w-3" />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" variant="outline" asChild>
+                  <a href={`/s/${shopSlug}`} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-3 w-3 mr-1.5" /> Preview My Shop
+                  </a>
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({ title: form.shop_name || "My Shop", url: shopLink });
+                  } else {
+                    copyToClipboard(shopLink, "Shop link");
+                  }
+                }}>
+                  <Link2 className="h-3 w-3 mr-1.5" /> Share Shop
+                </Button>
+                <Button size="sm" variant="outline" asChild>
+                  <Link to="/marketplace">
+                    <ShoppingBag className="h-3 w-3 mr-1.5" /> Add Products
+                  </Link>
+                </Button>
               </div>
             </div>
           )}
+
+          {/* Shop Products */}
+          <div className="space-y-3 pt-1">
+            <p className="text-sm font-medium text-muted-foreground">
+              {shopProducts.length > 0
+                ? `${shopProducts.length} product${shopProducts.length !== 1 ? "s" : ""} in your shop`
+                : "No products in your shop yet"}
+            </p>
+
+            {shopProducts.length === 0 ? (
+              <div className="flex flex-col items-center py-8 text-center border border-dashed border-border rounded-lg">
+                <Store className="h-10 w-10 text-muted-foreground/30 mb-2" />
+                <p className="text-sm text-muted-foreground mb-3">Add products from the marketplace to start your shop</p>
+                <Button size="sm" variant="default" className="volt-gradient" asChild>
+                  <Link to="/marketplace">
+                    <ShoppingBag className="h-3.5 w-3.5 mr-1.5" /> Browse Marketplace
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {shopProducts.map((p) => {
+                  const productLink = `${window.location.origin}/product/${p.slug}?ref=${referralCode}`;
+                  return (
+                    <div key={p.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card">
+                      {p.assets?.images?.[0] ? (
+                        <img src={p.assets.images[0]} alt={p.name} className="h-12 w-12 rounded-md object-cover flex-shrink-0" />
+                      ) : (
+                        <span className="text-2xl flex-shrink-0">{p.image}</span>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{p.name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-muted-foreground">{p.brand}</span>
+                          {p.price > 0 && <span className="text-xs text-muted-foreground">•</span>}
+                          {p.price > 0 && <span className="text-xs font-medium">{formatNaira(p.price)}</span>}
+                          <span className="text-xs text-muted-foreground">•</span>
+                          <span className="text-xs font-semibold text-primary">{p.commissionRate}%</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => copyToClipboard(productLink, "Product link")}>
+                          <Copy className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-destructive h-8 w-8 p-0" onClick={() => {
+                          removeFromShop.mutate(p.id, {
+                            onSuccess: () => toast.success(`Removed ${p.name} from shop`),
+                          });
+                        }}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
+      {/* Payout Details */}
       <Card className="border-border/50">
         <CardContent className="p-6 space-y-4">
           <h3 className="text-base font-display font-semibold">Payout Details</h3>
