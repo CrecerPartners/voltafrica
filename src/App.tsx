@@ -28,6 +28,7 @@ import Leaderboard from "@/pages/Leaderboard";
 import Training from "@/pages/Training";
 import TrainingCourse from "@/pages/TrainingCourse";
 import Profile from "@/pages/Profile";
+import SellerShop from "@/pages/SellerShop";
 import NotFound from "@/pages/NotFound";
 import Checkout from "@/pages/Checkout";
 import OrderConfirmation from "@/pages/OrderConfirmation";
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/product/:slug" element={<ProductPage />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            <Route path="/s/:shopSlug" element={<SellerShop />} />
           </Route>
           <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />

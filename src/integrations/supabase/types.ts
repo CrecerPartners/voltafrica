@@ -190,11 +190,14 @@ export type Database = {
           account_number: string | null
           avatar_url: string | null
           bank_name: string | null
+          bio: string | null
           created_at: string
           email: string
           id: string
           name: string
           referral_code: string | null
+          shop_name: string | null
+          shop_slug: string | null
           tier: string
           university: string
           updated_at: string
@@ -205,11 +208,14 @@ export type Database = {
           account_number?: string | null
           avatar_url?: string | null
           bank_name?: string | null
+          bio?: string | null
           created_at?: string
           email?: string
           id?: string
           name?: string
           referral_code?: string | null
+          shop_name?: string | null
+          shop_slug?: string | null
           tier?: string
           university?: string
           updated_at?: string
@@ -220,11 +226,14 @@ export type Database = {
           account_number?: string | null
           avatar_url?: string | null
           bank_name?: string | null
+          bio?: string | null
           created_at?: string
           email?: string
           id?: string
           name?: string
           referral_code?: string | null
+          shop_name?: string | null
+          shop_slug?: string | null
           tier?: string
           university?: string
           updated_at?: string
@@ -312,6 +321,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "sales_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seller_shop_items: {
+        Row: {
+          added_at: string
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_shop_items_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
