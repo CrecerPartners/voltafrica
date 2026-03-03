@@ -172,7 +172,7 @@ const Marketplace = () => {
                         <ShoppingCart className="h-3 w-3 mr-1" /> Add
                       </Button>
                       {isLoggedIn && (
-                        <Button size="sm" variant={shopItemIds.includes(product.id) ? "secondary" : "outline"} className="text-xs h-8 px-2" onClick={(e) => {
+                        <Button size="sm" variant={shopItemIds.includes(product.id) ? "secondary" : "outline"} className="text-xs h-8 px-2.5" onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           const inShop = shopItemIds.includes(product.id);
@@ -182,7 +182,7 @@ const Marketplace = () => {
                             addToShop.mutate(product.id, { onSuccess: () => toast.success(`Added to My Shop!`) });
                           }
                         }}>
-                          {shopItemIds.includes(product.id) ? <Check className="h-3 w-3" /> : <Store className="h-3 w-3" />}
+                          {shopItemIds.includes(product.id) ? <><Check className="h-3 w-3 mr-1" /> In Shop</> : <><Store className="h-3 w-3 mr-1" /> + Shop</>}
                         </Button>
                       )}
                     </div>
