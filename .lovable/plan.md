@@ -1,62 +1,37 @@
 
 
-## Marketplace Upgrade Plan
+## Current Problem
 
-Since Volt is an **affiliate marketplace** (sellers get links, earn commissions — no cart/checkout on Volt itself), the upgrade focuses on: modern e-commerce-style UI, dedicated product pages with unique URLs, image carousels, and clean product presentation. Cart/checkout/payment gateway are not needed.
+Right now, the `/product/:slug` route is **inside the `ProtectedRoute` wrapper** (line 63 of App.tsx). This means when a buyer clicks a shared referral link like `voltafrica.lovable.app/product/samsung-galaxy-s24?ref=VOLT-ABC123`, they get **redirected to the login page** instead of seeing the product. That's a broken experience for buyers.
 
----
+## What Needs to Change
 
-### What Changes
+**1. Make the product page publicly accessible**
+- Move the `/product/:slug` route **outside** the `ProtectedRoute` wrapper so anyone can view it
+- The page already handles the case where `profile` is null (falls back to the `ref` param or "VOLT")
 
-**1. Dedicated Product Page (`/product/:slug`)**
-- New route `/product/:slug` accessible both publicly and for logged-in users
-- Generate slug from product name + brand (e.g., `/product/samsung-galaxy-s24`)
-- Add a `slug` column to the products table (or generate client-side from name)
-- Full product page with:
-  - Image carousel (using Embla/existing carousel component) with thumbnails
-  - Product name, brand, price, description
-  - Commission badge for sellers
-  - Stock status badge (optional, from `assets` JSON)
-  - "Get Referral Link" CTA button
-  - Share buttons (WhatsApp, Instagram, Twitter)
-  - Selling tips section
-  - Related products grid at bottom
+**2. Create a public-facing product page layout**
+- When a non-logged-in buyer visits, they should see:
+  - Product images (carousel), name, brand, price, description
+  - A clean "Buy Now" or purchase CTA (links to the brand's actual purchase page, if available)
+  - No seller-specific tools (no referral link generator, no captions, no selling tips)
+- When a logged-in seller visits, they see everything as it is today
 
-**2. Marketplace Grid Redesign**
-- Modern e-commerce card layout with larger images, hover effects
-- Quick-action overlay on hover (View, Get Link)
-- Product cards link to `/product/:slug` instead of opening a sheet
-- Improved search with debounce
-- Category filter pills with counts
+**3. Wrap the page in a lightweight public layout**
+- A simple navbar with the Volt logo and a "Join as Seller" / "Login" CTA (not the full dashboard sidebar)
+- Clean footer
 
-**3. Product URL with Referral Tracking**
-- URL format: `voltafrica.com/product/brand-product-name`
-- Optional `?ref=CODE` query param for referral tracking
-- When a visitor lands on a product page via referral link, the referral code is captured
+**4. Referral tracking**
+- The `?ref=CODE` parameter is already read from the URL
+- Optionally store it in `localStorage` so if the buyer later signs up, the referral can be attributed
 
-**4. Database Migration**
-- Add `slug` column (unique, generated from name) to `products` table
-- RLS: allow public read on products (already exists via `true` policy)
+## Technical Plan
 
----
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Move `/product/:slug` route outside `ProtectedRoute`, wrap in a new `PublicLayout` |
+| `src/pages/ProductPage.tsx` | Conditionally show seller tools (captions, referral link, tips) only when user is logged in. Show a buyer-friendly view (product info + external buy link) for public visitors |
+| `src/components/PublicProductLayout.tsx` | New lightweight layout with Volt navbar + footer for public product pages |
 
-### Technical Details
-
-**New files:**
-- `src/pages/ProductPage.tsx` — full product detail page
-- `src/hooks/useProduct.ts` — fetch single product by slug
-
-**Modified files:**
-- `src/App.tsx` — add `/product/:slug` route
-- `src/pages/Marketplace.tsx` — restyle grid, link cards to product pages
-- `src/hooks/useProducts.ts` — add slug to Product interface
-
-**Database:**
-- Migration: `ALTER TABLE products ADD COLUMN slug text UNIQUE;`
-- Backfill existing products with generated slugs
-- Update admin product creation to auto-generate slugs
-
-**Carousel:** Reuse existing `embla-carousel-react` dependency for the product image carousel with thumbnail strip.
-
-**Referral tracking:** Product page reads `?ref=` param from URL and pre-fills referral link generation accordingly.
+This is a small routing + conditional rendering change — no database changes needed.
 
