@@ -45,7 +45,7 @@ const ProductPage = () => {
 
   const isLoggedIn = !!user;
   const userRefCode = profile?.referral_code || refCode || "VOLT";
-  const referralLink = product ? `https://voltafrica.lovable.app/product/${product.slug}?ref=${userRefCode}` : "";
+  const referralLink = product ? `${window.location.origin}/product/${product.slug}?ref=${userRefCode}` : "";
 
   // Store referral code for attribution on sign-up
   useEffect(() => {

@@ -49,7 +49,7 @@ const Marketplace = () => {
     e.preventDefault();
     e.stopPropagation();
     const code = profile?.referral_code || "VOLT";
-    navigator.clipboard.writeText(`https://voltafrica.lovable.app/product/${product.slug}?ref=${code}`);
+    navigator.clipboard.writeText(`${window.location.origin}/product/${product.slug}?ref=${code}`);
     toast.success(`Link copied for ${product.name}!`);
   };
 
