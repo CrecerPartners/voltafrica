@@ -1,26 +1,44 @@
 
 
-## Fix: Hide seller tools from public product page visitors
+## Plan: Use Dynamic URLs + Implement Seller Shop
 
 ### The Problem
-The `LandingNavbar` (used on public product pages) never checks authentication state — it always shows "Sign In" and "Get Started". Meanwhile, the `ProductPage` component does check `isLoggedIn` and shows seller tools (captions, share links, selling tips) when the user has an active session.
+The codebase has hardcoded `https://voltafrica.lovable.app` in referral/share links (Marketplace line 52, ProductPage line 48). When you get a custom domain, all those links break.
 
-So a logged-in seller browsing via `PublicProductLayout` sees seller-only tools alongside a "Sign In" navbar — a confusing mix. More importantly, any logged-in user sees seller tools on public product pages, even if they arrived there as a buyer.
+### The Fix
 
-### The Fix (2 changes)
+**Use `window.location.origin` everywhere** instead of hardcoding the URL. This way, whether the domain is `voltafrica.lovable.app`, `voltafrica.com`, or anything else, the links auto-adapt.
 
-**1. Update `LandingNavbar` to be auth-aware**
-- Import `useAuth` and check if the user is logged in
-- If logged in: show a "Dashboard" button (linking to `/dashboard`) instead of "Sign In" / "Get Started"
-- If not logged in: keep current "Sign In" and "Get Started" buttons
-- Cart icon stays visible for everyone
+### Changes Required
 
-**2. Keep seller tools gated behind `isLoggedIn` in `ProductPage`**
-- The existing `isLoggedIn` check on line 212 is correct — "Copy My Share Link", captions, and selling tips only show for logged-in sellers
-- Also hide the commission badge (line 150-152) from non-logged-in users since buyers don't need to see commission rates
-- The "Start Earning X% — Join Volt" CTA for non-logged-in visitors stays as-is
+**1. `src/pages/ProductPage.tsx` (line 48)**
+```typescript
+// Before
+const referralLink = `https://voltafrica.lovable.app/product/${product.slug}?ref=${userRefCode}`;
+// After
+const referralLink = `${window.location.origin}/product/${product.slug}?ref=${userRefCode}`;
+```
+
+**2. `src/pages/Marketplace.tsx` (line 52)**
+```typescript
+// Before
+navigator.clipboard.writeText(`https://voltafrica.lovable.app/product/${product.slug}?ref=${code}`);
+// After
+navigator.clipboard.writeText(`${window.location.origin}/product/${product.slug}?ref=${code}`);
+```
+
+**3. Future shop link in Profile.tsx** (when we build the shop feature)
+```typescript
+const shopLink = `${window.location.origin}/s/${profile.shop_slug}`;
+```
+
+All share links, referral links, and shop links will use `window.location.origin` so they automatically work with any domain.
+
+### Scope
+This is a quick 2-file fix. The seller shop feature (approved in previous plan) will also use this pattern from the start.
 
 ### Files to modify
-- `src/components/LandingNavbar.tsx` — add auth check, show "Dashboard" when logged in
-- `src/pages/ProductPage.tsx` — hide commission badge for non-logged-in users
+- `src/pages/ProductPage.tsx` — line 48
+- `src/pages/Marketplace.tsx` — line 52
+- Any other files with hardcoded domain (will scan during implementation)
 
