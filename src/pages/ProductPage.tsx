@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMyShopItems, useAddToShop, useRemoveFromShop } from "@/hooks/useSellerShop";
 import { formatNaira } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ import { SharePopover } from "@/components/SharePopover";
 import { shareContent, canNativeShare, copyToClipboard } from "@/lib/shareUtils";
 import {
   Link2, Share2, Lightbulb, Copy, MessageCircle, Instagram, Twitter,
-  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap
+  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -39,6 +40,9 @@ const ProductPage = () => {
   const { data: products = [] } = useProducts();
   const { data: profile } = useProfile();
   const { addItem } = useCart();
+  const { data: shopItemIds = [] } = useMyShopItems();
+  const addToShop = useAddToShop();
+  const removeFromShop = useRemoveFromShop();
 
   const [activeThumb, setActiveThumb] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -193,6 +197,21 @@ const ProductPage = () => {
                     triggerClassName="w-full h-10 border border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md gap-2"
                   />
                 )}
+                <Button
+                  variant={shopItemIds.includes(product.id) ? "secondary" : "outline"}
+                  className="w-full h-10"
+                  onClick={() => {
+                    const inShop = shopItemIds.includes(product.id);
+                    if (inShop) {
+                      removeFromShop.mutate(product.id, { onSuccess: () => toast.success("Removed from My Shop") });
+                    } else {
+                      addToShop.mutate(product.id, { onSuccess: () => toast.success("Added to My Shop!") });
+                    }
+                  }}
+                >
+                  {shopItemIds.includes(product.id) ? <Check className="h-4 w-4 mr-2" /> : <Store className="h-4 w-4 mr-2" />}
+                  {shopItemIds.includes(product.id) ? "In My Shop" : "Add to My Shop"}
+                </Button>
               </>
             ) : (
               <Button variant="outline" className="w-full h-10" asChild>

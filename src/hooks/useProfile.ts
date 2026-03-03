@@ -14,6 +14,9 @@ export interface Profile {
   tier: string;
   referral_code: string;
   avatar_url: string;
+  bio: string;
+  shop_name: string;
+  shop_slug: string | null;
   created_at: string;
   updated_at: string;
 }
