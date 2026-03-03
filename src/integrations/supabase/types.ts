@@ -14,6 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
+      order_items: {
+        Row: {
+          commission_rate: number
+          created_at: string
+          id: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+          ref_code: string | null
+        }
+        Insert: {
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          order_id: string
+          price?: number
+          product_id: string
+          quantity?: number
+          ref_code?: string | null
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          price?: number
+          product_id?: string
+          quantity?: number
+          ref_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          paystack_reference: string | null
+          phone: string
+          state: string
+          status: string
+          total: number
+          user_id: string | null
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          paystack_reference?: string | null
+          phone: string
+          state: string
+          status?: string
+          total?: number
+          user_id?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          paystack_reference?: string | null
+          phone?: string
+          state?: string
+          status?: string
+          total?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       payouts: {
         Row: {
           account_number: string

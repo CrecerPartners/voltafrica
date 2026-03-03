@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useProduct } from "@/hooks/useProduct";
+import { useCart } from "@/contexts/CartContext";
 import { useProducts } from "@/hooks/useProducts";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +16,7 @@ import { SharePopover } from "@/components/SharePopover";
 import { shareContent, canNativeShare, copyToClipboard } from "@/lib/shareUtils";
 import {
   Link2, Share2, Lightbulb, Copy, MessageCircle, Instagram, Twitter,
-  ChevronLeft, Loader2, ExternalLink, PackageCheck, Zap
+  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -37,6 +38,7 @@ const ProductPage = () => {
   const { data: product, isLoading, error } = useProduct(slug);
   const { data: products = [] } = useProducts();
   const { data: profile } = useProfile();
+  const { addItem } = useCart();
 
   const [activeThumb, setActiveThumb] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -136,9 +138,6 @@ const ProductPage = () => {
               <Badge variant="outline" className={categoryColors[product.category] || "bg-muted text-muted-foreground"}>
                 {product.category}
               </Badge>
-              <Badge variant="outline" className="bg-success/10 text-success border-success/20">
-                <PackageCheck className="h-3 w-3 mr-1" /> In Stock
-              </Badge>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold font-display text-foreground">{product.name}</h1>
             <p className="text-sm text-muted-foreground mt-1">{product.brand}</p>
@@ -157,14 +156,33 @@ const ProductPage = () => {
 
           {/* CTA */}
           <div className="space-y-3 pt-2">
+            {/* Add to cart for everyone */}
+            <Button
+              className="w-full volt-gradient h-12 text-base"
+              onClick={() => {
+                addItem({
+                  productId: product.id,
+                  name: product.name,
+                  slug: product.slug,
+                  image: product.image,
+                  imageUrl: product.assets?.images?.[0],
+                  price: product.price,
+                  commissionRate: product.commissionRate,
+                });
+                toast.success(`${product.name} added to cart!`);
+              }}
+            >
+              <ShoppingCart className="h-5 w-5 mr-2" /> Add to Cart — {formatNaira(product.price)}
+            </Button>
+
             {isLoggedIn ? (
               <>
-                <Button className="w-full volt-gradient h-12 text-base" onClick={() => copyToClipboard(referralLink, "Referral link")}>
-                  <Link2 className="h-5 w-5 mr-2" /> Get Referral Link
+                <Button variant="outline" className="w-full h-10" onClick={() => copyToClipboard(referralLink, "Share link")}>
+                  <Link2 className="h-4 w-4 mr-2" /> Copy My Share Link
                 </Button>
                 {canNativeShare() ? (
                   <Button variant="outline" className="w-full h-10" onClick={() => shareContent(product.name, shareText, referralLink)}>
-                    <Share2 className="h-4 w-4 mr-2" /> Share Product
+                    <Share2 className="h-4 w-4 mr-2" /> Share to Earn
                   </Button>
                 ) : (
                   <SharePopover
@@ -175,18 +193,11 @@ const ProductPage = () => {
                 )}
               </>
             ) : (
-              <>
-                {(product.assets as any)?.purchaseUrl && (
-                  <Button className="w-full volt-gradient h-12 text-base" onClick={() => window.open((product.assets as any).purchaseUrl, "_blank")}>
-                    <ExternalLink className="h-5 w-5 mr-2" /> Buy Now
-                  </Button>
-                )}
-                <Button variant="outline" className="w-full h-10" asChild>
-                  <Link to="/login">
-                    <Zap className="h-4 w-4 mr-2" /> Join as Seller & Earn {product.commissionRate}%
-                  </Link>
-                </Button>
-              </>
+              <Button variant="outline" className="w-full h-10" asChild>
+                <Link to="/login">
+                  <Zap className="h-4 w-4 mr-2" /> Start Earning {product.commissionRate}% — Join Volt
+                </Link>
+              </Button>
             )}
           </div>
 
