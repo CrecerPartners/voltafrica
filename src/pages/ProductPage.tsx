@@ -197,7 +197,7 @@ const ProductPage = () => {
             ) : (
               <Button variant="outline" className="w-full h-10" asChild>
                 <Link to="/login">
-                  <Zap className="h-4 w-4 mr-2" /> Start Earning {product.commissionRate}% — Join Volt
+                  <Zap className="h-4 w-4 mr-2" /> Sign In
                 </Link>
               </Button>
             )}
