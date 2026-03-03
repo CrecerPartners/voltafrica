@@ -147,9 +147,11 @@ const ProductPage = () => {
             {product.price > 0 && (
               <span className="text-2xl font-bold text-foreground">{formatNaira(product.price)}</span>
             )}
-            <Badge className="volt-gradient text-primary-foreground text-sm px-3 py-1">
-              {product.commissionRate}% commission
-            </Badge>
+            {isLoggedIn && (
+              <Badge className="volt-gradient text-primary-foreground text-sm px-3 py-1">
+                {product.commissionRate}% commission
+              </Badge>
+            )}
           </div>
 
           <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
