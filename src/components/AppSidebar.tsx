@@ -34,7 +34,7 @@ const navItems = [
   { title: "Sales", url: "/sales", icon: BarChart3 },
   { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
   { title: "Training", url: "/training", icon: GraduationCap },
-  { title: "Profile", url: "/profile", icon: User },
+  { title: "Settings", url: "/profile", icon: User },
 ];
 
 export function AppSidebar() {

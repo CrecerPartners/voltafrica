@@ -28,7 +28,9 @@ export function useAddToShop() {
         .insert({ user_id: user!.id, product_id: productId });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-shop-items"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-shop-items"] });
+    },
   });
 }
 
@@ -44,7 +46,9 @@ export function useRemoveFromShop() {
         .eq("product_id", productId);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-shop-items"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-shop-items"] });
+    },
   });
 }
 
