@@ -7,8 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Loader2, ShoppingCart, PackageOpen, Store } from "lucide-react";
+import { Loader2, ShoppingCart, PackageOpen, Store, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { ReviewSection } from "@/components/ReviewSection";
 
 const SellerShop = () => {
   const { shopSlug } = useParams<{ shopSlug: string }>();
@@ -43,14 +44,19 @@ const SellerShop = () => {
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       {/* Seller Header */}
       <div className="flex flex-col items-center text-center space-y-3 pt-4">
-        <Avatar className="h-20 w-20 text-3xl">
-          {seller.avatar_url ? <AvatarImage src={seller.avatar_url} alt={seller.name} /> : null}
-          <AvatarFallback className="bg-primary/20 text-primary font-bold font-display text-3xl">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+        {seller.shop_logo_url ? (
+          <img src={seller.shop_logo_url} alt={displayName} className="h-20 w-20 rounded-xl object-cover border border-border" />
+        ) : (
+          <Avatar className="h-20 w-20 text-3xl">
+            {seller.avatar_url ? <AvatarImage src={seller.avatar_url} alt={seller.name} /> : null}
+            <AvatarFallback className="bg-primary/20 text-primary font-bold font-display text-3xl">{initials}</AvatarFallback>
+          </Avatar>
+        )}
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold font-display">{displayName}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold font-display flex items-center justify-center gap-2">
+            {displayName}
+            {seller.verification_status === "verified" && <ShieldCheck className="h-5 w-5 text-primary" />}
+          </h1>
           {seller.bio && <p className="text-muted-foreground mt-1 max-w-md mx-auto">{seller.bio}</p>}
         </div>
         <Badge variant="outline" className="text-xs">

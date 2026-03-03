@@ -2,16 +2,18 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, ShoppingCart, XCircle } from "lucide-react";
+import { ReviewPrompt } from "@/components/ReviewPrompt";
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
   const reference = searchParams.get("reference");
   const status = searchParams.get("status") || "success";
+  const productIds = searchParams.get("products")?.split(",").filter(Boolean) || [];
 
   const isSuccess = status !== "failed";
 
   return (
-    <div className="max-w-lg mx-auto py-16 px-4 text-center">
+    <div className="max-w-lg mx-auto py-16 px-4 text-center space-y-6">
       <Card>
         <CardContent className="pt-8 pb-8 space-y-4">
           {isSuccess ? (
@@ -49,6 +51,11 @@ const OrderConfirmation = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Review prompt after successful purchase */}
+      {isSuccess && productIds.length > 0 && (
+        <ReviewPrompt productIds={productIds} />
+      )}
     </div>
   );
 };
