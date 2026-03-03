@@ -46,7 +46,7 @@ const Login = () => {
       if (isSignup) {
         // Pass sellerType as university field (reusing existing DB column)
         const university = `${sellerType} — ${city}`;
-        const { error } = await signUp(email, password, name, university);
+        const { error } = await signUp(email, password, name, university, sellerType);
         if (error) {
           toast.error(error.message);
         } else {
