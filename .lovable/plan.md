@@ -1,49 +1,35 @@
 
 
-## Enrich Profile Page & Seller Shop Experience
+## Fix Seller Shop Issues
 
-### Current State
-The Profile page has basic shop settings (name, bio, slug, copy link, product list with remove). The public SellerShop page shows seller info + product grid. The Marketplace and ProductPage have "Add to My Shop" buttons. **The foundation is built.**
+### Problems Identified
 
-### What's Missing / Needs Strengthening
+1. **Shop slug never saved**: All profiles have `shop_slug = null`. The slug is generated client-side from `shop_name` but only saved on "Save Changes" click. The user likely saved but the slug generation from shop_name may not have matched what was expected. Also, the user wants to **customize the slug directly**, not just auto-generate it.
 
-**1. Profile Page — "My Shop" section needs enrichment:**
-- Show shop URL prominently with a "Preview My Shop" button (opens `/s/:slug` in new tab)
-- Show an empty state when no products are in the shop with a CTA to "Browse Marketplace"
-- Show product count, commission rate, and price on each shop product row
-- Add a "Copy Product Link" button per product (copies the seller's referral link for that product)
-- Show the shop status: whether the shop is "live" (has slug + at least 1 product) or "not set up yet"
+2. **"Shop not available"**: Because `shop_slug` is null in DB, the public shop page query returns nothing.
 
-**2. Profile Page — Add "Quick Actions" toolbar in the shop card:**
-- "View My Public Shop" — link to `/s/:shopSlug`
-- "Share Shop Link" — copy/native share
-- "Add Products" — link to `/marketplace`
+3. **Products added from Marketplace don't reflect immediately in Profile shop list**: The `useMyShopItems` query key is `["my-shop-items", user?.id]` but invalidation in `useAddToShop`/`useRemoveFromShop` uses `["my-shop-items"]` — this actually works (prefix matching), but the Profile page isn't navigated to immediately after adding. The real issue is likely that the user expects instant feedback on the Marketplace page itself (which works) AND on the Profile page when they navigate back.
 
-**3. Public SellerShop page — Polish:**
-- Add a "Shop {Name}'s Picks" heading above the product grid
-- Show a friendly empty state with the seller's name
-- Add the seller's referral code to all product links (already done ✓)
+4. **Page title**: Should be "Settings" not "Profile & Settings".
 
-**4. Marketplace — Make "Add to My Shop" more visible:**
-- Add tooltip or label so it's not just an icon button
-- Show a small counter badge in the sidebar nav for "My Shop" items (nice-to-have)
+5. **Profile and Shop settings should be separated**: Use tabs — "Profile" tab and "Shop" tab.
 
-### Files to Modify
+6. **Shop slug should be editable**: Let the user customize their shop URL slug with a text input, auto-prefilled from shop name but editable.
 
-**`src/pages/Profile.tsx`** — Major enrichment:
-- Add "Preview My Shop" button that opens public shop URL
-- Add "Browse Marketplace" CTA when shop is empty  
-- Show commission rate + price on each product row
-- Add per-product "Copy Link" button (copies `origin/product/:slug?ref=CODE`)
-- Add shop status indicator (live vs incomplete)
-- Add "Share Shop" quick action alongside "Copy Shop Link"
+### Changes
 
-**`src/pages/SellerShop.tsx`** — Minor polish:
-- Add "Shop {Name}'s Picks" section heading above product grid
-- Personalize empty state message with seller name
+**`src/pages/Profile.tsx`** — Major restructure:
+- Rename page title to "Settings"
+- Split into two tabs: **Profile** (avatar, personal info, payout details, save button) and **My Shop** (shop name, custom slug input, bio, shop URL preview, shop status, products list, quick actions, save button)
+- Add editable `shop_slug` field: auto-generate from shop_name as default, but let user override. Show live preview of the URL.
+- Each tab has its own Save button
 
-**`src/pages/Marketplace.tsx`** — Minor:
-- Add text label to the shop toggle button so it reads "Add to Shop" / "In Shop" instead of just an icon
+**`src/hooks/useSellerShop.ts`** — Fix invalidation:
+- Change `onSuccess` in `useAddToShop` and `useRemoveFromShop` to also invalidate `["my-shop-items", user?.id]` explicitly (belt-and-suspenders)
 
-No database changes needed — all schema is already in place.
+**`src/components/AppSidebar.tsx`** — Rename "Profile" to "Settings" in nav
+
+**`src/components/MobileBottomNav.tsx`** — Rename "Profile" to "Settings" if present
+
+### No database changes needed — schema already supports all fields.
 
