@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Menu, Zap } from "lucide-react";
+import { CartDrawer } from "@/components/CartDrawer";
 
 export function LandingNavbar() {
   const [open, setOpen] = useState(false);
@@ -18,6 +19,7 @@ export function LandingNavbar() {
         </Link>
 
         <div className="hidden items-center gap-3 md:flex">
+          <CartDrawer />
           <Button variant="ghost" asChild>
             <Link to="/login">Sign In</Link>
           </Button>
@@ -26,8 +28,11 @@ export function LandingNavbar() {
           </Button>
         </div>
 
+        <div className="flex items-center gap-1 md:hidden">
+          <CartDrawer />
+
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild className="md:hidden">
+          <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <Menu className="h-5 w-5" />
             </Button>
@@ -44,6 +49,7 @@ export function LandingNavbar() {
             </div>
           </SheetContent>
         </Sheet>
+        </div>
       </div>
     </header>
   );

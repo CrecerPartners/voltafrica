@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminProtectedRoute } from "@/components/AdminProtectedRoute";
 import { DashboardLayout } from "@/components/DashboardLayout";
@@ -28,6 +29,8 @@ import Training from "@/pages/Training";
 import TrainingCourse from "@/pages/TrainingCourse";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/NotFound";
+import Checkout from "@/pages/Checkout";
+import OrderConfirmation from "@/pages/OrderConfirmation";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminProducts from "@/pages/admin/AdminProducts";
@@ -44,6 +47,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
     <AuthProvider>
+    <CartProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -60,6 +64,8 @@ const App = () => (
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route element={<PublicProductLayout />}>
             <Route path="/product/:slug" element={<ProductPage />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
           </Route>
           <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -87,6 +93,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </CartProvider>
     </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>

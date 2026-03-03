@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useProducts, Product } from "@/hooks/useProducts";
+import { useCart } from "@/contexts/CartContext";
 import { useProfile } from "@/hooks/useProfile";
 import { formatNaira } from "@/lib/utils";
-import { Link2, Filter, Search, PackageOpen, Loader2, Eye } from "lucide-react";
+import { Link2, Filter, Search, PackageOpen, Loader2, Eye, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -34,6 +35,7 @@ const categoryColors: Record<ProductCategory, string> = {
 const Marketplace = () => {
   const { data: products = [], isLoading } = useProducts();
   const { data: profile } = useProfile();
+  const { addItem } = useCart();
   const [activeCategory, setActiveCategory] = useState<ProductCategory | "all">("all");
   const [sortBy, setSortBy] = useState<"commission" | "name">("commission");
   const [searchQuery, setSearchQuery] = useState("");
@@ -145,8 +147,21 @@ const Marketplace = () => {
                       {product.price > 0 && <p className="text-xs text-muted-foreground">{formatNaira(product.price)}</p>}
                       <p className="text-sm font-bold text-primary">{product.commissionRate}%</p>
                     </div>
-                    <Button size="sm" onClick={(e) => getLink(e, product)} className="volt-gradient text-xs h-8 px-3 shadow-md hover:shadow-lg transition-shadow">
-                      <Link2 className="h-3 w-3 mr-1" /> Get Link
+                    <Button size="sm" onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      addItem({
+                        productId: product.id,
+                        name: product.name,
+                        slug: product.slug,
+                        image: product.image,
+                        imageUrl: product.assets?.images?.[0],
+                        price: product.price,
+                        commissionRate: product.commissionRate,
+                      });
+                      toast.success(`${product.name} added to cart!`);
+                    }} className="volt-gradient text-xs h-8 px-3 shadow-md hover:shadow-lg transition-shadow">
+                      <ShoppingCart className="h-3 w-3 mr-1" /> Add
                     </Button>
                   </div>
                 </CardContent>
