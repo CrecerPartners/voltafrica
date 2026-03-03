@@ -15,14 +15,14 @@ import {
 import heroBrands from "@/assets/hero-brands.png";
 
 const steps = [
-  { icon: Rocket, title: "List Your Products", desc: "Upload your catalog and set commission rates for ambassadors." },
-  { icon: Users, title: "Ambassadors Promote", desc: "Thousands of campus reps share your products with their networks." },
+  { icon: Rocket, title: "List Your Products", desc: "Upload your catalog and set commission rates for Volt sellers." },
+  { icon: Users, title: "Sellers Promote", desc: "Thousands of Gen Z sellers share your products across their networks and communities." },
   { icon: BarChart3, title: "Track & Scale", desc: "Monitor sales in real time. Pay commissions only on results." },
 ];
 
 const benefits = [
-  { icon: Target, title: "Hyper-Local Reach", desc: "Get your products in front of students on 500+ campuses across Africa." },
-  { icon: Megaphone, title: "Word-of-Mouth at Scale", desc: "Ambassadors sell through trust — no ad fatigue, no bots." },
+  { icon: Target, title: "Hyper-Local Reach", desc: "Get your products in front of Gen Z buyers across 20+ cities and campuses in Nigeria." },
+  { icon: Megaphone, title: "Word-of-Mouth at Scale", desc: "Sellers promote through trust and community — no ad fatigue, no bots." },
   { icon: ShieldCheck, title: "Pay for Performance", desc: "Commission-based model means you only pay when a sale is made." },
 ];
 
@@ -41,10 +41,10 @@ export default function AboutBrands() {
             For Brands
           </span>
           <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
-            Sell More on Every Campus
+            Penetrate the Gen Z Urban Market at Scale
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Plug into Africa's largest student ambassador network. Volt connects your brand with campus reps who drive real sales.
+            Leverage youth-led distribution across campuses, cities, creators, and communities to drive consistent product sales.
           </p>
         </div>
       </section>
@@ -97,19 +97,19 @@ export default function AboutBrands() {
       <section className="volt-gradient">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center">
           <h2 className="font-display text-3xl font-bold text-primary-foreground">
-            Ready to Grow on Campus?
+            Ready to Reach Gen Z?
           </h2>
           <p className="mt-3 text-primary-foreground/80">
-            Join 200+ brands already selling through Volt ambassadors.
+            Join 200+ brands already selling through Volt's Gen Z seller network.
           </p>
           <Button
             asChild
             size="lg"
             className="mt-8 bg-background text-foreground px-8 font-semibold hover:bg-background/90"
           >
-            <Link to="/login">
+            <a href="https://volt.crecerpartners.com/brand-form/" target="_blank" rel="noopener noreferrer">
               Partner with Volt <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            </a>
           </Button>
         </div>
       </section>

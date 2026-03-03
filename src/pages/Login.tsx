@@ -3,10 +3,27 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Zap, Gift, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+
+const sellerTypes = [
+  "Student",
+  "NYSC member",
+  "Fresh grad",
+  "Micro-influencer",
+  "Content creator",
+  "Young urban youth seller",
+];
+
+const cities = [
+  "Lagos", "Ibadan", "Abeokuta", "Ile-Ife", "Osogbo", "Akure", "Ado-Ekiti",
+  "Ilorin", "Abuja", "Kano", "Kaduna", "Zaria", "Jos", "Benin City", "Asaba",
+  "Warri", "Port Harcourt", "Uyo", "Calabar", "Owerri", "Enugu", "Aba",
+  "Nsukka", "Makurdi", "Yola", "Bauchi", "Gombe", "Sokoto", "Minna",
+];
 
 const Login = () => {
   const location = useLocation();
@@ -15,7 +32,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [university, setUniversity] = useState("");
+  const [sellerType, setSellerType] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { signUp, signIn } = useAuth();
@@ -26,6 +44,8 @@ const Login = () => {
 
     try {
       if (isSignup) {
+        // Pass sellerType as university field (reusing existing DB column)
+        const university = `${sellerType} — ${city}`;
         const { error } = await signUp(email, password, name, university);
         if (error) {
           toast.error(error.message);
@@ -69,11 +89,11 @@ const Login = () => {
           </div>
           <div>
             <CardTitle className="text-2xl font-display">
-              {isSignup ? "Join the Volt-Squad ⚡" : "Welcome Back"}
+              {isSignup ? "Join the Volt Network ⚡" : "Welcome Back"}
             </CardTitle>
             <CardDescription className="mt-2">
               {isSignup
-                ? "Start earning as a campus ambassador"
+                ? "Start earning as a Volt seller"
                 : "Sign in to your dashboard"}
             </CardDescription>
           </div>
@@ -101,7 +121,7 @@ const Login = () => {
               <label className="text-sm font-medium text-foreground">Email</label>
               <Input
                 type="email"
-                placeholder="you@university.edu.ng"
+                placeholder="you@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-secondary border-border"
@@ -121,15 +141,34 @@ const Login = () => {
               />
             </div>
             {isSignup && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">University</label>
-                <Input
-                  placeholder="University of Lagos"
-                  value={university}
-                  onChange={(e) => setUniversity(e.target.value)}
-                  className="bg-secondary border-border"
-                />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">What best describes you?</label>
+                  <Select value={sellerType} onValueChange={setSellerType}>
+                    <SelectTrigger className="bg-secondary border-border">
+                      <SelectValue placeholder="Select your category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sellerTypes.map((type) => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">What city are you based in?</label>
+                  <Select value={city} onValueChange={setCity}>
+                    <SelectTrigger className="bg-secondary border-border">
+                      <SelectValue placeholder="Select your city" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cities.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
             )}
             {!isSignup && (
               <div className="text-right">
