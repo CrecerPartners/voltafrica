@@ -62,6 +62,7 @@ export type Database = {
           image: string
           name: string
           price: number
+          slug: string
         }
         Insert: {
           assets?: Json
@@ -74,6 +75,7 @@ export type Database = {
           image?: string
           name: string
           price?: number
+          slug: string
         }
         Update: {
           assets?: Json
@@ -86,6 +88,7 @@ export type Database = {
           image?: string
           name?: string
           price?: number
+          slug?: string
         }
         Relationships: []
       }
