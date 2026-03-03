@@ -35,7 +35,7 @@ const moreTabs = [
   { label: "Referrals", path: "/referrals", icon: Users },
   { label: "Leaderboard", path: "/leaderboard", icon: Trophy },
   { label: "Training", path: "/training", icon: GraduationCap },
-  { label: "Profile", path: "/profile", icon: User },
+  { label: "Settings", path: "/profile", icon: User },
 ];
 
 export function MobileBottomNav() {
