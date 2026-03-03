@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { BrandsContent } from "@/components/landing/BrandsContent";
@@ -7,7 +7,6 @@ import {
   Zap,
   TrendingUp,
   Users,
-  
   ShoppingBag,
   BarChart3,
   GraduationCap,
@@ -20,6 +19,7 @@ import {
   Landmark,
   Ticket,
   Shirt,
+  CheckCircle2,
 } from "lucide-react";
 
 import heroStudent from "@/assets/hero-student.png";
@@ -27,10 +27,10 @@ import heroBrands from "@/assets/hero-brands.png";
 
 const audiences = {
   students: {
-    badge: "For Students",
-    headline: "Join the Volt Squad",
+    badge: "For Gen Z Sellers",
+    headline: "Earn with Nigeria's fastest-growing Gen Z seller network.",
     subtitle:
-      "Become a campus ambassador, promote products you love, and earn real commissions — all while you study.",
+      "Use your influence, audience, and network to promote products you love and earn real commissions while connecting with your community.",
     cta: "Start Earning Today",
     ctaLink: "/join-now",
     icon: GraduationCap,
@@ -38,9 +38,9 @@ const audiences = {
   },
   brands: {
     badge: "For Brands",
-    headline: "Start Selling on Campus",
+    headline: "Penetrate the Gen Z Urban Market at Scale",
     subtitle:
-      "Reach thousands of students through trusted campus ambassadors. Launch hyper-local campaigns that actually convert.",
+      "Leverage youth-led distribution across campuses, cities, creators, and communities to drive consistent product sales.",
     cta: "Partner with Volt",
     ctaLink: "https://volt.crecerpartners.com/brand-form/",
     icon: Building2,
@@ -48,32 +48,76 @@ const audiences = {
   },
 };
 
+const sellerTypes = [
+  "Students",
+  "NYSC members",
+  "Fresh grads",
+  "Micro-influencers",
+  "Content creators",
+  "Young urban youth sellers",
+];
+
 const whyJoin = [
-  { icon: Zap, title: "Zero Startup Capital", desc: "Start selling immediately — no investment needed." },
-  { icon: ShoppingBag, title: "Vetted Products", desc: "Only quality, in-demand products from trusted brands." },
-  { icon: TrendingUp, title: "High Commissions", desc: "Earn competitive rates on every sale you close." },
-  { icon: Star, title: "Weekly Payouts", desc: "Get paid every Friday — straight to your bank." },
-  { icon: GraduationCap, title: "Career Advantage", desc: "Build real sales and marketing skills while in school." },
-  { icon: BookOpen, title: "Free Training", desc: "Access courses and resources to sharpen your skills." },
-  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse and pick products students actually want." },
-  { icon: Users, title: "Refer & Earn", desc: "Invite friends and earn bonus commissions on their sales." },
-  { icon: BarChart3, title: "Track Everything", desc: "Dashboard with sales analytics, earnings, and growth." },
+  { icon: Star, title: "Reliable Weekly Payouts", desc: "Earn consistently. Get paid every week." },
+  { icon: GraduationCap, title: "Career Advantage", desc: "Build real sales, marketing, and audience growth skills while earning." },
+  { icon: BookOpen, title: "Free Training", desc: "Access practical training to help you sell smarter and scale faster." },
+  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse and sell from high-demand trending products Gen Z already love." },
+  { icon: Users, title: "Refer & Earn", desc: "Build your network and earn commission on their sales." },
+  { icon: BarChart3, title: "Track Everything", desc: "Real-time dashboard for sales, earnings, and performance growth." },
 ];
 
 const stats = [
-  { value: "100+", label: "Campuses" },
-  { value: "5,000+", label: "Sales Agents" },
-  { value: "₦500K+", label: "Commissions Paid" },
-  { value: "50+", label: "Products Listed" },
+  { value: 20, suffix: "+", label: "Locations Covered" },
+  { value: 5, suffix: "K+", label: "Gen Z Sellers" },
+  { value: 500, prefix: "₦", suffix: "K+", label: "Paid Out" },
+  { value: 100, suffix: "+", label: "Brands & Products" },
 ];
 
 const earnings = [
-  { title: "Signup Bonus", desc: "₦500 Credit to your Volt account the moment you register." },
-  { title: "Direct Sales Commission", desc: "Up to 30%" },
-  { title: "Referral Bonus", desc: "₦1,000 \"Spark Bonus\" for every friend you bring who makes their first 5 sales." },
-  { title: "High-Volume Bonus", desc: "Extra Cash for Influencers who hit weekly targets." },
-  { title: "Lead Base Pay", desc: "₦5,000 – ₦30,000 monthly (Team Leads only)." },
+  { title: "Signup Bonus", desc: "Receive ₦500 when you activate your seller account." },
+  { title: "Direct Sales Commission", desc: "Earn up to 30% on every product you sell." },
+  { title: "Referral Commission", desc: "Earn ₦1,000 for every seller you bring who activates and completes 5 sales." },
+  { title: "Performance Bonus", desc: "Unlock extra cash rewards when you hit weekly sales targets." },
+  { title: "Leadership Earnings", desc: "Top-performing sellers can qualify for monthly leadership payouts." },
 ];
+
+function CountUpStat({ value, prefix, suffix, label }: { value: number; prefix?: string; suffix?: string; label: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [count, setCount] = useState(0);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const start = performance.now();
+          const duration = 2000;
+          const step = (now: number) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * value));
+            if (progress < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return (
+    <div ref={ref} className="text-center">
+      <p className="font-display text-3xl font-bold text-primary md:text-4xl">
+        {prefix}{count.toLocaleString()}{suffix}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+    </div>
+  );
+}
 
 export default function LandingPage() {
   const [tab, setTab] = useState<"students" | "brands">("students");
@@ -101,7 +145,7 @@ export default function LandingPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Students
+              Sellers
             </button>
             <button
               onClick={() => setTab("brands")}
@@ -151,7 +195,7 @@ export default function LandingPage() {
                 )}
               </Button>
               <Button variant="outline" size="lg" asChild className="px-8 text-base">
-                <Link to={tab === "students" ? "/about/students" : "/about/brands"}>
+                <Link to={tab === "students" ? "/about/sellers" : "/about/brands"}>
                   Learn More
                 </Link>
               </Button>
@@ -166,17 +210,35 @@ export default function LandingPage() {
 
       {tab === "students" && (
         <>
+          {/* Stats with count-up */}
           <section className="border-y border-border bg-muted/30">
             <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-4 py-12 md:grid-cols-4 md:py-16">
               {stats.map((s) => (
-                <div key={s.label} className="text-center">
-                  <p className="font-display text-3xl font-bold text-primary md:text-4xl">{s.value}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
-                </div>
+                <CountUpStat key={s.label} value={s.value} prefix={s.prefix} suffix={s.suffix} label={s.label} />
               ))}
             </div>
           </section>
-          <section className="border-y border-border bg-muted/30">
+
+          {/* Who can sell */}
+          <section className="border-b border-border bg-muted/30">
+            <div className="mx-auto max-w-4xl px-4 py-12 md:py-16">
+              <div className="text-center mb-8">
+                <h2 className="font-display text-2xl font-bold md:text-3xl">Who Can Sell on Volt?</h2>
+                <p className="mt-2 text-muted-foreground">Join 1K+ Gen Z Sellers Across Nigeria</p>
+              </div>
+              <div className="flex flex-wrap justify-center gap-3">
+                {sellerTypes.map((type) => (
+                  <div key={type} className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary">
+                    <CheckCircle2 className="h-4 w-4" />
+                    {type}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Earnings */}
+          <section className="border-b border-border bg-muted/30">
             <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
               <div className="mb-12 text-center">
                 <h2 className="font-display text-3xl font-bold md:text-4xl">Multiple Ways to Earn on Volt</h2>
@@ -195,15 +257,17 @@ export default function LandingPage() {
               </div>
               <div className="mt-10 text-center">
                 <Button asChild size="lg" className="volt-gradient border-0 px-8 text-base font-semibold shadow-xl hover:opacity-90">
-                  <Link to="/join-now">Sign Up & Claim My ₦500 Bonus<ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/join-now">Become a Volt Seller<ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
               </div>
             </div>
           </section>
+
+          {/* Why Join */}
           <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
             <div className="mb-12 text-center">
-              <h2 className="font-display text-3xl font-bold md:text-4xl">Why Join the Volt Squad?</h2>
-              <p className="mt-3 text-muted-foreground">Everything you need to start earning on campus.</p>
+              <h2 className="font-display text-3xl font-bold md:text-4xl">Why Join the Volt Network?</h2>
+              <p className="mt-3 text-muted-foreground">Everything you need to start earning.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {whyJoin.map((f) => (
@@ -220,6 +284,7 @@ export default function LandingPage() {
             </div>
           </section>
 
+          {/* Categories */}
           <section className="relative overflow-hidden">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute top-0 left-1/4 h-[300px] w-[300px] rounded-full bg-primary/5 blur-3xl" />
@@ -265,15 +330,14 @@ export default function LandingPage() {
 
       {tab === "brands" && <BrandsContent />}
 
-
       {tab === "students" && (
         <section className="volt-gradient">
           <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
             <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
-              Ready to Get Started?
+              Ready to Start Earning?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
-              Whether you're a student looking to earn or a brand looking to grow — Volt is your launchpad.
+              Whether you're a Gen Z seller, creator, or brand, Volt helps you monetize influence and scale fast.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button
@@ -281,7 +345,7 @@ export default function LandingPage() {
                 size="lg"
                 className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
               >
-                <Link to="/join-now">Get Started Free</Link>
+                <Link to="/join-now">Join the Volt Network</Link>
               </Button>
             </div>
           </div>

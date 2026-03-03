@@ -11,18 +11,28 @@ import {
   Users,
   ArrowRight,
   Zap,
+  CheckCircle2,
 } from "lucide-react";
 
+const sellerTypes = [
+  "Students",
+  "NYSC members",
+  "Fresh grads",
+  "Micro-influencers",
+  "Content creators",
+  "Young urban youth sellers",
+];
+
 const steps = [
-  { icon: UserPlus, title: "Sign Up", desc: "Create your free account and complete your campus ambassador profile." },
+  { icon: UserPlus, title: "Sign Up", desc: "Create your free account and set up your seller profile." },
   { icon: Share2, title: "Share & Sell", desc: "Browse the marketplace, pick products you love, and share with your network." },
   { icon: Banknote, title: "Get Paid", desc: "Earn commissions on every confirmed sale. Request payouts anytime." },
 ];
 
 const benefits = [
   { icon: TrendingUp, title: "Real Earnings", desc: "No MLM. No nonsense. Earn transparent, trackable commissions." },
-  { icon: Trophy, title: "Climb Leaderboards", desc: "Compete with fellow ambassadors and unlock tier rewards." },
-  { icon: Users, title: "Build Your Team", desc: "Refer friends, earn bonuses, and grow your own sales squad." },
+  { icon: Trophy, title: "Climb Leaderboards", desc: "Compete with fellow sellers and unlock tier rewards." },
+  { icon: Users, title: "Build Your Network", desc: "Refer sellers, earn bonuses, and grow your own sales squad." },
 ];
 
 export default function AboutStudents() {
@@ -37,19 +47,34 @@ export default function AboutStudents() {
         </div>
         <div className="relative mx-auto max-w-4xl px-4 py-16 text-center md:py-24">
           <span className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold text-primary">
-            For Students
+            For Gen Z Sellers
           </span>
           <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
-            Your Campus. Your Hustle. Your Earnings.
+            Your Influence. Your Hustle. Your Earnings.
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Volt turns your campus influence into real income. Promote products, track your sales, and get paid — all from your phone.
+            Volt turns your influence and network into real income. Promote products, track your sales, and get paid — all from your phone.
           </p>
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Who can sell */}
       <section className="border-y border-border bg-muted/30">
+        <div className="mx-auto max-w-4xl px-4 py-12 text-center">
+          <h2 className="font-display text-2xl font-bold mb-6">Who Can Sell on Volt?</h2>
+          <div className="flex flex-wrap justify-center gap-3">
+            {sellerTypes.map((type) => (
+              <div key={type} className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary">
+                <CheckCircle2 className="h-4 w-4" />
+                {type}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="border-b border-border bg-muted/30">
         <div className="mx-auto max-w-5xl px-4 py-16 md:py-20">
           <h2 className="mb-12 text-center font-display text-3xl font-bold">How It Works</h2>
           <div className="grid gap-8 md:grid-cols-3">
@@ -92,14 +117,14 @@ export default function AboutStudents() {
             Ready to Start Earning?
           </h2>
           <p className="mt-3 text-primary-foreground/80">
-            Sign up in under a minute and start sharing products today.
+            Sign up in under a minute and start selling today.
           </p>
           <Button
             asChild
             size="lg"
             className="mt-8 bg-background text-foreground px-8 font-semibold hover:bg-background/90"
           >
-            <Link to="/login">
+            <Link to="/join-now">
               Join Volt <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>

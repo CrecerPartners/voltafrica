@@ -22,53 +22,53 @@ import {
 } from "lucide-react";
 
 const brandStats = [
-  { value: "2M+", label: "active student buyers nationwide" },
-  { value: "60k", label: "students per major campus" },
-  { value: "100+", label: "student sales agents per campus" },
+  { value: "2M+", label: "active Gen Z buyers nationwide" },
+  { value: "20+", label: "cities & campuses covered" },
+  { value: "5K+", label: "Gen Z sellers across Nigeria" },
   { value: "1000+", label: "peer-driven interactions per campaign" },
-  { value: "≤10", label: "days to launch campus sales" },
+  { value: "≤10", label: "days to launch sales" },
 ];
 
 const benefits = [
   {
     icon: Package,
     title: "Zero-Stress Logistics",
-    desc: "We handle recruitment, coordination, tracking, and weekly payouts to students. You focus on your product. We focus on distribution and movement.",
+    desc: "We handle recruitment, coordination, tracking, and weekly payouts to sellers. You focus on your product. We focus on distribution and movement.",
   },
   {
     icon: Target,
     title: "Sales Density, Not Surface Reach",
-    desc: "Volt deploys 100+ student sales agents per campus, ensuring saturation across hostels, classes, and departments — not one-off visibility from a few creators.",
+    desc: "Volt deploys Gen Z sellers across campuses, cities, and communities, ensuring saturation through peer networks — not one-off visibility from a few creators.",
   },
   {
     icon: Share2,
     title: "Social-First Sales Content",
-    desc: "Students buy on WhatsApp, Telegram & TikTok. Volt converts your product assets into high-conversion flyers, stickers, and status-ready content designed for campus sharing.",
+    desc: "Gen Z buys on WhatsApp, Telegram & TikTok. Volt converts your product assets into high-conversion flyers, stickers, and status-ready content designed for social sharing.",
   },
   {
     icon: Rocket,
     title: "Faster Time-to-Market",
-    desc: "Campus campaigns can go live in days, not months. Volt eliminates the long setup cycles of traditional field marketing and influencer campaigns.",
+    desc: "Campaigns can go live in days, not months. Volt eliminates the long setup cycles of traditional field marketing and influencer campaigns.",
   },
   {
     icon: RefreshCw,
     title: "Repeat Buying & Community-Led Adoption",
-    desc: "Campus communities are tight-knit. Once a product gains traction, repeat purchases and organic referrals follow, turning single campaigns into ongoing demand.",
+    desc: "Gen Z communities are tight-knit. Once a product gains traction, repeat purchases and organic referrals follow, turning single campaigns into ongoing demand.",
   },
   {
     icon: ShieldCheck,
-    title: "Vetted Campus Sales Force",
-    desc: "Volt recruits and manages trusted students & student leaders — class governors, hostel reps, campus influencers and student sales agents who already influence real buying decisions.",
+    title: "Vetted Seller Network",
+    desc: "Volt recruits and manages trusted sellers — students, NYSC members, micro-influencers, and content creators who already influence real buying decisions.",
   },
   {
     icon: Handshake,
     title: "Direct Peer-to-Peer Trust & Selling",
-    desc: "Students don't buy from ads; they buy from people they know. Volt leverages peer-to-peer recommendation, demos, and everyday conversations to drive faster adoption.",
+    desc: "Gen Z doesn't buy from ads; they buy from people they know. Volt leverages peer-to-peer recommendation, demos, and everyday conversations to drive faster adoption.",
   },
   {
     icon: BarChart3,
     title: "Performance Tracking, Not Guesswork",
-    desc: "Track exactly which campuses, products, and student reps are driving sales in real time.",
+    desc: "Track exactly which cities, products, and sellers are driving sales in real time.",
   },
 ];
 
@@ -76,7 +76,7 @@ const comparisonRows = [
   { dim: "Reach", trad: "Passive Scrolling", volt: "Direct Peer-To-Peer Trust" },
   { dim: "Cost", trad: "Pay-Per-Impression (High Risk)", volt: "Pay-Per-Sale (ROI Focused)" },
   { dim: "Engagement", trad: "One-off Clicks", volt: "Community-Led Adoption" },
-  { dim: "Tracking", trad: "Vanity Metrics", volt: "Campus & Agent-Level Data" },
+  { dim: "Tracking", trad: "Vanity Metrics", volt: "City & Seller-Level Data" },
   { dim: "Sales", trad: "Uncertain", volt: "Performance Based" },
 ];
 
@@ -91,9 +91,9 @@ const verticals = [
 
 const processSteps = [
   { step: 1, title: "List Your Brand", desc: "Submit your product and campaign details through our onboarding form." },
-  { step: 2, title: "Campaign Activation", desc: "We recruit and assign student sales agents and campus ambassadors based on your target schools." },
-  { step: 3, title: "Campus Sales Go Live", desc: "Your campaign launches across selected campuses with WhatsApp-first content and referral tracking." },
-  { step: 4, title: "Track Sales & Scale", desc: "Monitor performance by campus and agent. Scale into more schools as demand grows." },
+  { step: 2, title: "Campaign Activation", desc: "We recruit and assign Gen Z sellers based on your target cities and demographics." },
+  { step: 3, title: "Sales Go Live", desc: "Your campaign launches across selected locations with WhatsApp-first content and referral tracking." },
+  { step: 4, title: "Track Sales & Scale", desc: "Monitor performance by city and seller. Scale into more locations as demand grows." },
 ];
 
 export function BrandsContent() {
@@ -177,7 +177,7 @@ export function BrandsContent() {
         <div className="mb-4 text-center">
           <h2 className="font-display text-3xl font-bold md:text-4xl">Product Verticals We Distribute</h2>
           <p className="mt-3 text-muted-foreground">
-            Volt focuses on fast-moving, high-demand products that students already buy.
+            Volt focuses on fast-moving, high-demand products that Gen Z already buys.
           </p>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -224,10 +224,10 @@ export function BrandsContent() {
             Distribution for the Next Generation
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/80">
-            Students don't buy from ads — they buy from people they trust. Volt turns campuses into structured sales environments powered by peer influence and real incentives. This is not influencer marketing.
+            Gen Z doesn't buy from ads — they buy from people they trust. Volt turns communities into structured sales environments powered by peer influence and real incentives. This is not influencer marketing.
           </p>
           <p className="mt-4 text-lg font-semibold text-primary-foreground">
-            This is campus distribution infrastructure.
+            This is Gen Z distribution infrastructure.
           </p>
           <div className="mt-8">
             <Button
