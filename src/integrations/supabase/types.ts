@@ -148,6 +148,7 @@ export type Database = {
           assets: Json
           brand: string
           category: string
+          commission_model: string
           commission_rate: number
           created_at: string
           description: string
@@ -155,12 +156,14 @@ export type Database = {
           image: string
           name: string
           price: number
+          product_type: string
           slug: string
         }
         Insert: {
           assets?: Json
           brand: string
           category: string
+          commission_model?: string
           commission_rate?: number
           created_at?: string
           description?: string
@@ -168,12 +171,14 @@ export type Database = {
           image?: string
           name: string
           price?: number
+          product_type?: string
           slug: string
         }
         Update: {
           assets?: Json
           brand?: string
           category?: string
+          commission_model?: string
           commission_rate?: number
           created_at?: string
           description?: string
@@ -181,6 +186,7 @@ export type Database = {
           image?: string
           name?: string
           price?: number
+          product_type?: string
           slug?: string
         }
         Relationships: []
@@ -332,6 +338,7 @@ export type Database = {
         Row: {
           amount: number
           commission: number
+          conversion_status: string | null
           created_at: string
           customer: string
           date: string
@@ -346,6 +353,7 @@ export type Database = {
         Insert: {
           amount?: number
           commission?: number
+          conversion_status?: string | null
           created_at?: string
           customer?: string
           date?: string
@@ -360,6 +368,7 @@ export type Database = {
         Update: {
           amount?: number
           commission?: number
+          conversion_status?: string | null
           created_at?: string
           customer?: string
           date?: string

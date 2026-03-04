@@ -1,5 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { createHmac } from "https://deno.land/std@0.224.0/crypto/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -51,9 +50,20 @@ Deno.serve(async (req) => {
       const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
       const supabase = createClient(supabaseUrl, supabaseKey);
 
+      // Check if order contains only digital products
+      const { data: orderItems } = await supabase
+        .from("order_items")
+        .select("product_id, products(product_type)")
+        .eq("order_id", orderId);
+
+      const allDigital = orderItems?.every((item: any) => item.products?.product_type === "digital");
+
+      // For digital orders, auto-confirm; for physical, mark as paid
+      const newStatus = allDigital ? "confirmed" : "paid";
+
       await supabase
         .from("orders")
-        .update({ status: "paid", paystack_reference: reference })
+        .update({ status: newStatus, paystack_reference: reference })
         .eq("id", orderId);
     }
 

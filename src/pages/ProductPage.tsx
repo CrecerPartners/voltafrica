@@ -11,10 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { SharePopover } from "@/components/SharePopover";
 import { shareContent, canNativeShare, copyToClipboard } from "@/lib/shareUtils";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Link2, Share2, Lightbulb, Copy, MessageCircle, Instagram, Twitter,
   ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check, Download
@@ -30,6 +30,20 @@ const categoryColors: Record<string, string> = {
   fashion: "bg-pink-500/10 text-pink-500 border-pink-500/20",
   courses: "bg-violet-500/10 text-violet-500 border-violet-500/20",
 };
+
+const productTypeBadge: Record<string, { label: string; className: string }> = {
+  physical: { label: "Physical", className: "bg-muted text-muted-foreground" },
+  digital: { label: "Digital", className: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
+  lead: { label: "Sign-Up Offer", className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
+};
+
+function getCommissionLabel(product: { commissionRate: number; commissionModel: string; productType: string }) {
+  if (product.commissionModel === "percentage") return `${product.commissionRate}% commission`;
+  if (product.commissionModel === "fixed") return `${formatNaira(product.commissionRate)} per sale`;
+  if (product.commissionModel === "per_signup") return `${formatNaira(product.commissionRate)} per sign-up`;
+  if (product.commissionModel === "per_install") return `${formatNaira(product.commissionRate)} per install`;
+  return `${product.commissionRate}% commission`;
+}
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -47,6 +61,7 @@ const ProductPage = () => {
 
   const [activeThumb, setActiveThumb] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [leadLoading, setLeadLoading] = useState(false);
 
   const isLoggedIn = !!user;
   const userRefCode = profile?.referral_code || refCode || "VOLT";
@@ -60,6 +75,42 @@ const ProductPage = () => {
   }, [refCode]);
 
   const related = products.filter(p => product && p.category === product.category && p.id !== product.id).slice(0, 4);
+
+  const handleLeadClick = async () => {
+    if (!product) return;
+    const fulfillmentUrl = product.assets?.fulfillment_url;
+    if (!fulfillmentUrl) {
+      toast.error("Sign-up link not available for this product");
+      return;
+    }
+    setLeadLoading(true);
+    try {
+      // Record click as a sale entry for tracking
+      if (user) {
+        await supabase
+          .from("sales" as any)
+          .insert({
+            user_id: user.id,
+            product_id: product.id,
+            date: new Date().toISOString().split("T")[0],
+            customer: "Lead click",
+            quantity: 1,
+            amount: 0,
+            commission: 0,
+            status: "pending",
+            conversion_status: "clicked",
+          } as any);
+      }
+      // Redirect to external URL with ref code appended
+      const separator = fulfillmentUrl.includes("?") ? "&" : "?";
+      const trackedUrl = `${fulfillmentUrl}${separator}ref=${userRefCode}`;
+      window.open(trackedUrl, "_blank");
+    } catch (err) {
+      console.error("Lead tracking error:", err);
+    } finally {
+      setLeadLoading(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -85,6 +136,9 @@ const ProductPage = () => {
 
   const images = product.assets?.images?.length > 0 ? product.assets.images : [];
   const shareText = `${product.name} — ${product.description}\n\n${referralLink}`;
+  const isLead = product.productType === "lead";
+  const isDigital = product.productType === "digital";
+  const typeBadge = productTypeBadge[product.productType] || productTypeBadge.physical;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
@@ -143,6 +197,9 @@ const ProductPage = () => {
               <Badge variant="outline" className={categoryColors[product.category] || "bg-muted text-muted-foreground"}>
                 {product.category}
               </Badge>
+              <Badge variant="outline" className={typeBadge.className}>
+                {typeBadge.label}
+              </Badge>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold font-display text-foreground">{product.name}</h1>
             <p className="text-sm text-muted-foreground mt-1">{product.brand}</p>
@@ -154,33 +211,45 @@ const ProductPage = () => {
             )}
             {isLoggedIn && (
               <Badge className="volt-gradient text-primary-foreground text-sm px-3 py-1">
-                {product.commissionRate}% commission
+                {getCommissionLabel(product)}
               </Badge>
             )}
           </div>
 
           <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
 
-          {/* CTA */}
+          {/* CTA — varies by product type */}
           <div className="space-y-3 pt-2">
-            {/* Add to cart for everyone */}
-            <Button
-              className="w-full volt-gradient h-12 text-base"
-              onClick={() => {
-                addItem({
-                  productId: product.id,
-                  name: product.name,
-                  slug: product.slug,
-                  image: product.image,
-                  imageUrl: product.assets?.images?.[0],
-                  price: product.price,
-                  commissionRate: product.commissionRate,
-                });
-                toast.success(`${product.name} added to cart!`);
-              }}
-            >
-              <ShoppingCart className="h-5 w-5 mr-2" /> Add to Cart — {formatNaira(product.price)}
-            </Button>
+            {isLead ? (
+              /* Lead product: Sign Up Now button → external redirect */
+              <Button
+                className="w-full volt-gradient h-12 text-base"
+                onClick={handleLeadClick}
+                disabled={leadLoading}
+              >
+                {leadLoading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <ExternalLink className="h-5 w-5 mr-2" />}
+                Sign Up Now
+              </Button>
+            ) : (
+              /* Physical / Digital: Add to Cart */
+              <Button
+                className="w-full volt-gradient h-12 text-base"
+                onClick={() => {
+                  addItem({
+                    productId: product.id,
+                    name: product.name,
+                    slug: product.slug,
+                    image: product.image,
+                    imageUrl: product.assets?.images?.[0],
+                    price: product.price,
+                    commissionRate: product.commissionRate,
+                  });
+                  toast.success(`${product.name} added to cart!`);
+                }}
+              >
+                <ShoppingCart className="h-5 w-5 mr-2" /> Add to Cart — {formatNaira(product.price)}
+              </Button>
+            )}
 
             {isLoggedIn ? (
               <>
@@ -312,7 +381,7 @@ const ProductPage = () => {
                   <CardContent className="p-3 space-y-1">
                     <h3 className="font-semibold text-sm leading-tight truncate">{p.name}</h3>
                     <p className="text-xs text-muted-foreground">{p.brand}</p>
-                    <p className="text-sm font-bold text-primary">{p.commissionRate}%</p>
+                    <p className="text-sm font-bold text-primary">{getCommissionLabel(p)}</p>
                   </CardContent>
                 </Card>
               </Link>

@@ -2,16 +2,27 @@ import { useState, useRef } from "react";
 import { useAdminProducts, useUpsertProduct, useDeleteProduct } from "@/hooks/useAdminData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon, Search } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 
-const empty = { name: "", brand: "", category: "", price: 0, commission_rate: 0, image: "", description: "", assets: { images: [] as string[], videos: [] as string[] } };
+const empty = {
+  name: "", brand: "", category: "", price: 0, commission_rate: 0, image: "", description: "",
+  product_type: "physical", commission_model: "percentage",
+  assets: { images: [] as string[], videos: [] as string[], fulfillment_url: "" },
+};
 const PAGE_SIZE = 20;
+
+const typeLabels: Record<string, string> = { physical: "Physical", digital: "Digital", lead: "Lead / Sign-Up" };
+const typeBadgeColors: Record<string, string> = {
+  physical: "", digital: "bg-blue-500/10 text-blue-600", lead: "bg-emerald-500/10 text-emerald-600",
+};
 
 export default function AdminProducts() {
   const { data: products, isLoading } = useAdminProducts();
@@ -29,17 +40,21 @@ export default function AdminProducts() {
   const totalPages = Math.max(1, Math.ceil((filtered?.length ?? 0) / PAGE_SIZE));
   const paginated = paginateItems(filtered, page, PAGE_SIZE);
 
-  const openNew = () => { setForm({ ...empty, assets: { images: [], videos: [] } }); setVideoUrl(""); setOpen(true); };
+  const openNew = () => { setForm({ ...empty, assets: { images: [], videos: [], fulfillment_url: "" } }); setVideoUrl(""); setOpen(true); };
   const openEdit = (p: any) => {
     const assets = typeof p.assets === "object" && p.assets ? p.assets : { images: [], videos: [] };
-    setForm({ ...p, assets: { images: assets.images || [], videos: assets.videos || [] } });
+    setForm({
+      ...p,
+      product_type: p.product_type || "physical",
+      commission_model: p.commission_model || "percentage",
+      assets: { images: assets.images || [], videos: assets.videos || [], fulfillment_url: assets.fulfillment_url || "" },
+    });
     setVideoUrl("");
     setOpen(true);
   };
 
   const save = () => {
     const toSave = { ...form };
-    // Set first image as main image if not set
     if (!toSave.image && toSave.assets?.images?.length > 0) {
       toSave.image = toSave.assets.images[0];
     }
@@ -106,6 +121,8 @@ export default function AdminProducts() {
     });
   };
 
+  const showFulfillmentUrl = form.product_type === "digital" || form.product_type === "lead";
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -128,9 +145,10 @@ export default function AdminProducts() {
                 <TableHead>Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Brand</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead>Commission %</TableHead>
+                <TableHead>Commission</TableHead>
                 <TableHead className="w-24">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -146,9 +164,14 @@ export default function AdminProducts() {
                   </TableCell>
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell>{p.brand}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={typeBadgeColors[p.product_type] || ""}>
+                      {typeLabels[p.product_type] || "Physical"}
+                    </Badge>
+                  </TableCell>
                   <TableCell>{p.category}</TableCell>
                   <TableCell>₦{Number(p.price).toLocaleString()}</TableCell>
-                  <TableCell>{p.commission_rate}%</TableCell>
+                  <TableCell>{p.commission_rate}% <span className="text-xs text-muted-foreground">({p.commission_model || "percentage"})</span></TableCell>
                   <TableCell>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(p)}><Pencil className="h-3.5 w-3.5" /></Button>
@@ -170,11 +193,59 @@ export default function AdminProducts() {
             <Input placeholder="Name" value={form.name} onChange={(e) => set("name", e.target.value)} />
             <Input placeholder="Brand" value={form.brand} onChange={(e) => set("brand", e.target.value)} />
             <Input placeholder="Category" value={form.category} onChange={(e) => set("category", e.target.value)} />
+
+            {/* Product Type & Commission Model */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Product Type</label>
+                <Select value={form.product_type} onValueChange={(v) => set("product_type", v)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="physical">Physical</SelectItem>
+                    <SelectItem value="digital">Digital</SelectItem>
+                    <SelectItem value="lead">Lead / Sign-Up</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Commission Model</label>
+                <Select value={form.commission_model} onValueChange={(v) => set("commission_model", v)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="percentage">Percentage (%)</SelectItem>
+                    <SelectItem value="fixed">Fixed Amount (₦)</SelectItem>
+                    <SelectItem value="per_signup">Per Sign-Up (₦)</SelectItem>
+                    <SelectItem value="per_install">Per Install (₦)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <Input type="number" placeholder="Price" value={form.price} onChange={(e) => set("price", +e.target.value)} />
-              <Input type="number" placeholder="Commission %" value={form.commission_rate} onChange={(e) => set("commission_rate", +e.target.value)} />
+              <Input type="number" placeholder="Commission Rate/Amount" value={form.commission_rate} onChange={(e) => set("commission_rate", +e.target.value)} />
             </div>
             <Textarea placeholder="Description" value={form.description} onChange={(e) => set("description", e.target.value)} />
+
+            {/* Fulfillment URL for digital/lead */}
+            {showFulfillmentUrl && (
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  {form.product_type === "lead" ? "External Sign-Up URL" : "Digital Fulfillment URL"}
+                </label>
+                <Input
+                  placeholder="https://brand.com/signup"
+                  value={form.assets?.fulfillment_url || ""}
+                  onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, fulfillment_url: e.target.value } }))}
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  {form.product_type === "lead"
+                    ? "The external link buyers will be redirected to. Seller's ref code will be appended as ?ref=CODE"
+                    : "Where buyers will be redirected after payment"
+                  }
+                </p>
+              </div>
+            )}
 
             {/* Image management */}
             <div className="space-y-2">

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { DbProduct, Product } from "./useProducts";
+import { DbProduct, Product, ProductType, CommissionModel } from "./useProducts";
 
 function mapProduct(db: DbProduct): Product {
   return {
@@ -14,6 +14,8 @@ function mapProduct(db: DbProduct): Product {
     description: db.description,
     assets: db.assets,
     slug: db.slug,
+    productType: (db.product_type as ProductType) || "physical",
+    commissionModel: (db.commission_model as CommissionModel) || "percentage",
   };
 }
 

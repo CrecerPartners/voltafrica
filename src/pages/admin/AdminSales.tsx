@@ -22,6 +22,13 @@ const statusColors: Record<string, string> = {
   cancelled: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
 };
 
+const conversionStatusColors: Record<string, string> = {
+  clicked: "bg-muted text-muted-foreground",
+  signed_up: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+  verified: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  paid_out: "bg-primary/10 text-primary",
+};
+
 const PAGE_SIZE = 20;
 
 export default function AdminSales() {
@@ -35,6 +42,7 @@ export default function AdminSales() {
   const userFilter = searchParams.get("user");
 
   const [filter, setFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState<Date>();
   const [dateTo, setDateTo] = useState<Date>();
@@ -44,6 +52,7 @@ export default function AdminSales() {
   const [editNotes, setEditNotes] = useState("");
   const [editAmount, setEditAmount] = useState(0);
   const [editCommission, setEditCommission] = useState(0);
+  const [editConversionStatus, setEditConversionStatus] = useState("");
   const [proofUrl, setProofUrl] = useState<string | null>(null);
   const [bulkProcessing, setBulkProcessing] = useState(false);
 
@@ -51,6 +60,8 @@ export default function AdminSales() {
   const getSellerName = (sale: any) => sale.profiles?.name || userMap[sale.user_id]?.name || "Unknown";
 
   let filtered = filter === "all" ? sales : sales?.filter((s) => s.status === filter);
+  if (typeFilter === "leads") filtered = filtered?.filter((s: any) => s.products?.product_type === "lead");
+  else if (typeFilter === "sales") filtered = filtered?.filter((s: any) => s.products?.product_type !== "lead");
   if (userFilter) filtered = filtered?.filter((s) => s.user_id === userFilter);
   if (search) {
     const q = search.toLowerCase();
@@ -87,6 +98,23 @@ export default function AdminSales() {
     toast({ title: "Sale cancelled" });
   };
 
+  const handleUpdateConversionStatus = async (saleId: string, newStatus: string) => {
+    const updates: any = { conversion_status: newStatus };
+    // If marking as verified, also confirm the sale to credit commission
+    if (newStatus === "verified") {
+      updates.status = "confirmed";
+    }
+    await updateDetails.mutateAsync({ saleId, updates });
+    if (newStatus === "verified") {
+      const sale = (sales || []).find(s => s.id === saleId);
+      if (sale) {
+        const tx = findMatchingTransaction(sale);
+        if (tx) await updateTx.mutateAsync({ transactionId: tx.id, status: "paid" });
+      }
+    }
+    toast({ title: `Conversion status updated to "${newStatus}"` });
+  };
+
   const handleBulkConfirm = async () => {
     setBulkProcessing(true);
     const pendingSales = (filtered || []).filter(s => selected.has(s.id) && s.status === "pending");
@@ -107,10 +135,20 @@ export default function AdminSales() {
     setSelected(prev => { const n = new Set(prev); pendingIds.forEach(id => allSelected ? n.delete(id) : n.add(id)); return n; });
   };
 
-  const openDetail = (s: any) => { setDetailSale(s); setEditNotes(s.notes || ""); setEditAmount(Number(s.amount)); setEditCommission(Number(s.commission)); };
+  const openDetail = (s: any) => {
+    setDetailSale(s);
+    setEditNotes(s.notes || "");
+    setEditAmount(Number(s.amount));
+    setEditCommission(Number(s.commission));
+    setEditConversionStatus(s.conversion_status || "");
+  };
   const saveDetails = () => {
     if (!detailSale) return;
-    updateDetails.mutate({ saleId: detailSale.id, updates: { notes: editNotes, amount: editAmount, commission: editCommission } }, {
+    const updates: any = { notes: editNotes, amount: editAmount, commission: editCommission };
+    if (detailSale.products?.product_type === "lead" && editConversionStatus) {
+      updates.conversion_status = editConversionStatus;
+    }
+    updateDetails.mutate({ saleId: detailSale.id, updates }, {
       onSuccess: () => { toast({ title: "Sale updated" }); setDetailSale(null); },
       onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
     });
@@ -133,9 +171,10 @@ export default function AdminSales() {
 
   const handleExport = () => {
     if (!filtered?.length) return;
-    exportToCsv("sales", filtered.map(s => ({ ...s, seller: getSellerName(s), product: s.products?.name ?? "" })), [
+    exportToCsv("sales", filtered.map(s => ({ ...s, seller: getSellerName(s), product: (s as any).products?.name ?? "" })), [
       { key: "date", label: "Date" }, { key: "seller", label: "Seller" }, { key: "customer", label: "Customer" },
-      { key: "product", label: "Product" }, { key: "amount", label: "Amount" }, { key: "commission", label: "Commission" }, { key: "status", label: "Status" },
+      { key: "product", label: "Product" }, { key: "amount", label: "Amount" }, { key: "commission", label: "Commission" },
+      { key: "status", label: "Status" }, { key: "conversion_status", label: "Conversion" },
     ]);
   };
 
@@ -151,10 +190,19 @@ export default function AdminSales() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={handleExport} disabled={!filtered?.length}>Export CSV</Button>
+          {/* Type filter */}
+          <Select value={typeFilter} onValueChange={(v) => { setTypeFilter(v); setPage(1); }}>
+            <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="sales">Sales</SelectItem>
+              <SelectItem value="leads">Leads</SelectItem>
+            </SelectContent>
+          </Select>
           <Select value={filter} onValueChange={(v) => { setFilter(v); setPage(1); }}>
             <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="confirmed">Confirmed</SelectItem>
               <SelectItem value="cancelled">Cancelled</SelectItem>
@@ -194,6 +242,7 @@ export default function AdminSales() {
                 <TableHead>Seller</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Product</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Commission</TableHead>
                 <TableHead>Status</TableHead>
@@ -202,39 +251,69 @@ export default function AdminSales() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginated.map((s: any) => (
-                <TableRow key={s.id}>
-                  <TableCell>
-                    {s.status === "pending" && <Checkbox checked={selected.has(s.id)} onCheckedChange={() => toggleSelect(s.id)} />}
-                  </TableCell>
-                  <TableCell className="text-xs">{new Date(s.date).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-sm">{getSellerName(s)}</TableCell>
-                  <TableCell>{s.customer}</TableCell>
-                  <TableCell>{s.products?.name ?? "—"}</TableCell>
-                  <TableCell>₦{Number(s.amount).toLocaleString()}</TableCell>
-                  <TableCell>₦{Number(s.commission).toLocaleString()}</TableCell>
-                  <TableCell><Badge variant="secondary" className={statusColors[s.status] || ""}>{s.status}</Badge></TableCell>
-                  <TableCell>
-                    {s.proof_file_url ? (
-                      <div className="flex gap-0.5">
-                        <Button variant="ghost" size="icon" onClick={() => viewProof(s.proof_file_url)}><Eye className="h-3.5 w-3.5" /></Button>
-                        <Button variant="ghost" size="icon" onClick={() => downloadProof(s.proof_file_url)}><Download className="h-3.5 w-3.5" /></Button>
-                      </div>
-                    ) : "—"}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-0.5">
-                      <Button variant="ghost" size="icon" onClick={() => openDetail(s)}><Eye className="h-4 w-4" /></Button>
-                      {s.status === "pending" && (
-                        <>
-                          <Button variant="ghost" size="icon" onClick={() => handleConfirm(s)}><Check className="h-4 w-4 text-green-600" /></Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleCancel(s)}><X className="h-4 w-4 text-destructive" /></Button>
-                        </>
+              {paginated.map((s: any) => {
+                const isLead = s.products?.product_type === "lead";
+                return (
+                  <TableRow key={s.id}>
+                    <TableCell>
+                      {s.status === "pending" && <Checkbox checked={selected.has(s.id)} onCheckedChange={() => toggleSelect(s.id)} />}
+                    </TableCell>
+                    <TableCell className="text-xs">{new Date(s.date).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-sm">{getSellerName(s)}</TableCell>
+                    <TableCell>{s.customer}</TableCell>
+                    <TableCell>{s.products?.name ?? "—"}</TableCell>
+                    <TableCell>
+                      {isLead ? (
+                        <div className="space-y-1">
+                          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 text-[10px]">Lead</Badge>
+                          {s.conversion_status && (
+                            <Select
+                              value={s.conversion_status}
+                              onValueChange={(v) => handleUpdateConversionStatus(s.id, v)}
+                            >
+                              <SelectTrigger className="h-6 text-[10px] w-24">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="clicked">Clicked</SelectItem>
+                                <SelectItem value="signed_up">Signed Up</SelectItem>
+                                <SelectItem value="verified">Verified</SelectItem>
+                                <SelectItem value="paid_out">Paid Out</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </div>
+                      ) : (
+                        <Badge variant="outline" className="text-[10px]">
+                          {s.products?.product_type === "digital" ? "Digital" : "Physical"}
+                        </Badge>
                       )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell>₦{Number(s.amount).toLocaleString()}</TableCell>
+                    <TableCell>₦{Number(s.commission).toLocaleString()}</TableCell>
+                    <TableCell><Badge variant="secondary" className={statusColors[s.status] || ""}>{s.status}</Badge></TableCell>
+                    <TableCell>
+                      {s.proof_file_url ? (
+                        <div className="flex gap-0.5">
+                          <Button variant="ghost" size="icon" onClick={() => viewProof(s.proof_file_url)}><Eye className="h-3.5 w-3.5" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => downloadProof(s.proof_file_url)}><Download className="h-3.5 w-3.5" /></Button>
+                        </div>
+                      ) : "—"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-0.5">
+                        <Button variant="ghost" size="icon" onClick={() => openDetail(s)}><Eye className="h-4 w-4" /></Button>
+                        {s.status === "pending" && (
+                          <>
+                            <Button variant="ghost" size="icon" onClick={() => handleConfirm(s)}><Check className="h-4 w-4 text-green-600" /></Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleCancel(s)}><X className="h-4 w-4 text-destructive" /></Button>
+                          </>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
           <AdminTablePagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={filtered?.length ?? 0} pageSize={PAGE_SIZE} />
@@ -254,11 +333,30 @@ export default function AdminSales() {
                 <div><span className="text-muted-foreground">Quantity:</span> <strong>{detailSale.quantity}</strong></div>
                 <div><span className="text-muted-foreground">Date:</span> <strong>{new Date(detailSale.date).toLocaleDateString()}</strong></div>
                 <div><span className="text-muted-foreground">Status:</span> <Badge variant="secondary" className={statusColors[detailSale.status] || ""}>{detailSale.status}</Badge></div>
+                <div><span className="text-muted-foreground">Type:</span> <strong>{detailSale.products?.product_type || "physical"}</strong></div>
+                {detailSale.conversion_status && (
+                  <div><span className="text-muted-foreground">Conversion:</span> <Badge variant="secondary" className={conversionStatusColors[detailSale.conversion_status] || ""}>{detailSale.conversion_status}</Badge></div>
+                )}
               </div>
               {detailSale.status === "pending" && (
                 <div className="grid grid-cols-2 gap-2">
                   <div><label className="text-xs text-muted-foreground">Amount</label><Input type="number" value={editAmount} onChange={(e) => setEditAmount(+e.target.value)} /></div>
                   <div><label className="text-xs text-muted-foreground">Commission</label><Input type="number" value={editCommission} onChange={(e) => setEditCommission(+e.target.value)} /></div>
+                </div>
+              )}
+              {/* Conversion status editor for lead products */}
+              {detailSale.products?.product_type === "lead" && (
+                <div className="space-y-1">
+                  <label className="text-xs text-muted-foreground">Conversion Status</label>
+                  <Select value={editConversionStatus} onValueChange={setEditConversionStatus}>
+                    <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="clicked">Clicked</SelectItem>
+                      <SelectItem value="signed_up">Signed Up</SelectItem>
+                      <SelectItem value="verified">Verified (credits commission)</SelectItem>
+                      <SelectItem value="paid_out">Paid Out</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
               <div><label className="text-xs text-muted-foreground">Admin Notes</label><Textarea value={editNotes} onChange={(e) => setEditNotes(e.target.value)} placeholder="Add notes..." /></div>
