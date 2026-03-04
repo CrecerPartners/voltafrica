@@ -74,7 +74,35 @@ const ProductPage = () => {
     }
   }, [refCode]);
 
-  const related = products.filter(p => product && p.category === product.category && p.id !== product.id).slice(0, 4);
+  // Find products from the same seller (via seller_shop_items) or fall back to same category
+  const [sellerProducts, setSellerProducts] = useState<string[]>([]);
+  useEffect(() => {
+    if (!product) return;
+    // Find which sellers have this product in their shop, then get their other products
+    const fetchSellerProducts = async () => {
+      const { data: shopEntries } = await supabase
+        .from("seller_shop_items" as any)
+        .select("user_id")
+        .eq("product_id", product.id)
+        .limit(1);
+      if (shopEntries && shopEntries.length > 0) {
+        const sellerId = (shopEntries[0] as any).user_id;
+        const { data: sellerItems } = await supabase
+          .from("seller_shop_items" as any)
+          .select("product_id")
+          .eq("user_id", sellerId);
+        if (sellerItems) {
+          setSellerProducts((sellerItems as any[]).map(i => i.product_id).filter(id => id !== product.id));
+        }
+      }
+    };
+    fetchSellerProducts();
+  }, [product?.id]);
+
+  const related = sellerProducts.length > 0
+    ? products.filter(p => sellerProducts.includes(p.id)).slice(0, 4)
+    : products.filter(p => product && p.category === product.category && p.id !== product.id).slice(0, 4);
+  const relatedTitle = sellerProducts.length > 0 ? "More from this Seller" : "Similar Products";
 
   const handleLeadClick = async () => {
     if (!product) return;
@@ -364,7 +392,7 @@ const ProductPage = () => {
       {/* Related Products */}
       {related.length > 0 && (
         <div className="space-y-4 pt-4">
-          <h2 className="text-xl font-bold font-display text-foreground">Similar Products</h2>
+          <h2 className="text-xl font-bold font-display text-foreground">{relatedTitle}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {related.map(p => (
               <Link key={p.id} to={`/product/${p.slug}`}>

@@ -59,9 +59,14 @@ const SellerShop = () => {
           </h1>
           {seller.bio && <p className="text-muted-foreground mt-1 max-w-md mx-auto">{seller.bio}</p>}
         </div>
-        <Badge variant="outline" className="text-xs">
-          <Store className="h-3 w-3 mr-1" /> {products.length} product{products.length !== 1 ? "s" : ""}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-xs">
+            <Store className="h-3 w-3 mr-1" /> {products.length} product{products.length !== 1 ? "s" : ""}
+          </Badge>
+          <Button variant="outline" size="sm" asChild className="text-xs h-7">
+            <Link to="/products">Browse All Products</Link>
+          </Button>
+        </div>
       </div>
 
       {/* Products Grid */}

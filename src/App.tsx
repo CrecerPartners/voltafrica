@@ -11,6 +11,7 @@ import { AdminProtectedRoute } from "@/components/AdminProtectedRoute";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { AdminLayout } from "@/components/AdminLayout";
 import { PublicProductLayout } from "@/components/PublicProductLayout";
+import PublicMarketplace from "@/pages/PublicMarketplace";
 import LandingPage from "@/pages/LandingPage";
 import AboutStudents from "@/pages/AboutStudents";
 import AboutBrands from "@/pages/AboutBrands";
@@ -67,6 +68,7 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route element={<PublicProductLayout />}>
+            <Route path="/products" element={<PublicMarketplace />} />
             <Route path="/product/:slug" element={<ProductPage />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />

@@ -22,6 +22,9 @@ export function LandingNavbar() {
         </Link>
 
         <div className="hidden items-center gap-3 md:flex">
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/products">Products</Link>
+          </Button>
           <CartDrawer />
           {isLoggedIn ? (
             <Button asChild className="volt-gradient border-0 font-semibold shadow-lg hover:opacity-90">
@@ -51,6 +54,9 @@ export function LandingNavbar() {
           <SheetContent side="right" className="w-72">
             <SheetTitle className="sr-only">Navigation</SheetTitle>
             <div className="flex flex-col gap-6 pt-8">
+              <Button variant="outline" asChild className="w-full" onClick={() => setOpen(false)}>
+                <Link to="/products">Products</Link>
+              </Button>
               {isLoggedIn ? (
                 <Button asChild className="w-full volt-gradient border-0 font-semibold" onClick={() => setOpen(false)}>
                   <Link to="/dashboard"><LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard</Link>
