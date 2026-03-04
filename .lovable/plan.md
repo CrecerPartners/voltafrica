@@ -1,64 +1,53 @@
 
 
-## Enrich Admin Panel for All New Features
+## Fix Seller vs Buyer Experience & Public Marketplace
 
-The admin currently manages users, products, sales, payouts, training, referrals, and leaderboard. But recent features added verification, reviews, shop customization, and multi-product-type support that the admin can't yet manage. Here's what needs updating:
+### The Problems
 
-### What's Missing
+1. **Marketplace (`/marketplace`) is behind login** — requires seller auth to access. Buyers can't browse products.
+2. **Logged-in sellers see "Add to Cart"** on the marketplace — but sellers should primarily see "Add to My Shop", not cart buttons.
+3. **No public product catalog exists** — there's no `/products` route for public browsing.
+4. **Product page "Similar Products" shows same-category** — should show products from the same seller (since shops exist now).
+5. **Seller shops don't link to "See All Products"** — no way to browse the full catalog from a shop page.
+6. **Cart shows in dashboard navbar** — it doesn't, but the CartDrawer shows on the public LandingNavbar which is correct for buyers.
 
-1. **Verification Management** — Admin has no way to view/approve/reject user ID verification requests. The `verification_status`, `account_type`, `id_document_url` fields exist on profiles but are invisible in admin.
-2. **Reviews Management** — The `reviews` table exists but admin can't view, moderate, or delete reviews.
-3. **User Detail Panel** — Missing: verification status, account type, social links, shop slug, shop logo, bio. The edit form only shows name/university/whatsapp/bank.
-4. **Dashboard Overview** — No stats for: pending verifications, total reviews, lead conversions, product type breakdown.
-5. **Orders Management** — Orders table exists but there's no admin page for it. Admin can't see buyer orders or track fulfillment.
+### The Solution
 
-### Plan
+**1. Create a public `/products` route** that renders a buyer-facing version of the marketplace (no login required, cart works, no "Add to Shop" buttons). This uses the `PublicProductLayout` wrapper.
 
-**1. New Page: Admin Reviews (`src/pages/admin/AdminReviews.tsx`)**
-- List all reviews with product name, reviewer, rating (stars), comment, date
-- Delete button for moderation
-- Filter by rating (1-5) and search by product/reviewer
-- New hook: `useAdminReviews` + `useDeleteReview` in `useAdminData.ts`
+**2. Redesign the seller `/marketplace`** to be seller-focused:
+- Primary action: **"+ My Shop"** (add to shop)
+- Secondary: "Copy Link" for sharing
+- Remove "Add to Cart" from the seller marketplace entirely
+- Keep commission info visible (seller context)
 
-**2. New Page: Admin Verification (`src/pages/admin/AdminVerification.tsx`)**
-- List profiles where `id_document_url IS NOT NULL` or `verification_status = 'pending'`
-- Show: name, account type, verification status, uploaded doc (view/download from `verification-docs` bucket)
-- Quick actions: Approve (set `verified`), Reject (set `unverified`)
-- New hook: `useAdminVerifications` in `useAdminData.ts` (filtered query on profiles)
+**3. Add `/products` link** to:
+- Seller shops (`/s/:slug`) — "Browse All Products" link
+- The public `LandingNavbar`
 
-**3. New Page: Admin Orders (`src/pages/admin/AdminOrders.tsx`)**
-- List all orders with buyer name, email, total, status, date
-- Expand to see order items (product, quantity, price, ref code)
-- Update order status (pending → confirmed → delivered)
-- New hooks: `useAdminOrders` in `useAdminData.ts`
+**4. Change "Similar Products" on `ProductPage.tsx`** to "More from this Seller" — query products that share the same seller (via `seller_shop_items`). Fall back to same-category if no seller context.
 
-**4. Enrich AdminUsers detail panel**
-- Show: account type, verification status (with badge), social links, shop slug, shop logo, bio
-- Add verification status dropdown (unverified/pending/verified) to edit form
-- Link to view their shop (`/s/{shop_slug}`)
-
-**5. Enrich AdminDashboard**
-- Add cards: Pending Verifications, Total Reviews, Lead Conversions (verified), Total Orders
-- Add product type breakdown (physical/digital/lead counts)
-
-**6. Update AdminLayout nav**
-- Add: Reviews, Verification, Orders to sidebar
+**5. Cart/checkout stays fully public** — no login needed to add to cart or check out (already works this way on `/product/:slug`).
 
 ### Files to Create
+
 | File | Purpose |
 |------|---------|
-| `src/pages/admin/AdminReviews.tsx` | Review moderation page |
-| `src/pages/admin/AdminVerification.tsx` | ID verification management |
-| `src/pages/admin/AdminOrders.tsx` | Order tracking/management |
+| `src/pages/PublicMarketplace.tsx` | Buyer-facing product catalog at `/products` — browse, search, filter, add to cart. No login required. No commission info, no "Add to Shop". |
 
 ### Files to Modify
+
 | File | Changes |
 |------|---------|
-| `src/hooks/useAdminData.ts` | Add: `useAdminReviews`, `useDeleteReview`, `useAdminVerifications`, `useAdminOrders`, `useUpdateOrderStatus` |
-| `src/components/AdminLayout.tsx` | Add Reviews, Verification, Orders nav items |
-| `src/App.tsx` | Add 3 new admin routes |
-| `src/pages/admin/AdminUsers.tsx` | Enrich detail panel with verification, account type, social links, shop info |
-| `src/pages/admin/AdminDashboard.tsx` | Add pending verifications, reviews, orders, leads stats + product type breakdown |
+| `src/App.tsx` | Add `/products` route under `PublicProductLayout` |
+| `src/pages/Marketplace.tsx` | Redesign as seller tool: primary CTA is "Add to Shop" / "In Shop", show commission prominently, remove "Add to Cart" button, add link to public `/products` |
+| `src/pages/ProductPage.tsx` | Change "Similar Products" → "More from this Seller" using `seller_shop_items` lookup. If accessed via shop ref, show that seller's other products. Fallback to same-category. |
+| `src/pages/SellerShop.tsx` | Add "Browse All Products" link pointing to `/products` |
+| `src/components/LandingNavbar.tsx` | Add "Products" nav link to `/products` |
 
-### No database changes needed — all tables and columns already exist.
+### Key UX Decisions
+
+- **Sellers** (logged in, `/marketplace`): See commission rates, "Add to My Shop", share links. No cart.
+- **Buyers** (public, `/products`): See prices, "Add to Cart", no commission info, no shop management. Cart → Checkout → enter details at payment.
+- **Product pages** (`/product/:slug`): Remain dual-purpose — show cart for everyone, show seller tools only when logged in (already works this way).
 
