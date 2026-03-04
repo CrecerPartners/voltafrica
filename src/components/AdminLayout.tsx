@@ -7,6 +7,9 @@ import {
   Wallet,
   GraduationCap,
   ArrowLeft,
+  Star,
+  ShieldCheck,
+  ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +18,10 @@ const navItems = [
   { label: "Users", path: "/admin/users", icon: Users },
   { label: "Products", path: "/admin/products", icon: Package },
   { label: "Sales", path: "/admin/sales", icon: ShoppingCart },
+  { label: "Orders", path: "/admin/orders", icon: ClipboardList },
   { label: "Payouts", path: "/admin/payouts", icon: Wallet },
+  { label: "Reviews", path: "/admin/reviews", icon: Star },
+  { label: "Verification", path: "/admin/verification", icon: ShieldCheck },
   { label: "Training", path: "/admin/training", icon: GraduationCap },
   { label: "Referrals", path: "/admin/referrals", icon: Users },
   { label: "Leaderboard", path: "/admin/leaderboard", icon: LayoutDashboard },

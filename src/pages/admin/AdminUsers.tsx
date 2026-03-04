@@ -42,7 +42,11 @@ export default function AdminUsers() {
 
   const openDetail = (u: any) => {
     setSelected(u);
-    setEditForm({ name: u.name, university: u.university, whatsapp: u.whatsapp || "", bank_name: u.bank_name || "", account_number: u.account_number || "" });
+    setEditForm({
+      name: u.name, university: u.university, whatsapp: u.whatsapp || "",
+      bank_name: u.bank_name || "", account_number: u.account_number || "",
+      verification_status: u.verification_status || "unverified",
+    });
   };
 
   const saveEdit = () => {
@@ -142,13 +146,44 @@ export default function AdminUsers() {
                 ) : (
                   <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center text-xl font-bold">{selected.name?.charAt(0) || "?"}</div>
                 )}
-                <div><p className="font-semibold text-lg">{selected.name}</p><p className="text-sm text-muted-foreground">{selected.email}</p></div>
+                <div>
+                  <p className="font-semibold text-lg">{selected.name}</p>
+                  <p className="text-sm text-muted-foreground">{selected.email}</p>
+                </div>
               </div>
+
               <div className="grid gap-3 text-sm">
                 <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Tier</span><span className="font-medium">{selected.tier}</span></div>
+                <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Account Type</span><span className="font-medium capitalize">{selected.account_type || "—"}</span></div>
+                <div className="flex justify-between py-1 border-b">
+                  <span className="text-muted-foreground">Verification</span>
+                  <span className={`font-medium capitalize ${selected.verification_status === "verified" ? "text-green-600" : selected.verification_status === "pending" ? "text-yellow-600" : "text-red-600"}`}>
+                    {selected.verification_status || "unverified"}
+                  </span>
+                </div>
                 <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Referral Code</span><span className="font-mono">{selected.referral_code || "—"}</span></div>
                 <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Joined</span><span>{new Date(selected.created_at).toLocaleDateString()}</span></div>
+                {selected.bio && (
+                  <div className="py-1 border-b"><span className="text-muted-foreground block mb-1">Bio</span><span className="text-sm">{selected.bio}</span></div>
+                )}
+                {selected.shop_slug && (
+                  <div className="flex justify-between py-1 border-b">
+                    <span className="text-muted-foreground">Shop</span>
+                    <Link to={`/s/${selected.shop_slug}`} className="text-primary hover:underline text-sm">/s/{selected.shop_slug}</Link>
+                  </div>
+                )}
+                {selected.social_links && Object.keys(selected.social_links).length > 0 && (
+                  <div className="py-1 border-b">
+                    <span className="text-muted-foreground block mb-1">Social Links</span>
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(selected.social_links as Record<string, string>).map(([platform, url]) => (
+                        url && <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline capitalize">{platform}</a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
+
               <div className="pt-2 space-y-3">
                 <p className="text-sm font-medium">Edit Profile</p>
                 <div className="grid gap-2">
@@ -157,6 +192,14 @@ export default function AdminUsers() {
                   <Input placeholder="WhatsApp" value={editForm.whatsapp} onChange={(e) => setEditForm(f => ({ ...f, whatsapp: e.target.value }))} />
                   <Input placeholder="Bank Name" value={editForm.bank_name} onChange={(e) => setEditForm(f => ({ ...f, bank_name: e.target.value }))} />
                   <Input placeholder="Account Number" value={editForm.account_number} onChange={(e) => setEditForm(f => ({ ...f, account_number: e.target.value }))} />
+                  <Select value={editForm.verification_status} onValueChange={(v) => setEditForm(f => ({ ...f, verification_status: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Verification Status" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unverified">Unverified</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="verified">Verified</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button onClick={saveEdit} disabled={updateProfile.isPending} className="w-full"><Save className="h-4 w-4 mr-1" /> Save Changes</Button>
               </div>

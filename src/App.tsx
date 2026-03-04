@@ -40,6 +40,9 @@ import AdminPayouts from "@/pages/admin/AdminPayouts";
 import AdminTraining from "@/pages/admin/AdminTraining";
 import AdminReferrals from "@/pages/admin/AdminReferrals";
 import AdminLeaderboard from "@/pages/admin/AdminLeaderboard";
+import AdminReviews from "@/pages/admin/AdminReviews";
+import AdminVerification from "@/pages/admin/AdminVerification";
+import AdminOrders from "@/pages/admin/AdminOrders";
 import AdminLogin from "@/pages/admin/AdminLogin";
 
 const queryClient = new QueryClient();
@@ -90,6 +93,9 @@ const App = () => (
             <Route path="/admin/training" element={<AdminTraining />} />
             <Route path="/admin/referrals" element={<AdminReferrals />} />
             <Route path="/admin/leaderboard" element={<AdminLeaderboard />} />
+            <Route path="/admin/reviews" element={<AdminReviews />} />
+            <Route path="/admin/verification" element={<AdminVerification />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
