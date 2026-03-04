@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 export interface Sale {
   id: string;
@@ -41,5 +42,41 @@ export function useSales() {
       })) as Sale[];
     },
     enabled: !!user,
+  });
+}
+
+export function useDeleteSale() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (saleId: string) => {
+      const { error } = await supabase
+        .from("sales" as any)
+        .delete()
+        .eq("id", saleId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+      toast.success("Sale deleted");
+    },
+    onError: (err: any) => toast.error(err.message || "Failed to delete sale"),
+  });
+}
+
+export function useUpdateSale() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Record<string, any> }) => {
+      const { error } = await supabase
+        .from("sales" as any)
+        .update(data as any)
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+      toast.success("Sale updated");
+    },
+    onError: (err: any) => toast.error(err.message || "Failed to update sale"),
   });
 }

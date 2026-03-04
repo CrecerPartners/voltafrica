@@ -2,12 +2,17 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useSales } from "@/hooks/useSales";
+import { useSales, useDeleteSale, Sale } from "@/hooks/useSales";
 import { formatNaira } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingCart, TrendingUp, Star, Loader2, PlusCircle, AlertCircle } from "lucide-react";
+import { ShoppingCart, TrendingUp, Star, Loader2, PlusCircle, AlertCircle, Pencil, Trash2 } from "lucide-react";
 import { ManualSaleDialog } from "@/components/ManualSaleDialog";
+import { EditSaleDialog } from "@/components/EditSaleDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const statusColors: Record<string, string> = {
   confirmed: "text-success border-success/20",
@@ -24,9 +29,12 @@ const conversionColors: Record<string, string> = {
 
 const Sales = () => {
   const { data: sales = [], isLoading } = useSales();
+  const deleteSale = useDeleteSale();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [manualSaleOpen, setManualSaleOpen] = useState(false);
+  const [editSale, setEditSale] = useState<Sale | null>(null);
+  const [deleteSaleId, setDeleteSaleId] = useState<string | null>(null);
 
   const filtered = sales.filter(
     (s) =>
@@ -104,7 +112,6 @@ const Sales = () => {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {/* Type filter */}
         {["all", "sales", "leads"].map((t) => (
           <Button key={t} variant={typeFilter === t ? "default" : "outline"} size="sm" onClick={() => setTypeFilter(t)}
             className={typeFilter === t ? "volt-gradient" : ""}>
@@ -112,7 +119,6 @@ const Sales = () => {
           </Button>
         ))}
         <div className="hidden sm:block border-l border-border mx-1" />
-        {/* Status filter */}
         {["all", "confirmed", "pending", "cancelled"].map((s) => (
           <Button key={s} variant={statusFilter === s ? "default" : "outline"} size="sm" onClick={() => setStatusFilter(s)}
             className={statusFilter === s ? "volt-gradient" : ""}>
@@ -133,12 +139,13 @@ const Sales = () => {
                 <TableHead className="text-right">Amount</TableHead>
                 <TableHead className="text-right">Commission</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No sales yet</TableCell>
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">No sales yet</TableCell>
                 </TableRow>
               )}
               {filtered.map((sale) => (
@@ -167,13 +174,45 @@ const Sales = () => {
                   <TableCell>
                     <Badge variant="outline" className={statusColors[sale.status]}>{sale.status}</Badge>
                   </TableCell>
+                  <TableCell>
+                    {sale.status === "pending" && (
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditSale(sale)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteSaleId(sale.id)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
       <ManualSaleDialog open={manualSaleOpen} onOpenChange={setManualSaleOpen} />
+      <EditSaleDialog open={!!editSale} onOpenChange={(open) => !open && setEditSale(null)} sale={editSale} />
+
+      <AlertDialog open={!!deleteSaleId} onOpenChange={(open) => !open && setDeleteSaleId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this sale?</AlertDialogTitle>
+            <AlertDialogDescription>This action cannot be undone. The pending sale will be permanently removed.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => { if (deleteSaleId) { deleteSale.mutate(deleteSaleId); setDeleteSaleId(null); } }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

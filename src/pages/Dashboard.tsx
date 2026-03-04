@@ -35,6 +35,7 @@ import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Loader2 } from "lucide-react";
 import { SignupBonusDialog } from "@/components/SignupBonusDialog";
+import { OnboardingWalkthrough } from "@/components/OnboardingWalkthrough";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -92,8 +93,10 @@ const Dashboard = () => {
 
   const firstName = profile?.name?.split(" ")[0] || "there";
 
-  // Show signup bonus dialog for new users
+  // Show signup bonus dialog for new users, then onboarding
   const [showBonusDialog, setShowBonusDialog] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   useEffect(() => {
     if (!profile || !transactions) return;
     const hasSeenBonus = localStorage.getItem(`volt-bonus-seen-${profile.user_id}`);
@@ -105,6 +108,17 @@ const Dashboard = () => {
       }
     }
   }, [profile, transactions]);
+
+  const handleBonusClose = (open: boolean) => {
+    setShowBonusDialog(open);
+    if (!open && profile) {
+      const hasSeenOnboarding = localStorage.getItem(`volt-onboarding-done-${profile.user_id}`);
+      if (!hasSeenOnboarding) {
+        setShowOnboarding(true);
+        localStorage.setItem(`volt-onboarding-done-${profile.user_id}`, "true");
+      }
+    }
+  };
 
   const copyReferralCode = () => {
     if (profile?.referral_code) {
@@ -274,7 +288,8 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      <SignupBonusDialog open={showBonusDialog} onOpenChange={setShowBonusDialog} name={firstName} />
+      <SignupBonusDialog open={showBonusDialog} onOpenChange={handleBonusClose} name={firstName} />
+      <OnboardingWalkthrough open={showOnboarding} onOpenChange={setShowOnboarding} referralCode={profile?.referral_code || undefined} />
     </div>
   );
 };
