@@ -1,7 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAdminUsers, useAdminSales, useAdminPayouts, useAdminTransactions } from "@/hooks/useAdminData";
-import { Users, ShoppingCart, Wallet, TrendingUp, Clock, AlertTriangle, ArrowRight } from "lucide-react";
+import { useAdminUsers, useAdminSales, useAdminPayouts, useAdminTransactions, useAdminProducts } from "@/hooks/useAdminData";
+import { useAdminReviews } from "@/hooks/useAdminReviews";
+import { useAdminOrders } from "@/hooks/useAdminOrders";
+import { Users, ShoppingCart, Wallet, TrendingUp, Clock, AlertTriangle, ArrowRight, Star, ShieldCheck, ClipboardList, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo } from "react";
@@ -11,6 +13,9 @@ export default function AdminDashboard() {
   const { data: sales } = useAdminSales();
   const { data: payouts } = useAdminPayouts();
   const { data: transactions } = useAdminTransactions();
+  const { data: products } = useAdminProducts();
+  const { data: reviews } = useAdminReviews();
+  const { data: orders } = useAdminOrders();
 
   const totalUsers = users?.length ?? 0;
   const totalSales = sales?.length ?? 0;
@@ -18,6 +23,20 @@ export default function AdminDashboard() {
   const pendingPayouts = payouts?.filter((p) => p.status === "pending").length ?? 0;
   const totalRevenue = sales?.filter(s => s.status === "confirmed").reduce((sum, s) => sum + Number(s.amount), 0) ?? 0;
   const totalCommissions = transactions?.filter(t => t.status === "paid").reduce((sum, t) => sum + Number(t.amount), 0) ?? 0;
+  const pendingVerifications = users?.filter((u) => u.verification_status === "pending").length ?? 0;
+  const totalReviews = reviews?.length ?? 0;
+  const totalOrders = orders?.length ?? 0;
+  const verifiedLeads = sales?.filter((s: any) => s.conversion_status === "verified").length ?? 0;
+
+  // Product type breakdown
+  const productTypeCounts = useMemo(() => {
+    const counts = { physical: 0, digital: 0, lead: 0 };
+    products?.forEach((p: any) => {
+      const t = p.product_type as keyof typeof counts;
+      if (t in counts) counts[t]++;
+    });
+    return counts;
+  }, [products]);
 
   // Tier distribution
   const tierCounts = useMemo(() => {
@@ -57,9 +76,13 @@ export default function AdminDashboard() {
     { label: "Pending Payouts", value: pendingPayouts, icon: Wallet, color: "text-orange-500" },
     { label: "Total Revenue", value: `₦${totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "text-emerald-500" },
     { label: "Commissions Paid", value: `₦${totalCommissions.toLocaleString()}`, icon: TrendingUp, color: "text-purple-500" },
+    { label: "Pending Verifications", value: pendingVerifications, icon: ShieldCheck, color: "text-cyan-500" },
+    { label: "Total Reviews", value: totalReviews, icon: Star, color: "text-pink-500" },
+    { label: "Total Orders", value: totalOrders, icon: ClipboardList, color: "text-indigo-500" },
+    { label: "Verified Leads", value: verifiedLeads, icon: Package, color: "text-teal-500" },
   ];
 
-  const hasPendingAlerts = pendingSales > 0 || pendingPayouts > 0;
+  const hasPendingAlerts = pendingSales > 0 || pendingPayouts > 0 || pendingVerifications > 0;
 
   return (
     <div className="space-y-6">
@@ -86,11 +109,19 @@ export default function AdminDashboard() {
               </div>
             </Link>
           )}
+          {pendingVerifications > 0 && (
+            <Link to="/admin/verification">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 text-cyan-800 dark:text-cyan-300 text-sm">
+                <ShieldCheck className="h-4 w-4" />
+                {pendingVerifications} verification{pendingVerifications > 1 ? "s" : ""} pending
+                <ArrowRight className="h-3 w-3" />
+              </div>
+            </Link>
+          )}
         </div>
       )}
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {cards.map((c) => (
           <Card key={c.label}>
             <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-4">
@@ -104,10 +135,26 @@ export default function AdminDashboard() {
         ))}
       </div>
 
+      {/* Product type breakdown */}
+      <div className="flex flex-wrap gap-3">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted text-sm">
+          <Package className="h-3.5 w-3.5" /> Physical: <span className="font-semibold">{productTypeCounts.physical}</span>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted text-sm">
+          <Package className="h-3.5 w-3.5" /> Digital: <span className="font-semibold">{productTypeCounts.digital}</span>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted text-sm">
+          <Package className="h-3.5 w-3.5" /> Lead: <span className="font-semibold">{productTypeCounts.lead}</span>
+        </div>
+      </div>
+
       {/* Quick actions */}
       <div className="flex flex-wrap gap-2">
         <Link to="/admin/sales"><Button variant="outline" size="sm">Review Sales</Button></Link>
         <Link to="/admin/payouts"><Button variant="outline" size="sm">Process Payouts</Button></Link>
+        <Link to="/admin/orders"><Button variant="outline" size="sm">Manage Orders</Button></Link>
+        <Link to="/admin/verification"><Button variant="outline" size="sm">Verifications</Button></Link>
+        <Link to="/admin/reviews"><Button variant="outline" size="sm">Moderate Reviews</Button></Link>
         <Link to="/admin/products"><Button variant="outline" size="sm">Manage Products</Button></Link>
         <Link to="/admin/users"><Button variant="outline" size="sm">Manage Users</Button></Link>
         <Link to="/admin/training"><Button variant="outline" size="sm">Training Content</Button></Link>
