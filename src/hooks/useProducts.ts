@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type ProductType = "physical" | "digital" | "lead";
+export type CommissionModel = "percentage" | "fixed" | "per_signup" | "per_install";
+
 export interface DbProduct {
   id: string;
   name: string;
@@ -17,12 +20,14 @@ export interface DbProduct {
     instagramCaption: string;
     twitterCaption: string;
     sellingTips: string[];
+    fulfillment_url?: string;
   };
   slug: string;
+  product_type: ProductType;
+  commission_model: CommissionModel;
   created_at: string;
 }
 
-// Map DB product to the shape components expect
 export interface Product {
   id: string;
   name: string;
@@ -34,6 +39,8 @@ export interface Product {
   description: string;
   assets: DbProduct["assets"];
   slug: string;
+  productType: ProductType;
+  commissionModel: CommissionModel;
 }
 
 function mapProduct(db: DbProduct): Product {
@@ -48,6 +55,8 @@ function mapProduct(db: DbProduct): Product {
     description: db.description,
     assets: db.assets,
     slug: db.slug,
+    productType: (db.product_type as ProductType) || "physical",
+    commissionModel: (db.commission_model as CommissionModel) || "percentage",
   };
 }
 

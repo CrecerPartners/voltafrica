@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/integrations/supabase/client";
 import { formatNaira } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,23 +13,39 @@ import { ChevronLeft, Loader2, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const checkoutSchema = z.object({
-  name: z.string().trim().min(2, "Name is required").max(100),
-  email: z.string().trim().email("Valid email is required").max(255),
-  phone: z.string().trim().min(10, "Valid phone number is required").max(20),
-  address: z.string().trim().min(5, "Delivery address is required").max(500),
-  city: z.string().trim().min(2, "City is required").max(100),
-  state: z.string().trim().min(2, "State is required").max(100),
-});
-
-type CheckoutForm = z.infer<typeof checkoutSchema>;
-
 const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const { data: products = [] } = useProducts();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState<CheckoutForm>({
+
+  // Determine if all items in cart are digital
+  const allDigital = useMemo(() => {
+    return items.length > 0 && items.every((item) => {
+      const product = products.find((p) => p.id === item.productId);
+      return product?.productType === "digital";
+    });
+  }, [items, products]);
+
+  const checkoutSchema = useMemo(() => {
+    const base = {
+      name: z.string().trim().min(2, "Name is required").max(100),
+      email: z.string().trim().email("Valid email is required").max(255),
+      phone: z.string().trim().min(10, "Valid phone number is required").max(20),
+    };
+    if (allDigital) return z.object(base);
+    return z.object({
+      ...base,
+      address: z.string().trim().min(5, "Delivery address is required").max(500),
+      city: z.string().trim().min(2, "City is required").max(100),
+      state: z.string().trim().min(2, "State is required").max(100),
+    });
+  }, [allDigital]);
+
+  type CheckoutForm = z.infer<typeof checkoutSchema>;
+
+  const [form, setForm] = useState<Record<string, string>>({
     name: "",
     email: "",
     phone: "",
@@ -36,7 +53,7 @@ const Checkout = () => {
     city: "",
     state: "",
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof CheckoutForm, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
 
   if (items.length === 0) {
     return (
@@ -52,17 +69,21 @@ const Checkout = () => {
     );
   }
 
-  const handleChange = (field: keyof CheckoutForm, value: string) => {
+  const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
+  const visibleFields = allDigital
+    ? (["name", "email", "phone"] as const)
+    : (["name", "email", "phone", "address", "city", "state"] as const);
+
   const handleSubmit = async () => {
     const result = checkoutSchema.safeParse(form);
     if (!result.success) {
-      const fieldErrors: Partial<Record<keyof CheckoutForm, string>> = {};
+      const fieldErrors: Partial<Record<string, string>> = {};
       result.error.errors.forEach((e) => {
-        const field = e.path[0] as keyof CheckoutForm;
+        const field = e.path[0] as string;
         if (!fieldErrors[field]) fieldErrors[field] = e.message;
       });
       setErrors(fieldErrors);
@@ -73,17 +94,16 @@ const Checkout = () => {
     try {
       const refCode = localStorage.getItem("volt_ref_code") || null;
 
-      // Create order
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
           user_id: user?.id || null,
-          email: result.data.email,
-          name: result.data.name,
-          phone: result.data.phone,
-          address: result.data.address,
-          city: result.data.city,
-          state: result.data.state,
+          email: form.email,
+          name: form.name,
+          phone: form.phone,
+          address: allDigital ? "Digital delivery" : form.address,
+          city: allDigital ? "N/A" : form.city,
+          state: allDigital ? "N/A" : form.state,
           total: totalPrice,
           status: "pending",
         })
@@ -92,7 +112,6 @@ const Checkout = () => {
 
       if (orderError) throw orderError;
 
-      // Create order items
       const orderItems = items.map((item) => ({
         order_id: order.id,
         product_id: item.productId,
@@ -105,13 +124,12 @@ const Checkout = () => {
       const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
       if (itemsError) throw itemsError;
 
-      // Initiate Paystack payment
       const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
         "create-paystack-payment",
         {
           body: {
             orderId: order.id,
-            email: result.data.email,
+            email: form.email,
             amount: totalPrice,
           },
         }
@@ -133,6 +151,24 @@ const Checkout = () => {
     }
   };
 
+  const fieldLabels: Record<string, string> = {
+    name: "Full Name",
+    email: "Email",
+    phone: "Phone Number",
+    address: "Address",
+    city: "City",
+    state: "State",
+  };
+
+  const fieldPlaceholders: Record<string, string> = {
+    name: "Full name",
+    email: "you@example.com",
+    phone: "08012345678",
+    address: "Street address",
+    city: "Lagos",
+    state: "Lagos State",
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-12">
       <Link to="/marketplace" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -142,27 +178,21 @@ const Checkout = () => {
       <h1 className="text-2xl md:text-3xl font-bold font-display">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Delivery form */}
         <div className="lg:col-span-3 space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Delivery Information</CardTitle>
+              <CardTitle className="text-lg">
+                {allDigital ? "Contact Information" : "Delivery Information"}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {(["name", "email", "phone", "address", "city", "state"] as const).map((field) => (
+              {visibleFields.map((field) => (
                 <div key={field} className="space-y-1.5">
-                  <Label htmlFor={field} className="capitalize">{field === "phone" ? "Phone Number" : field}</Label>
+                  <Label htmlFor={field}>{fieldLabels[field]}</Label>
                   <Input
                     id={field}
                     type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
-                    placeholder={
-                      field === "name" ? "Full name" :
-                      field === "email" ? "you@example.com" :
-                      field === "phone" ? "08012345678" :
-                      field === "address" ? "Street address" :
-                      field === "city" ? "Lagos" :
-                      "Lagos State"
-                    }
+                    placeholder={fieldPlaceholders[field]}
                     value={form[field]}
                     onChange={(e) => handleChange(field, e.target.value)}
                   />
@@ -173,7 +203,6 @@ const Checkout = () => {
           </Card>
         </div>
 
-        {/* Order summary */}
         <div className="lg:col-span-2">
           <Card className="sticky top-24">
             <CardHeader>

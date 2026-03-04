@@ -23,7 +23,7 @@ export function useAdminSales() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("sales")
-        .select("*, products(name, brand)")
+        .select("*, products(name, brand, product_type)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       // Fetch seller names

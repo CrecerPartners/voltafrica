@@ -12,11 +12,13 @@ export interface Sale {
   amount: number;
   commission: number;
   status: "confirmed" | "pending" | "cancelled";
+  conversion_status: string | null;
   proof_file_url: string | null;
   notes: string | null;
   created_at: string;
   product_name?: string;
   category?: string;
+  product_type?: string;
 }
 
 export function useSales() {
@@ -27,7 +29,7 @@ export function useSales() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("sales" as any)
-        .select("*, products:product_id(name, category)")
+        .select("*, products:product_id(name, category, product_type)")
         .eq("user_id", user!.id)
         .order("date", { ascending: false });
       if (error) throw error;
@@ -35,6 +37,7 @@ export function useSales() {
         ...s,
         product_name: s.products?.name || "Unknown",
         category: s.products?.category || "digital",
+        product_type: s.products?.product_type || "physical",
       })) as Sale[];
     },
     enabled: !!user,
