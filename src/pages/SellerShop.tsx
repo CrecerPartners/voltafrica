@@ -63,9 +63,6 @@ const SellerShop = () => {
           <Badge variant="outline" className="text-xs">
             <Store className="h-3 w-3 mr-1" /> {products.length} product{products.length !== 1 ? "s" : ""}
           </Badge>
-          <Button variant="outline" size="sm" asChild className="text-xs h-7">
-            <Link to="/products">Browse All Products</Link>
-          </Button>
         </div>
       </div>
 
