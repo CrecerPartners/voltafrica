@@ -1,71 +1,64 @@
 
 
-## Restructure Product Types & Commission Models
+## Enrich Admin Panel for All New Features
 
-### What We're Building
+The admin currently manages users, products, sales, payouts, training, referrals, and leaderboard. But recent features added verification, reviews, shop customization, and multi-product-type support that the admin can't yet manage. Here's what needs updating:
 
-Adding `product_type` and `commission_model` to products so Volt can handle physical goods, digital products, and lead/sign-up offers with distinct flows. For lead products, sellers share an **external link with their tracking ref code appended** — no cart, no checkout. The system tracks clicks and admin manually verifies conversions.
+### What's Missing
 
-### Database Migration
+1. **Verification Management** — Admin has no way to view/approve/reject user ID verification requests. The `verification_status`, `account_type`, `id_document_url` fields exist on profiles but are invisible in admin.
+2. **Reviews Management** — The `reviews` table exists but admin can't view, moderate, or delete reviews.
+3. **User Detail Panel** — Missing: verification status, account type, social links, shop slug, shop logo, bio. The edit form only shows name/university/whatsapp/bank.
+4. **Dashboard Overview** — No stats for: pending verifications, total reviews, lead conversions, product type breakdown.
+5. **Orders Management** — Orders table exists but there's no admin page for it. Admin can't see buyer orders or track fulfillment.
 
-Add 2 columns to `products`, 1 to `sales`:
+### Plan
 
-```sql
-ALTER TABLE public.products ADD COLUMN product_type text NOT NULL DEFAULT 'physical';
--- values: 'physical', 'digital', 'lead'
+**1. New Page: Admin Reviews (`src/pages/admin/AdminReviews.tsx`)**
+- List all reviews with product name, reviewer, rating (stars), comment, date
+- Delete button for moderation
+- Filter by rating (1-5) and search by product/reviewer
+- New hook: `useAdminReviews` + `useDeleteReview` in `useAdminData.ts`
 
-ALTER TABLE public.products ADD COLUMN commission_model text NOT NULL DEFAULT 'percentage';
--- values: 'percentage', 'fixed', 'per_signup', 'per_install'
+**2. New Page: Admin Verification (`src/pages/admin/AdminVerification.tsx`)**
+- List profiles where `id_document_url IS NOT NULL` or `verification_status = 'pending'`
+- Show: name, account type, verification status, uploaded doc (view/download from `verification-docs` bucket)
+- Quick actions: Approve (set `verified`), Reject (set `unverified`)
+- New hook: `useAdminVerifications` in `useAdminData.ts` (filtered query on profiles)
 
-ALTER TABLE public.sales ADD COLUMN conversion_status text DEFAULT NULL;
--- values: 'clicked', 'signed_up', 'verified', 'paid_out' (only for lead products)
-```
+**3. New Page: Admin Orders (`src/pages/admin/AdminOrders.tsx`)**
+- List all orders with buyer name, email, total, status, date
+- Expand to see order items (product, quantity, price, ref code)
+- Update order status (pending → confirmed → delivered)
+- New hooks: `useAdminOrders` in `useAdminData.ts`
 
-The `fulfillment_url` (external brand link for digital/lead products) will be stored in the existing `assets` JSONB field as `assets.fulfillment_url`.
+**4. Enrich AdminUsers detail panel**
+- Show: account type, verification status (with badge), social links, shop slug, shop logo, bio
+- Add verification status dropdown (unverified/pending/verified) to edit form
+- Link to view their shop (`/s/{shop_slug}`)
 
-### How Lead/Sign-Up Tracking Works
+**5. Enrich AdminDashboard**
+- Add cards: Pending Verifications, Total Reviews, Lead Conversions (verified), Total Orders
+- Add product type breakdown (physical/digital/lead counts)
 
-1. Admin creates a lead product with `product_type = 'lead'` and sets `assets.fulfillment_url` to the brand's external sign-up page (e.g. `https://brand.com/signup`)
-2. On ProductPage, instead of "Add to Cart", buyer sees **"Sign Up Now"** button
-3. Clicking it:
-   - Records a `sales` row with `conversion_status: 'clicked'`, `amount: 0`, and the seller's ref code
-   - Redirects buyer to `fulfillment_url?ref={sellerRefCode}` — the external link with tracking code appended
-4. Admin later updates `conversion_status` through AdminSales as the lead progresses (clicked → signed_up → verified → paid_out)
-5. Commission is only credited when admin sets status to `verified`
+**6. Update AdminLayout nav**
+- Add: Reviews, Verification, Orders to sidebar
 
-### How Digital Products Differ
-
-- Same checkout flow but **Checkout.tsx hides delivery address fields** (only name, email, phone)
-- After payment, **redirect to `fulfillment_url`** instead of generic confirmation
-- Paystack webhook auto-confirms digital orders
+### Files to Create
+| File | Purpose |
+|------|---------|
+| `src/pages/admin/AdminReviews.tsx` | Review moderation page |
+| `src/pages/admin/AdminVerification.tsx` | ID verification management |
+| `src/pages/admin/AdminOrders.tsx` | Order tracking/management |
 
 ### Files to Modify
+| File | Changes |
+|------|---------|
+| `src/hooks/useAdminData.ts` | Add: `useAdminReviews`, `useDeleteReview`, `useAdminVerifications`, `useAdminOrders`, `useUpdateOrderStatus` |
+| `src/components/AdminLayout.tsx` | Add Reviews, Verification, Orders nav items |
+| `src/App.tsx` | Add 3 new admin routes |
+| `src/pages/admin/AdminUsers.tsx` | Enrich detail panel with verification, account type, social links, shop info |
+| `src/pages/admin/AdminDashboard.tsx` | Add pending verifications, reviews, orders, leads stats + product type breakdown |
 
-| File | What Changes |
-|------|-------------|
-| `src/hooks/useProducts.ts` | Add `productType`, `commissionModel` to interfaces, map from DB |
-| `src/hooks/useProduct.ts` | Same interface update |
-| `src/pages/admin/AdminProducts.tsx` | Add Product Type selector (Physical/Digital/Lead), Commission Model selector, Fulfillment URL field (shown for digital/lead) |
-| `src/pages/ProductPage.tsx` | Conditional CTA: "Add to Cart" for physical/digital, "Sign Up Now" for lead (creates sale record + redirects to external URL with ref code). Show product type badge. |
-| `src/pages/Marketplace.tsx` | Show type badge. For leads: "Sign Up" instead of "Add" button, link goes external with ref |
-| `src/pages/Checkout.tsx` | Hide address/city/state for digital products. After payment for digital, redirect to fulfillment URL |
-| `src/pages/Sales.tsx` | Add "Type" filter tab (All/Sales/Leads). Show `conversion_status` for lead-type entries |
-| `src/pages/admin/AdminSales.tsx` | Add conversion status dropdown for lead sales (clicked → signed_up → verified → paid_out). Confirming a lead at "verified" credits commission |
-| `src/components/ManualSaleDialog.tsx` | For lead products: hide price/quantity/proof fields, show conversion status selector instead |
-| `supabase/functions/paystack-webhook/index.ts` | Look up product type; auto-confirm digital orders on payment |
-| `src/pages/admin/AdminProducts.tsx` | Show product type column in table |
-
-### Commission Display (Seller-facing)
-
-- **Physical**: "Earn 20% per sale" + Add to Cart
-- **Digital**: "Earn ₦500 per sale" + Add to Cart (no shipping)
-- **Lead**: "Earn ₦1,000 per verified sign-up" + Share Link (external redirect)
-
-### What We're NOT Building Yet
-
-- Auto-conversion tracking via brand API/webhooks (future)
-- Subscription renewal tracking (future)
-- Per-install SDK tracking (future)
-
-Admin manually verifies lead conversions, same pattern as current manual sale verification.
+### No database changes needed — all tables and columns already exist.
 
