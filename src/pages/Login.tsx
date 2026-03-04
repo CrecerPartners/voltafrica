@@ -31,7 +31,8 @@ const Login = () => {
   const [isSignup, setIsSignup] = useState(isJoinNow);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [sellerType, setSellerType] = useState("");
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,9 +45,21 @@ const Login = () => {
 
     try {
       if (isSignup) {
-        // Pass sellerType as university field (reusing existing DB column)
+        if (!firstName.trim() || !lastName.trim()) {
+          toast.error("First name and last name are required");
+          return;
+        }
+        if (!sellerType) {
+          toast.error("Please select what best describes you");
+          return;
+        }
+        if (!city) {
+          toast.error("Please select your city");
+          return;
+        }
+        const fullName = `${firstName.trim()} ${lastName.trim()}`;
         const university = `${sellerType} — ${city}`;
-        const { error } = await signUp(email, password, name, university, sellerType);
+        const { error } = await signUp(email, password, fullName, university, sellerType);
         if (error) {
           toast.error(error.message);
         } else {
@@ -107,18 +120,31 @@ const Login = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignup && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Full Name</label>
-                <Input
-                  placeholder="Chidera Okafor"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="bg-secondary border-border"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">First Name <span className="text-destructive">*</span></label>
+                  <Input
+                    placeholder="Chidera"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="bg-secondary border-border"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">Last Name <span className="text-destructive">*</span></label>
+                  <Input
+                    placeholder="Okafor"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="bg-secondary border-border"
+                    required
+                  />
+                </div>
               </div>
             )}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Email</label>
+              <label className="text-sm font-medium text-foreground">Email <span className="text-destructive">*</span></label>
               <Input
                 type="email"
                 placeholder="you@email.com"
@@ -129,7 +155,7 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Password</label>
+              <label className="text-sm font-medium text-foreground">Password <span className="text-destructive">*</span></label>
               <Input
                 type="password"
                 placeholder="••••••••"
@@ -143,8 +169,8 @@ const Login = () => {
             {isSignup && (
               <>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">What best describes you?</label>
-                  <Select value={sellerType} onValueChange={setSellerType}>
+                  <label className="text-sm font-medium text-foreground">What best describes you? <span className="text-destructive">*</span></label>
+                  <Select value={sellerType} onValueChange={setSellerType} required>
                     <SelectTrigger className="bg-secondary border-border">
                       <SelectValue placeholder="Select your category" />
                     </SelectTrigger>
@@ -156,8 +182,8 @@ const Login = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">What city are you based in?</label>
-                  <Select value={city} onValueChange={setCity}>
+                  <label className="text-sm font-medium text-foreground">What city are you based in? <span className="text-destructive">*</span></label>
+                  <Select value={city} onValueChange={setCity} required>
                     <SelectTrigger className="bg-secondary border-border">
                       <SelectValue placeholder="Select your city" />
                     </SelectTrigger>
