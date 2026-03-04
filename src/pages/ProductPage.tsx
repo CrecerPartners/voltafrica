@@ -17,7 +17,7 @@ import { shareContent, canNativeShare, copyToClipboard } from "@/lib/shareUtils"
 import { supabase } from "@/integrations/supabase/client";
 import {
   Link2, Share2, Lightbulb, Copy, MessageCircle, Instagram, Twitter,
-  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check, Download
+  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check, Download, UserSearch
 } from "lucide-react";
 import { ReviewSection } from "@/components/ReviewSection";
 import { toast } from "sonner";
@@ -62,8 +62,13 @@ const ProductPage = () => {
   const [activeThumb, setActiveThumb] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [leadLoading, setLeadLoading] = useState(false);
+  const [sellerInfo, setSellerInfo] = useState<{ shopSlug: string; shopName: string } | null>(null);
 
-  const isLoggedIn = !!user;
+  // Determine viewing context
+  const isSeller = !!user; // Logged-in user = seller
+  const isBuyerWithRef = !isSeller && !!refCode; // Public visitor with ref code = buyer via seller shop
+  const isDirectVisitor = !isSeller && !refCode; // No login, no ref = organic/direct visitor
+
   const userRefCode = profile?.referral_code || refCode || "VOLT";
   const referralLink = product ? `${window.location.origin}/product/${product.slug}?ref=${userRefCode}` : "";
 
@@ -74,11 +79,26 @@ const ProductPage = () => {
     }
   }, [refCode]);
 
+  // Find seller info for breadcrumb (when ref code present, look up seller's shop)
+  useEffect(() => {
+    if (!refCode) return;
+    const fetchSellerByRef = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("shop_slug, shop_name, name")
+        .eq("referral_code", refCode)
+        .limit(1);
+      if (data && data.length > 0 && data[0].shop_slug) {
+        setSellerInfo({ shopSlug: data[0].shop_slug, shopName: data[0].shop_name || data[0].name || "Shop" });
+      }
+    };
+    fetchSellerByRef();
+  }, [refCode]);
+
   // Find products from the same seller (via seller_shop_items) or fall back to same category
   const [sellerProducts, setSellerProducts] = useState<string[]>([]);
   useEffect(() => {
     if (!product) return;
-    // Find which sellers have this product in their shop, then get their other products
     const fetchSellerProducts = async () => {
       const { data: shopEntries } = await supabase
         .from("seller_shop_items" as any)
@@ -113,7 +133,6 @@ const ProductPage = () => {
     }
     setLeadLoading(true);
     try {
-      // Record click as a sale entry for tracking
       if (user) {
         await supabase
           .from("sales" as any)
@@ -129,7 +148,6 @@ const ProductPage = () => {
             conversion_status: "clicked",
           } as any);
       }
-      // Redirect to external URL with ref code appended
       const separator = fulfillmentUrl.includes("?") ? "&" : "?";
       const trackedUrl = `${fulfillmentUrl}${separator}ref=${userRefCode}`;
       window.open(trackedUrl, "_blank");
@@ -153,9 +171,9 @@ const ProductPage = () => {
       <div className="flex flex-col items-center justify-center py-20 min-h-[60vh] text-center">
         <p className="text-lg font-semibold text-foreground">Product not found</p>
         <p className="text-sm text-muted-foreground mt-1">This product may have been removed.</p>
-        <Link to="/marketplace">
+        <Link to="/">
           <Button variant="outline" className="mt-4">
-            <ChevronLeft className="h-4 w-4 mr-1" /> Back to Marketplace
+            <ChevronLeft className="h-4 w-4 mr-1" /> Go Home
           </Button>
         </Link>
       </div>
@@ -170,10 +188,24 @@ const ProductPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
-      {/* Breadcrumb */}
+      {/* Breadcrumb — context-aware */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link to="/marketplace" className="hover:text-foreground transition-colors">Marketplace</Link>
-        <span>/</span>
+        {isSeller ? (
+          <>
+            <Link to="/marketplace" className="hover:text-foreground transition-colors">Marketplace</Link>
+            <span>/</span>
+          </>
+        ) : sellerInfo ? (
+          <>
+            <Link to={`/s/${sellerInfo.shopSlug}`} className="hover:text-foreground transition-colors">{sellerInfo.shopName}</Link>
+            <span>/</span>
+          </>
+        ) : (
+          <>
+            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+            <span>/</span>
+          </>
+        )}
         <span className="text-foreground font-medium truncate">{product.name}</span>
       </div>
 
@@ -237,7 +269,8 @@ const ProductPage = () => {
             {product.price > 0 && (
               <span className="text-2xl font-bold text-foreground">{formatNaira(product.price)}</span>
             )}
-            {isLoggedIn && (
+            {/* Commission badge — sellers only */}
+            {isSeller && (
               <Badge className="volt-gradient text-primary-foreground text-sm px-3 py-1">
                 {getCommissionLabel(product)}
               </Badge>
@@ -246,9 +279,16 @@ const ProductPage = () => {
 
           <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
 
-          {/* CTA — varies by product type */}
+          {/* CTA — varies by context */}
           <div className="space-y-3 pt-2">
-            {isLead ? (
+            {isDirectVisitor ? (
+              /* Direct visitor without ref: can't purchase (no seller attribution) */
+              <div className="rounded-xl border border-border/50 bg-muted/30 p-4 text-center space-y-2">
+                <UserSearch className="h-8 w-8 text-muted-foreground mx-auto" />
+                <p className="text-sm font-medium text-foreground">Want to buy this product?</p>
+                <p className="text-xs text-muted-foreground">Find a Volt seller to get a purchase link, or visit a seller's shop to browse and buy.</p>
+              </div>
+            ) : isLead ? (
               /* Lead product: Sign Up Now button → external redirect */
               <Button
                 className="w-full volt-gradient h-12 text-base"
@@ -259,7 +299,7 @@ const ProductPage = () => {
                 Sign Up Now
               </Button>
             ) : (
-              /* Physical / Digital: Add to Cart */
+              /* Physical / Digital: Add to Cart (buyers with ref + sellers) */
               <Button
                 className="w-full volt-gradient h-12 text-base"
                 onClick={() => {
@@ -279,7 +319,8 @@ const ProductPage = () => {
               </Button>
             )}
 
-            {isLoggedIn ? (
+            {/* Seller-only actions */}
+            {isSeller && (
               <>
                 <Button variant="outline" className="w-full h-10" onClick={() => copyToClipboard(referralLink, "Share link")}>
                   <Link2 className="h-4 w-4 mr-2" /> Copy My Share Link
@@ -311,26 +352,19 @@ const ProductPage = () => {
                   {shopItemIds.includes(product.id) ? "In My Shop" : "Add to My Shop"}
                 </Button>
               </>
-            ) : (
-              <Button variant="outline" className="w-full h-10" asChild>
-                <Link to="/login">
-                  <Zap className="h-4 w-4 mr-2" /> Sign In
-                </Link>
-              </Button>
             )}
           </div>
 
-          {/* Video */}
+          {/* Video — visible to everyone */}
           {product.assets.videoUrl && (
             <Button variant="outline" className="w-full" onClick={() => window.open(product.assets.videoUrl, "_blank")}>
               <ExternalLink className="h-4 w-4 mr-2" /> Watch Promo Video
             </Button>
           )}
 
-          {/* Seller-only tools */}
-          {isLoggedIn && (
+          {/* Seller-only tools: captions, tips */}
+          {isSeller && (
             <>
-              {/* Social Captions */}
               <div className="space-y-3 pt-2">
                 <h3 className="text-sm font-semibold text-foreground">Ready-made Captions</h3>
                 <CaptionCard icon={<MessageCircle className="h-4 w-4" />} label="WhatsApp" text={product.assets.whatsappMessage} link={referralLink} productName={product.name} />
@@ -338,7 +372,6 @@ const ProductPage = () => {
                 <CaptionCard icon={<Twitter className="h-4 w-4" />} label="Twitter / X" text={product.assets.twitterCaption} link={referralLink} productName={product.name} />
               </div>
 
-              {/* Selling Tips */}
               {product.assets.sellingTips?.length > 0 && (
                 <div className="space-y-2 pt-2">
                   <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -358,11 +391,11 @@ const ProductPage = () => {
         </div>
       </div>
 
-      {/* Reviews Section */}
+      {/* Reviews Section — visible to everyone */}
       <ReviewSection productId={product.id} />
 
-      {/* Media Kit (seller-only) */}
-      {isLoggedIn && images.length > 0 && (
+      {/* Media Kit — seller-only */}
+      {isSeller && images.length > 0 && (
         <Card className="border-border/50">
           <CardContent className="p-4 space-y-3">
             <h3 className="text-sm font-semibold flex items-center gap-2">
@@ -395,7 +428,7 @@ const ProductPage = () => {
           <h2 className="text-xl font-bold font-display text-foreground">{relatedTitle}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {related.map(p => (
-              <Link key={p.id} to={`/product/${p.slug}`}>
+              <Link key={p.id} to={`/product/${p.slug}${refCode ? `?ref=${refCode}` : ""}`}>
                 <Card className="border-border/50 group hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all overflow-hidden">
                   <div className="overflow-hidden">
                     <AspectRatio ratio={4 / 3}>
@@ -409,7 +442,11 @@ const ProductPage = () => {
                   <CardContent className="p-3 space-y-1">
                     <h3 className="font-semibold text-sm leading-tight truncate">{p.name}</h3>
                     <p className="text-xs text-muted-foreground">{p.brand}</p>
-                    <p className="text-sm font-bold text-primary">{getCommissionLabel(p)}</p>
+                    {isSeller ? (
+                      <p className="text-sm font-bold text-primary">{getCommissionLabel(p)}</p>
+                    ) : (
+                      <p className="text-sm font-bold text-foreground">{formatNaira(p.price)}</p>
+                    )}
                   </CardContent>
                 </Card>
               </Link>
