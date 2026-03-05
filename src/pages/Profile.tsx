@@ -171,6 +171,8 @@ const Profile = () => {
     </div>
   );
 
+  const isUnverified = !isVerified && !isPendingVerification;
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
@@ -179,6 +181,19 @@ const Profile = () => {
         </h1>
         <p className="text-muted-foreground mt-1">Manage your profile and shop</p>
       </div>
+
+      {/* Unverified Alert Banner */}
+      {isUnverified && (
+        <div className="flex items-start gap-3 rounded-lg border border-warning/30 bg-warning/5 p-4">
+          <CircleAlert className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-warning">Identity Not Verified</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Your identity has not been verified. Please upload your ID document below to get verified and unlock full features.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Avatar & Info */}
       <Card className="border-border/50">
@@ -192,11 +207,15 @@ const Profile = () => {
               {uploadAvatar.isPending ? <Loader2 className="h-5 w-5 text-white animate-spin" /> : <Camera className="h-5 w-5 text-white" />}
             </div>
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+            {isUnverified && (
+              <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-warning border-2 border-background" title="Unverified" />
+            )}
           </div>
           <div>
             <div className="flex items-center gap-2">
               <p className="font-semibold text-lg">{profile?.name || "—"}</p>
               {isVerified && <ShieldCheck className="h-4 w-4 text-primary" />}
+              {isUnverified && <Badge variant="outline" className="text-warning border-warning/30 text-[10px] px-1.5 py-0">Unverified</Badge>}
             </div>
             <p className="text-sm text-muted-foreground">{profile?.university || "—"}</p>
             <p className="text-xs text-primary font-medium mt-1">Tier: {profile?.tier || "Bronze"}</p>

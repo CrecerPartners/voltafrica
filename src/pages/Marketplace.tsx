@@ -102,23 +102,38 @@ const Marketplace = () => {
     );
   }
 
+  const firstName = profile?.name?.split(" ")[0] || "there";
+
   return (
     <div className="space-y-5 max-w-7xl">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-baseline gap-3">
-          <h1 className="text-2xl md:text-3xl font-bold font-display">Marketplace</h1>
-          <span className="text-sm text-muted-foreground">{filtered.length} products</span>
+      {/* Personalized Banner */}
+      <div className="volt-gradient rounded-2xl p-6 md:p-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA4KSIvPjwvc3ZnPg==')] opacity-50" />
+        <div className="relative z-10 space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold font-display text-white">
+                What are you selling today, <span className="underline decoration-white/40 underline-offset-4">{firstName}</span>?
+              </h1>
+              <p className="text-white/70 text-sm mt-1">{filtered.length} products available</p>
+            </div>
+            <Button variant="secondary" size="sm" asChild className="text-xs shrink-0 bg-white/15 border-white/20 text-white hover:bg-white/25 backdrop-blur-sm">
+              <Link to="/products"><ExternalLink className="h-3 w-3 mr-1" /> Public Store</Link>
+            </Button>
+          </div>
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
+            <Input
+              placeholder="Search products, brands..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 h-10 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus-visible:ring-white/30"
+            />
+          </div>
         </div>
-        <Button variant="outline" size="sm" asChild className="text-xs">
-          <Link to="/products"><ExternalLink className="h-3 w-3 mr-1" /> Public Store</Link>
-        </Button>
       </div>
 
       <div className="space-y-3">
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 h-9" />
-        </div>
         {/* Type filter */}
         <div className="flex flex-wrap items-center gap-2">
           {["all", "physical", "digital", "lead"].map((t) => (
