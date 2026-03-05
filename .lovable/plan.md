@@ -1,38 +1,41 @@
 
 
-## Fix: Seamless Login → OTP Flow
+## Plan: Marketplace Banner + Verification Improvements
 
-### The Problem
+### 1. Marketplace Banner with Personalized Greeting & Search
 
-When the user clicks "Sign In", `signIn()` succeeds which immediately sets `user` in auth state. The `useEffect` redirect fires and navigates to `/dashboard` before `signOut()` + `setStep("otp")` can run. The dashboard flashes, then the user bounces back to the login form.
+**File: `src/pages/Marketplace.tsx`**
 
-### The Fix
+Replace the current headline section (lines 106-121) with:
+- A styled banner card with gradient background
+- Personalized headline: "What are you selling today, **{firstName}**?" (extracted from `profile.name`)
+- Integrated search input with a search icon button inside the banner
+- Keep the "Public Store" link button
+- Move the product count below the banner
 
-Simple and clean — use a `useRef` flag to suppress the redirect during the login-OTP handoff:
+### 2. Pending Verification Notice in Profile Settings
 
-**File: `src/pages/Login.tsx`**
+**File: `src/pages/Profile.tsx`**
 
-1. Add `const isProcessingLogin = useRef(false)`
-2. Update the redirect `useEffect` to check the flag:
-   ```
-   if (!authLoading && user && !isProcessingLogin.current) {
-     navigate("/dashboard", { replace: true });
-   }
-   ```
-3. In the login branch of `handleSubmit`:
-   - Set `isProcessingLogin.current = true` **before** calling `signIn`
-   - If `signIn` errors, reset the flag to `false`
-   - If `signIn` succeeds, call `signOut()`, then `sendLoginOtp()`, then `setStep("otp")`, then set flag to `false`
-4. After successful OTP verification in `handleVerifyOtp`, the flag is already `false`, so the `useEffect` redirect naturally sends the user to `/dashboard`
+Currently, the profile page already shows "Pending Verification" and "Verified" badges in the verification card (lines 231-236). Enhancement:
+- For users whose `verification_status` is `unverified` and who haven't uploaded an ID yet, show a prominent alert/banner at the top of the profile page: "Your identity has not been verified. Please upload your ID to get verified."
+- Also show the unverified state in the avatar card area with an orange/warning indicator
 
-This ensures:
-- No dashboard flash — the redirect is suppressed during the sign-in → sign-out → send-OTP window
-- OTP screen appears immediately after password validation
-- After entering the 8-digit code, the user lands on the dashboard seamlessly
+### 3. Admin Verification Already Exists — Ensure It Works
+
+**File: `src/pages/admin/AdminVerification.tsx`** and **`src/hooks/useAdminVerifications.ts`**
+
+The admin verification page already exists with approve/reject functionality. No major changes needed — it already:
+- Lists profiles with pending/verified/unverified status
+- Has approve (set to "verified") and reject (set to "unverified") buttons
+- Shows document links
+
+Minor improvement: ensure the `useUpdateProfile` hook from `useAdminData` correctly updates `verification_status`.
 
 ### Files to Modify
 
 | File | Change |
 |------|--------|
-| `src/pages/Login.tsx` | Add `useRef` flag, guard the redirect `useEffect`, wrap login flow |
+| `src/pages/Marketplace.tsx` | Replace headline with personalized banner + integrated search |
+| `src/pages/Profile.tsx` | Add prominent unverified alert banner for unverified users |
 
