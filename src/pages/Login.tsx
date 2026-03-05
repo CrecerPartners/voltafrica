@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,9 +31,11 @@ const Login = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signUp, signIn, signOut, verifyOtp, resendSignupOtp, sendLoginOtp, resendLoginOtp } = useAuth();
 
+  const isProcessingLogin = useRef(false);
+
   // Redirect authenticated users to dashboard
   useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && user && !isProcessingLogin.current) {
       navigate("/dashboard", { replace: true });
     }
   }, [user, authLoading, navigate]);
@@ -77,13 +79,16 @@ const Login = () => {
           setStep("otp");
         }
       } else {
-        // Login: validate password first
+        // Login: validate password, suppress redirect, then send OTP
+        isProcessingLogin.current = true;
         const { error } = await signIn(email, password);
         if (error) {
+          isProcessingLogin.current = false;
           toast.error(error.message);
         } else {
           // Password valid — sign out and send OTP for second-factor verification
           await signOut();
+          isProcessingLogin.current = false;
           const { error: otpError } = await sendLoginOtp(email);
           if (otpError) {
             toast.error(otpError.message);
