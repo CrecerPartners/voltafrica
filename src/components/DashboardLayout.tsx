@@ -1,6 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Bell, LogOut, Zap } from "lucide-react";
+import { LogOut, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useProfile } from "@/hooks/useProfile";
@@ -9,6 +9,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { NotificationsPopover } from "@/components/NotificationsPopover";
 
 export function DashboardLayout() {
   const { data: profile } = useProfile();
@@ -49,10 +50,7 @@ export function DashboardLayout() {
             </div>
             <div className="flex items-center gap-3">
               <ThemeToggle />
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-4 w-4" />
-                <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-primary border-2 border-card" />
-              </Button>
+              <NotificationsPopover />
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
                   {profile?.avatar_url ? (
