@@ -28,7 +28,7 @@ import heroBrands from "@/assets/hero-brands.png";
 const audiences = {
   students: {
     badge: "For Gen Z Sellers",
-    headline: "Earn with Nigeria's fastest-growing Gen Z seller network.",
+    headline: "Join 1,000+ Gen Z Sellers Earning on Volt",
     subtitle:
       "Use your influence, audience, and network to promote products you love and earn real commissions while connecting with your community.",
     cta: "Start Earning Today",
@@ -38,9 +38,9 @@ const audiences = {
   },
   brands: {
     badge: "For Brands",
-    headline: "Penetrate the Gen Z Urban Market at Scale",
+    headline: "Built for Brands Selling to Gen Z & Millennials",
     subtitle:
-      "Leverage youth-led distribution across campuses, cities, creators, and communities to drive consistent product sales.",
+      "Fintech · Fashion · Food · Apps · Subscriptions · Events",
     cta: "Partner with Volt",
     ctaLink: "https://volt.crecerpartners.com/brand-form/",
     icon: Building2,
