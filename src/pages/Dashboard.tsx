@@ -99,6 +99,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!profile || !transactions) return;
+    // Only show for genuinely new signups (profile created within last 2 minutes)
+    const profileAge = new Date().getTime() - new Date(profile.created_at).getTime();
+    const isNewSignup = profileAge < 2 * 60 * 1000;
+    if (!isNewSignup) return;
+
     const hasSeenBonus = localStorage.getItem(`volt-bonus-seen-${profile.user_id}`);
     if (!hasSeenBonus) {
       const hasSignupBonus = transactions.some(t => t.type === "signup_bonus");
@@ -112,8 +117,10 @@ const Dashboard = () => {
   const handleBonusClose = (open: boolean) => {
     setShowBonusDialog(open);
     if (!open && profile) {
+      const profileAge = new Date().getTime() - new Date(profile.created_at).getTime();
+      const isNewSignup = profileAge < 5 * 60 * 1000;
       const hasSeenOnboarding = localStorage.getItem(`volt-onboarding-done-${profile.user_id}`);
-      if (!hasSeenOnboarding) {
+      if (isNewSignup && !hasSeenOnboarding) {
         setShowOnboarding(true);
         localStorage.setItem(`volt-onboarding-done-${profile.user_id}`, "true");
       }

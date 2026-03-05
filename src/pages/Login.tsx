@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,16 @@ const cities = [
 
 const Login = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, loading: authLoading, signUp, signIn, signOut, verifyOtp, resendSignupOtp, sendLoginOtp, resendLoginOtp } = useAuth();
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, authLoading, navigate]);
+
   const isJoinNow = location.pathname === "/join-now";
   const [isSignup, setIsSignup] = useState(isJoinNow);
   const [step, setStep] = useState<"form" | "otp">("form");
@@ -38,8 +48,6 @@ const Login = () => {
   const [sellerType, setSellerType] = useState("");
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { signUp, signIn, signOut, verifyOtp, resendSignupOtp, sendLoginOtp, resendLoginOtp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +107,7 @@ const Login = () => {
         toast.error(error.message);
       } else {
         toast.success(isSignup ? "Email verified! Welcome to Volt ⚡" : "Verified! Welcome back ⚡");
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       }
     } finally {
       setLoading(false);
