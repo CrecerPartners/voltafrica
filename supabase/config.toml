@@ -1,7 +1,9 @@
 project_id = "prmmixjhobunocvnbjsw"
 
-[functions.create-paystack-payment]
-verify_jwt = false
-
-[functions.paystack-webhook]
-verify_jwt = false
+[functions]
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.create-paystack-payment]
+    verify_jwt = false
+  [functions.paystack-webhook]
+    verify_jwt = false
