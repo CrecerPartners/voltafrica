@@ -4,7 +4,6 @@ import * as React from 'npm:react@18.3.1'
 
 import {
   Body,
-  Button,
   Container,
   Head,
   Heading,
@@ -18,18 +17,18 @@ interface SignupEmailProps {
   siteName: string
   siteUrl: string
   recipient: string
-  confirmationUrl: string
+  token: string
 }
 
 export const SignupEmail = ({
   siteName,
   siteUrl,
   recipient,
-  confirmationUrl,
+  token,
 }: SignupEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Welcome to Volt ⚡ Confirm your email to get started</Preview>
+    <Preview>Welcome to Volt ⚡ Here's your verification code</Preview>
     <Body style={main}>
       <Container style={container}>
         <Text style={brand}>⚡ Volt</Text>
@@ -38,15 +37,13 @@ export const SignupEmail = ({
           You're one step away from joining the fastest-growing seller network in Africa.
         </Text>
         <Text style={text}>
-          Confirm your email (
+          Enter this code to verify your email (
           <Link href={`mailto:${recipient}`} style={link}>
             {recipient}
           </Link>
-          ) to activate your account and claim your ₦500 signup bonus!
+          ) and claim your ₦500 signup bonus!
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Verify & Get Started ⚡
-        </Button>
+        <Text style={codeStyle}>{token}</Text>
         <Text style={footer}>
           If you didn't sign up for Volt, you can safely ignore this email.
         </Text>
@@ -80,14 +77,12 @@ const text = {
   margin: '0 0 20px',
 }
 const link = { color: '#1E90FF', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#1E90FF',
-  color: '#ffffff',
-  fontSize: '15px',
-  fontWeight: '600' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  borderRadius: '12px',
-  padding: '14px 24px',
-  textDecoration: 'none',
+const codeStyle = {
+  fontFamily: "'Space Grotesk', Courier, monospace",
+  fontSize: '28px',
+  fontWeight: 'bold' as const,
+  color: '#1E90FF',
+  letterSpacing: '4px',
+  margin: '0 0 28px',
 }
 const footer = { fontSize: '12px', color: '#a3a3a3', margin: '32px 0 0' }
