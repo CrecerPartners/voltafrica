@@ -18,7 +18,7 @@ const corsHeaders = {
 const EMAIL_SUBJECTS: Record<string, string> = {
   signup: 'Welcome to Volt ⚡ Confirm your email',
   invite: "You're invited to join Volt ⚡",
-  magiclink: 'Your Volt login link ⚡',
+  magiclink: 'Your Volt login code ⚡',
   recovery: 'Reset your Volt password',
   email_change: 'Confirm your new email — Volt',
   reauthentication: 'Your Volt verification code',
@@ -56,7 +56,7 @@ const SAMPLE_DATA: Record<string, object> = {
   },
   magiclink: {
     siteName: SITE_NAME,
-    confirmationUrl: SAMPLE_PROJECT_URL,
+    token: '123456',
   },
   recovery: {
     siteName: SITE_NAME,
