@@ -86,48 +86,51 @@ export function OnboardingWalkthrough({ open, onOpenChange, referralCode }: Onbo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm border-primary/30">
-        <div className="flex flex-col items-center gap-4 py-4 text-center">
+      <DialogContent className="sm:max-w-xs border-border">
+        <div className="flex flex-col items-center gap-3 py-2 text-center">
           {/* Progress */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {steps.map((_, i) => (
               <div
                 key={i}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === currentStep ? "w-6 bg-primary" : i < currentStep ? "w-3 bg-primary/40" : "w-3 bg-muted"
+                className={`h-1 rounded-full transition-all ${
+                  i === currentStep ? "w-5 bg-primary" : i < currentStep ? "w-2.5 bg-primary/40" : "w-2.5 bg-muted"
                 }`}
               />
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">Step {currentStep + 1} of {steps.length}</p>
+          <p className="text-[11px] text-muted-foreground">Step {currentStep + 1} of {steps.length}</p>
 
           {/* Icon */}
-          <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-            <step.icon className="h-8 w-8 text-primary" />
+          <div className="h-11 w-11 rounded-full bg-primary/10 flex items-center justify-center">
+            <step.icon className="h-5 w-5 text-primary" />
           </div>
 
           {/* Content */}
-          <div className="space-y-1.5">
-            <h2 className="text-xl font-bold font-display">{step.title}</h2>
-            <p className="text-sm text-muted-foreground px-2">{step.subtitle}</p>
+          <div className="space-y-1">
+            <h2 className="text-base font-bold font-display">{step.title}</h2>
+            <p className="text-xs text-muted-foreground px-1">{step.subtitle}</p>
           </div>
 
           {/* Actions */}
-          <div className="w-full space-y-2 pt-2">
-            <Button className="w-full volt-gradient font-semibold" onClick={handleAction}>
+          <div className="w-full space-y-1.5 pt-1">
+            <Button className="w-full volt-gradient font-semibold text-sm h-9" onClick={handleAction}>
               {step.action}
             </Button>
             {currentStep < steps.length - 1 ? (
-              <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="flex-1 text-muted-foreground" onClick={handleNext}>
-                  Next
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="flex-1 font-medium" onClick={handleNext}>
+                  Next →
                 </Button>
-                <Button variant="ghost" size="sm" className="flex-1 text-muted-foreground" onClick={handleSkip}>
-                  Skip All
-                </Button>
+                <button
+                  onClick={handleSkip}
+                  className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors px-2"
+                >
+                  Skip all
+                </button>
               </div>
             ) : (
-              <Button variant="ghost" size="sm" className="w-full text-muted-foreground" onClick={handleSkip}>
+              <Button variant="ghost" size="sm" className="w-full text-muted-foreground text-xs" onClick={handleSkip}>
                 Close
               </Button>
             )}
