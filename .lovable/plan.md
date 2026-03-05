@@ -1,33 +1,38 @@
 
 
-## Plan: Use Email OTP Token Instead of Magic Link
+## Fix: Seamless Login → OTP Flow
 
-### Problem
-The login OTP currently calls `supabase.auth.signInWithOtp({ email })` which sends a **magic link** (a clickable URL). The user wants a **6-digit code** instead, matching the signup OTP experience.
+### The Problem
 
-### Solution
+When the user clicks "Sign In", `signIn()` succeeds which immediately sets `user` in auth state. The `useEffect` redirect fires and navigates to `/dashboard` before `signOut()` + `setStep("otp")` can run. The dashboard flashes, then the user bounces back to the login form.
 
-**1. `src/contexts/AuthContext.tsx`** — Update `sendLoginOtp` and `resendLoginOtp`:
-- Pass `shouldCreateUser: false` to prevent creating new accounts
-- Set `options.channel = 'email'` (not strictly required but explicit)
-- The key fix: Supabase's `signInWithOtp` sends a magic link by default. To get a **token** instead, the email template must include `{{ .Token }}` instead of `{{ .ConfirmationURL }}`. Since we use custom email templates via the auth-email-hook, the template already receives `token` in the payload data. We need to update the **magic-link email template** to display the token code instead of a button link.
+### The Fix
 
-**2. `supabase/functions/_shared/email-templates/magic-link.tsx`** — Redesign to show a 6-digit OTP code:
-- Remove the clickable button with `confirmationUrl`
-- Add a `token` prop and display it as a large, styled 6-digit code (matching the reauthentication template pattern)
-- Update copy: "Enter this code to log in to your Volt account"
+Simple and clean — use a `useRef` flag to suppress the redirect during the login-OTP handoff:
 
-**3. `supabase/functions/auth-email-hook/index.ts`** — Update subject line:
-- Change `magiclink` subject from `'Your Volt login link ⚡'` to `'Your Volt login code ⚡'`
-- The `templateProps` already passes `token: payload.data.token` so no other changes needed
+**File: `src/pages/Login.tsx`**
 
-**4. Redeploy edge function** after changes.
+1. Add `const isProcessingLogin = useRef(false)`
+2. Update the redirect `useEffect` to check the flag:
+   ```
+   if (!authLoading && user && !isProcessingLogin.current) {
+     navigate("/dashboard", { replace: true });
+   }
+   ```
+3. In the login branch of `handleSubmit`:
+   - Set `isProcessingLogin.current = true` **before** calling `signIn`
+   - If `signIn` errors, reset the flag to `false`
+   - If `signIn` succeeds, call `signOut()`, then `sendLoginOtp()`, then `setStep("otp")`, then set flag to `false`
+4. After successful OTP verification in `handleVerifyOtp`, the flag is already `false`, so the `useEffect` redirect naturally sends the user to `/dashboard`
+
+This ensures:
+- No dashboard flash — the redirect is suppressed during the sign-in → sign-out → send-OTP window
+- OTP screen appears immediately after password validation
+- After entering the 8-digit code, the user lands on the dashboard seamlessly
 
 ### Files to Modify
 
 | File | Change |
 |------|--------|
-| `src/contexts/AuthContext.tsx` | Add `shouldCreateUser: false` to `signInWithOtp` calls |
-| `supabase/functions/_shared/email-templates/magic-link.tsx` | Replace link button with 6-digit token display |
-| `supabase/functions/auth-email-hook/index.ts` | Update magiclink subject line |
+| `src/pages/Login.tsx` | Add `useRef` flag, guard the redirect `useEffect`, wrap login flow |
 
