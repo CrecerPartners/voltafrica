@@ -11,6 +11,8 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   verifyOtp: (email: string, token: string, type: "signup" | "email") => Promise<{ error: Error | null }>;
   resendSignupOtp: (email: string) => Promise<{ error: Error | null }>;
+  sendLoginOtp: (email: string) => Promise<{ error: Error | null }>;
+  resendLoginOtp: (email: string) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,8 +69,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error as Error | null };
   };
 
+  const sendLoginOtp = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({ email });
+    return { error: error as Error | null };
+  };
+
+  const resendLoginOtp = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({ email });
+    return { error: error as Error | null };
+  };
+
   return (
-    <AuthContext.Provider value={{ session, user, loading, signUp, signIn, signOut, verifyOtp, resendSignupOtp }}>
+    <AuthContext.Provider value={{ session, user, loading, signUp, signIn, signOut, verifyOtp, resendSignupOtp, sendLoginOtp, resendLoginOtp }}>
       {children}
     </AuthContext.Provider>
   );

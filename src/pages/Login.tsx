@@ -39,7 +39,7 @@ const Login = () => {
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { signUp, signIn, verifyOtp, resendSignupOtp } = useAuth();
+  const { signUp, signIn, signOut, verifyOtp, resendSignupOtp, sendLoginOtp, resendLoginOtp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,11 +69,20 @@ const Login = () => {
           setStep("otp");
         }
       } else {
+        // Login: validate password first
         const { error } = await signIn(email, password);
         if (error) {
           toast.error(error.message);
         } else {
-          navigate("/dashboard");
+          // Password valid — sign out and send OTP for second-factor verification
+          await signOut();
+          const { error: otpError } = await sendLoginOtp(email);
+          if (otpError) {
+            toast.error(otpError.message);
+          } else {
+            toast.success("Verification code sent to your email!");
+            setStep("otp");
+          }
         }
       }
     } finally {
@@ -84,11 +93,12 @@ const Login = () => {
   const handleVerifyOtp = async (token: string) => {
     setLoading(true);
     try {
-      const { error } = await verifyOtp(email, token, "signup");
+      const otpType = isSignup ? "signup" : "email";
+      const { error } = await verifyOtp(email, token, otpType);
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success("Email verified! Welcome to Volt ⚡");
+        toast.success(isSignup ? "Email verified! Welcome to Volt ⚡" : "Verified! Welcome back ⚡");
         navigate("/dashboard");
       }
     } finally {
@@ -97,8 +107,13 @@ const Login = () => {
   };
 
   const handleResendOtp = async () => {
-    const { error } = await resendSignupOtp(email);
-    if (error) throw error;
+    if (isSignup) {
+      const { error } = await resendSignupOtp(email);
+      if (error) throw error;
+    } else {
+      const { error } = await resendLoginOtp(email);
+      if (error) throw error;
+    }
   };
 
   return (
