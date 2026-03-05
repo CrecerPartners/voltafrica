@@ -70,12 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const sendLoginOtp = async (email: string) => {
-    const { error } = await supabase.auth.signInWithOtp({ email });
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
     return { error: error as Error | null };
   };
 
   const resendLoginOtp = async (email: string) => {
-    const { error } = await supabase.auth.signInWithOtp({ email });
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
     return { error: error as Error | null };
   };
 

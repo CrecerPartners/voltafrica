@@ -4,7 +4,6 @@ import * as React from 'npm:react@18.3.1'
 
 import {
   Body,
-  Button,
   Container,
   Head,
   Heading,
@@ -15,28 +14,26 @@ import {
 
 interface MagicLinkEmailProps {
   siteName: string
-  confirmationUrl: string
+  token: string
 }
 
 export const MagicLinkEmail = ({
   siteName,
-  confirmationUrl,
+  token,
 }: MagicLinkEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Your Volt login link ⚡</Preview>
+    <Preview>Your Volt login code ⚡</Preview>
     <Body style={main}>
       <Container style={container}>
         <Text style={brand}>⚡ Volt</Text>
-        <Heading style={h1}>Your login link</Heading>
+        <Heading style={h1}>Your login code</Heading>
         <Text style={text}>
-          Tap the button below to log in to your Volt account. This link expires shortly, so use it while it's hot! 🔥
+          Enter this code to log in to your Volt account. It expires shortly, so use it while it's hot! 🔥
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Log In to Volt ⚡
-        </Button>
+        <Text style={codeStyle}>{token}</Text>
         <Text style={footer}>
-          If you didn't request this link, you can safely ignore this email.
+          If you didn't request this code, you can safely ignore this email.
         </Text>
       </Container>
     </Body>
@@ -67,14 +64,12 @@ const text = {
   lineHeight: '1.6',
   margin: '0 0 20px',
 }
-const button = {
-  backgroundColor: '#1E90FF',
-  color: '#ffffff',
-  fontSize: '15px',
-  fontWeight: '600' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  borderRadius: '12px',
-  padding: '14px 24px',
-  textDecoration: 'none',
+const codeStyle = {
+  fontFamily: "'Space Grotesk', Courier, monospace",
+  fontSize: '28px',
+  fontWeight: 'bold' as const,
+  color: '#1E90FF',
+  letterSpacing: '4px',
+  margin: '0 0 28px',
 }
 const footer = { fontSize: '12px', color: '#a3a3a3', margin: '32px 0 0' }
