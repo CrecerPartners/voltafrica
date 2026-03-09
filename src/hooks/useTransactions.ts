@@ -9,8 +9,9 @@ export interface Transaction {
   type: "commission" | "referral_bonus" | "signup_bonus" | "performance_bonus" | "payout" | "manual_sale";
   description: string;
   amount: number;
-  status: "pending" | "paid" | "processing";
+  status: "pending" | "verified" | "rejected" | "under_review" | "paid" | "processing";
   proof_file_name: string | null;
+  withdrawable_at: string;
   created_at: string;
 }
 

@@ -56,6 +56,7 @@ const Marketplace = () => {
   
   const [activeType, setActiveType] = useState<string>("all");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeOrg, setActiveOrg] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"commission" | "name">("commission");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -65,10 +66,19 @@ const Marketplace = () => {
     Digital: ["Fintech", "Tech Products", "Software & Tools", "Subscriptions"],
   };
 
+  // Extract unique organizations
+  const organizations = Array.from(new Set(products.map(p => p.organization || p.brand)))
+    .filter(Boolean)
+    .sort();
+
   const filtered = products
     .filter((p) => activeType === "all" || p.productType === activeType)
     .filter((p) => activeCategory === "all" || p.category === activeCategory)
-    .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.brand.toLowerCase().includes(searchQuery.toLowerCase()))
+    .filter((p) => activeOrg === "all" || (p.organization || p.brand) === activeOrg)
+    .filter((p) => 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (p.organization || p.brand).toLowerCase().includes(searchQuery.toLowerCase())
+    )
     .sort((a, b) => sortBy === "commission" ? b.commissionRate - a.commissionRate : a.name.localeCompare(b.name));
 
   const getLink = (e: React.MouseEvent, product: Product) => {
@@ -149,9 +159,26 @@ const Marketplace = () => {
               {cat === "all" ? "All Categories" : categoryLabels[cat] || cat}
             </Button>
           ))}
-          <div className="ml-auto hidden sm:block">
-            <Button variant="ghost" size="sm" onClick={() => setSortBy(sortBy === "commission" ? "name" : "commission")} className="text-muted-foreground h-8 text-xs">
-              <Filter className="h-3 w-3 mr-1" /> Sort: {sortBy === "commission" ? "Commission" : "Name"}
+        </div>
+
+        {/* Organizations Selection */}
+        <div className="flex items-center gap-2 w-full">
+          <div className="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            {["all", ...organizations].map((org) => (
+              <Button 
+                key={org} 
+                variant={activeOrg === org ? "default" : "outline"} 
+                size="sm" 
+                onClick={() => setActiveOrg(org)}
+                className={`${activeOrg === org ? "volt-gradient h-8 text-xs" : "h-8 text-xs font-medium text-muted-foreground"}`}
+              >
+                {org === "all" ? "All Brands" : org}
+              </Button>
+            ))}
+          </div>
+          <div className="shrink-0">
+            <Button variant="ghost" size="sm" onClick={() => setSortBy(sortBy === "commission" ? "name" : "commission")} className="text-muted-foreground h-8 text-xs px-2 sm:px-3">
+              <Filter className="h-3 w-3 mr-1" /> <span className="hidden xs:inline">Sort: </span>{sortBy === "commission" ? "Commission" : "Name"}
             </Button>
           </div>
         </div>
@@ -198,11 +225,11 @@ const Marketplace = () => {
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <h3 className="font-semibold text-sm leading-tight line-clamp-2">{product.name}</h3>
-                      <Badge variant="secondary" className="text-[10px] shrink-0 font-medium">
+                        <Badge variant="secondary" className="text-[10px] shrink-0 font-medium capitalize">
                         {product.productType}
                       </Badge>
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">{product.brand}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{product.organization || product.brand}</p>
                     <p className="text-xs text-muted-foreground line-clamp-2 mt-2 leading-relaxed opacity-80">{product.description}</p>
                   </div>
                   

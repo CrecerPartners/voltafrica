@@ -34,6 +34,7 @@ export interface DbProduct {
   product_type: string;
   subcategory?: string;
   commission_model: CommissionModel;
+  organization: string;
   created_at: string;
 }
 
@@ -51,6 +52,7 @@ export interface Product {
   productType: ProductType;
   subcategory?: string;
   commissionModel: CommissionModel;
+  organization: string;
 }
 
 function mapProduct(db: DbProduct): Product {
@@ -68,6 +70,7 @@ function mapProduct(db: DbProduct): Product {
     productType: (db.product_type as ProductType) || "Physical",
     subcategory: db.subcategory,
     commissionModel: (db.commission_model as CommissionModel) || "percentage",
+    organization: db.organization || db.brand,
   };
 }
 

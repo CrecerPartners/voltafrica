@@ -28,7 +28,7 @@ const subcategoriesByCategory: Record<string, string[]> = {
 };
 
 const empty = {
-  name: "", brand: "", category: "", subcategory: "", price: 0, commission_rate: 0, image: "", description: "",
+  name: "", brand: "", organization: "", category: "", subcategory: "", price: 0, commission_rate: 0, image: "", description: "",
   product_type: "Physical", commission_model: "percentage", delivery_type: "manual_provision", delivery_instructions: "",
   assets: { images: [] as string[], videos: [] as string[], fulfillment_url: "" },
 };
@@ -70,6 +70,7 @@ export default function AdminProducts() {
       commission_model: p.commission_model || "percentage",
       delivery_type: p.delivery_type || "manual_provision",
       delivery_instructions: p.delivery_instructions || "",
+      organization: p.organization || p.brand || "",
       assets: { images: assets.images || [], videos: assets.videos || [], fulfillment_url: assets.fulfillment_url || "" },
     });
     setNewLicenseKeys("");
@@ -186,7 +187,7 @@ export default function AdminProducts() {
               <TableRow>
                 <TableHead>Image</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Brand</TableHead>
+                <TableHead>Brand / Org</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Price</TableHead>
@@ -205,7 +206,7 @@ export default function AdminProducts() {
                     )}
                   </TableCell>
                   <TableCell className="font-medium">{p.name}</TableCell>
-                  <TableCell>{p.brand}</TableCell>
+                  <TableCell>{p.organization || p.brand}</TableCell>
                   <TableCell>
                     <Badge variant="secondary" className="text-xs">
                       {p.product_type}
@@ -241,8 +242,11 @@ export default function AdminProducts() {
                 <Input placeholder="iPhone 15 Pro" value={form.name} onChange={(e) => set("name", e.target.value)} />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium">Brand / Provider</label>
-                <Input placeholder="Apple" value={form.brand} onChange={(e) => set("brand", e.target.value)} />
+                <label className="text-sm font-medium">Brand / Organization</label>
+                <Input placeholder="Crecer / Paystack" value={form.organization || form.brand} onChange={(e) => {
+                   set("organization", e.target.value);
+                   if (!form.brand) set("brand", e.target.value);
+                }} />
               </div>
             </div>
 

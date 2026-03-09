@@ -9,6 +9,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import OtpVerification from "@/components/OtpVerification";
+import { MfaVerification } from "@/components/MfaVerification";
+import { supabase } from "@/integrations/supabase/client";
 
 const sellerTypes = [
   "Student",
@@ -42,7 +44,8 @@ const Login = () => {
 
   const isJoinNow = location.pathname === "/join-now";
   const [isSignup, setIsSignup] = useState(isJoinNow);
-  const [step, setStep] = useState<"form" | "otp">("form");
+  const [step, setStep] = useState<"form" | "otp" | "mfa">("form");
+  const [mfaFactorId, setMfaFactorId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -79,13 +82,27 @@ const Login = () => {
           setStep("otp");
         }
       } else {
-        // Login: validate password, suppress redirect, then send OTP
+        // Login: validate password
         isProcessingLogin.current = true;
-        const { error } = await signIn(email, password);
+        const { data, error } = await signIn(email, password);
+        
         if (error) {
           isProcessingLogin.current = false;
           toast.error(error.message);
         } else {
+          // Check for MFA
+          const { data: mfaData, error: mfaError } = await supabase.auth.mfa.listFactors();
+          const totpFactor = mfaData?.all.find(f => f.factor_type === 'totp' && f.status === 'verified');
+
+          if (totpFactor) {
+            setMfaFactorId(totpFactor.id);
+            setStep("mfa");
+            isProcessingLogin.current = false;
+            setLoading(false);
+            return;
+          }
+
+          // No TOTP? Fallback to the custom Email OTP flow
           // Password valid — sign out and send OTP for second-factor verification
           await signOut();
           isProcessingLogin.current = false;
@@ -132,7 +149,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-4 left-4 z-20">
-        <Button variant="ghost" size="sm" onClick={() => step === "otp" ? setStep("form") : navigate("/")} className="gap-1 text-muted-foreground hover:text-foreground">
+        <Button variant="ghost" size="sm" onClick={() => (step === "otp" || step === "mfa") ? setStep("form") : navigate("/")} className="gap-1 text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> Back
         </Button>
       </div>
@@ -144,7 +161,7 @@ const Login = () => {
       </div>
 
       <Card className="w-full max-w-md relative z-10 border-border/50">
-        {step === "otp" ? (
+        {step === "otp" && (
           <CardContent className="pt-8 pb-6">
             <OtpVerification
               email={email}
@@ -154,7 +171,22 @@ const Login = () => {
               loading={loading}
             />
           </CardContent>
-        ) : (
+        )}
+
+        {step === "mfa" && (
+          <CardContent className="pt-8 pb-6">
+            <MfaVerification
+              factorId={mfaFactorId}
+              onVerify={() => navigate("/dashboard", { replace: true })}
+              onBack={() => {
+                signOut();
+                setStep("form");
+              }}
+            />
+          </CardContent>
+        )}
+
+        {step === "form" && (
           <>
             <CardHeader className="text-center space-y-4">
               <div className="flex justify-center">

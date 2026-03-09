@@ -10,19 +10,22 @@ export function useWallet() {
     let totalEarned = 0;
     let totalPaidOut = 0;
     let pendingEarnings = 0;
-
-    let processingPayouts = 0;
+    const now = new Date();
 
     for (const t of transactions) {
       if (t.type === "payout") {
-        if (t.status === "processing") {
-          processingPayouts += Math.abs(t.amount);
-        }
         totalPaidOut += Math.abs(t.amount);
-      } else if (t.status === "pending") {
+      } else if (t.status === "rejected") {
+        continue;
+      } else if (t.status === "pending" || t.status === "under_review") {
         pendingEarnings += t.amount;
-      } else if (t.status === "paid") {
-        totalEarned += t.amount;
+      } else if (t.status === "paid" || t.status === "verified") {
+        const withdrawableAt = new Date(t.withdrawable_at);
+        if (withdrawableAt <= now) {
+          totalEarned += t.amount;
+        } else {
+          pendingEarnings += t.amount;
+        }
       }
     }
 

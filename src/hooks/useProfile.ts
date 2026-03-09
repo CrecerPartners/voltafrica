@@ -21,7 +21,16 @@ export interface Profile {
   account_type: string;
   id_document_url: string;
   verification_status: string;
+  transaction_pin?: string;
+  bank_code?: string;
+  security_locked_until?: string;
+  nin?: string;
+  bvn?: string;
+  proof_of_address_url?: string;
   social_links: { tiktok?: string; snapchat?: string; instagram?: string; twitter?: string };
+  income_target_amount?: number;
+  income_target_timeframe?: 'weekly' | 'monthly';
+  income_target_items?: { productId: string; quantity: number }[];
   created_at: string;
   updated_at: string;
 }

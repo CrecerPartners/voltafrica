@@ -17,7 +17,10 @@ import {
   Banknote,
   Trophy,
   BarChart3,
+  Target,
+  ChevronRight,
 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import {
   AreaChart,
   Area,
@@ -187,6 +190,37 @@ const Dashboard = () => {
           </Card>
         ))}
       </div>
+
+      {profile?.income_target_amount && profile.income_target_amount > 0 && (
+        <Card className="border-primary/20 bg-primary/5 overflow-hidden">
+          <CardContent className="p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2 flex-1">
+              <div className="flex items-center gap-2 text-primary font-bold text-sm">
+                 <Target className="h-4 w-4" /> 
+                 Your {profile.income_target_timeframe} Goal: {formatNaira(profile.income_target_amount)}
+              </div>
+              <div className="flex justify-between items-end mb-1">
+                 <p className="text-2xl font-bold font-display">
+                    {formatNaira(dashboardStats.totalEarnings)}
+                    <span className="text-sm font-normal text-muted-foreground ml-2">achieved</span>
+                 </p>
+                 <p className="text-sm font-bold text-primary">
+                    {Math.min(Math.round((dashboardStats.totalEarnings / profile.income_target_amount) * 100), 100)}%
+                 </p>
+              </div>
+              <Progress value={Math.min((dashboardStats.totalEarnings / profile.income_target_amount) * 100, 100)} className="h-2.5 bg-secondary/50" />
+              <p className="text-[11px] text-muted-foreground italic pt-1">
+                {dashboardStats.totalEarnings >= profile.income_target_amount 
+                  ? "🎉 Incredible! You've crushed your target! Set a new one in the calculator." 
+                  : `You need ${formatNaira(profile.income_target_amount - dashboardStats.totalEarnings)} more to reach your goal.`}
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => navigate("/calculator")} className="shrink-0 bg-background hover:bg-primary/10">
+               Update Target <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div>

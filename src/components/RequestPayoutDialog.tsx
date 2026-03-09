@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +14,12 @@ import { useSales } from "@/hooks/useSales";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { formatNaira } from "@/lib/utils";
-import { Loader2, AlertCircle, Banknote, ShoppingCart } from "lucide-react";
+import { Loader2, AlertCircle, Banknote, ShoppingCart, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { KYCModal } from "@/components/KYCModal";
+import { ShieldCheck } from "lucide-react";
 
 interface RequestPayoutDialogProps {
   open: boolean;
@@ -33,11 +35,26 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
   const { data: sales } = useSales();
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState("");
+  const [pin, setPin] = useState("");
+  const [mfaCode, setMfaCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [kycOpen, setKycOpen] = useState(false);
+  const [isMfaEnabled, setIsMfaEnabled] = useState(false);
+
+  useEffect(() => {
+    const checkMfa = async () => {
+      const { data } = await supabase.auth.mfa.listFactors();
+      if (data && data.all.some(f => f.factor_type === 'totp' && f.status === 'verified')) {
+        setIsMfaEnabled(true);
+      }
+    };
+    if (open) checkMfa();
+  }, [open]);
 
   const parsedAmount = parseFloat(amount) || 0;
   const hasBankDetails = profile?.bank_name && profile?.account_number;
   const hasSales = sales && sales.length > 0;
+  const hasKyc = !!(profile?.nin && profile?.bvn && profile?.proof_of_address_url);
 
   const error =
     parsedAmount <= 0
@@ -48,41 +65,37 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
           ? "Amount exceeds available balance"
           : null;
 
-  const canSubmit = parsedAmount >= MIN_PAYOUT && parsedAmount <= availableBalance && hasBankDetails && !submitting;
+  const canSubmit = 
+    parsedAmount >= MIN_PAYOUT && 
+    parsedAmount <= availableBalance && 
+    hasBankDetails && 
+    hasKyc && 
+    pin.length >= 4 && 
+    (!isMfaEnabled || mfaCode.length === 6) && 
+    !submitting;
 
   const handleSubmit = async () => {
     if (!canSubmit || !user || !profile) return;
 
     setSubmitting(true);
     try {
-      // Insert payout record
-      const { error: payoutError } = await supabase
-        .from("payouts" as any)
-        .insert({
-          user_id: user.id,
-          amount: parsedAmount,
-          status: "pending",
-          bank_name: profile.bank_name,
-          account_number: profile.account_number,
-        } as any);
-      if (payoutError) throw payoutError;
+      const { data, error: functionError } = await supabase.functions.invoke('request-payout', {
+        body: { amount: parsedAmount, pin, mfaCode }
+      });
 
-      // Insert corresponding negative transaction
-      const { error: txError } = await supabase
-        .from("transactions" as any)
-        .insert({
-          user_id: user.id,
-          date: new Date().toISOString().split("T")[0],
-          type: "payout",
-          description: `Payout to ${profile.bank_name} ****${profile.account_number.slice(-4)}`,
-          amount: -parsedAmount,
-          status: "processing",
-        } as any);
-      if (txError) throw txError;
+      if (functionError) {
+        throw new Error(functionError.message || "Failed to process payout");
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      toast.success("Payout requested! Payment confirmation takes 3-7 working days.");
+      toast.success(data?.message || "Payout requested! Payment confirmation takes 3-7 working days.");
       setAmount("");
+      setPin("");
+      setMfaCode("");
       onOpenChange(false);
     } catch (err: any) {
       toast.error(err.message || "Failed to request payout");
@@ -152,6 +165,39 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
             )}
           </div>
 
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground flex justify-between">
+              <span>Transaction PIN</span>
+              {!profile?.transaction_pin && <Link to="/profile" className="text-primary hover:underline" onClick={() => onOpenChange(false)}>Set up PIN</Link>}
+            </label>
+            <Input
+              type="password"
+              placeholder="Enter 4-digit PIN"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              className="font-mono tracking-widest text-lg h-12"
+              maxLength={4}
+            />
+          </div>
+
+          {/* MFA TOTP Input */}
+          {isMfaEnabled && (
+            <div className="space-y-1.5 pt-1">
+              <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <QrCode className="h-3 w-3" /> 2FA Authenticator Code
+              </label>
+              <Input
+                type="text"
+                placeholder="6-digit code"
+                value={mfaCode}
+                onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                className="font-mono tracking-[0.5em] text-center text-lg h-12"
+                maxLength={6}
+              />
+              <p className="text-[10px] text-muted-foreground">Enter the 6-digit code from your authenticator app.</p>
+            </div>
+          )}
+
           {/* Bank details */}
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">Bank Details</label>
@@ -172,6 +218,27 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
               </div>
             )}
           </div>
+
+          {/* KYC Status */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">KYC Verification</label>
+            {hasKyc ? (
+              <div className="rounded-lg border border-border/50 p-3 flex items-center gap-3">
+                <ShieldCheck className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="text-sm font-medium">Verified</p>
+                  <p className="text-xs text-muted-foreground">Documents uploaded</p>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 text-center">
+                <p className="text-xs text-muted-foreground mb-2">KYC information required for payouts.</p>
+                <Button variant="outline" size="sm" onClick={() => setKycOpen(true)}>
+                  Complete KYC
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         <DialogFooter>
@@ -181,6 +248,7 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
           </Button>
         </DialogFooter>
       </DialogContent>
+      <KYCModal open={kycOpen} onOpenChange={setKycOpen} />
     </Dialog>
   );
 }

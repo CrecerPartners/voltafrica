@@ -108,6 +108,23 @@ const Checkout = () => {
     setLoading(true);
     try {
       const refCode = localStorage.getItem("volt_ref_code") || null;
+      
+      // Get IP Address
+      let ip = "0.0.0.0";
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        ip = data.ip;
+      } catch (e) {
+        console.error("IP detection failed:", e);
+      }
+
+      // Get/Generate Device ID
+      let deviceId = localStorage.getItem("volt_device_id");
+      if (!deviceId) {
+        deviceId = crypto.randomUUID();
+        localStorage.setItem("volt_device_id", deviceId);
+      }
 
       const { data: order, error: orderError } = await supabase
         .from("orders")
@@ -122,6 +139,9 @@ const Checkout = () => {
           total: totalPrice,
           status: "pending",
           notes: form.order_notes || null,
+          ip_address: ip,
+          device_id: deviceId,
+          user_agent: navigator.userAgent,
         })
         .select()
         .single();

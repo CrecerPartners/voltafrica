@@ -18,10 +18,13 @@ import {
   User, Building, Phone, CreditCard, Save, Loader2, Camera,
   Store, Link2, Trash2, ExternalLink, ShoppingBag, Copy,
   CircleCheck, CircleAlert, Settings, Upload, ShieldCheck,
-  Instagram, AtSign, Globe,
+  Instagram, AtSign, Globe, QrCode,
 } from "lucide-react";
 import { toast } from "sonner";
 import { copyToClipboard } from "@/lib/shareUtils";
+import { KYCModal } from "@/components/KYCModal";
+import { MfaSetup } from "@/components/MfaSetup";
+import { Lock } from "lucide-react";
 
 const toSlug = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
@@ -40,14 +43,37 @@ const Profile = () => {
 
   const [profileForm, setProfileForm] = useState({
     name: "", email: "", whatsapp: "",
-    bank_name: "", account_number: "",
+    bank_name: "", account_number: "", bank_code: "",
     account_type: "", social_links: { tiktok: "", snapchat: "", instagram: "", twitter: "" },
+    bank_account_verified: false,
+  });
+
+  const [securityForm, setSecurityForm] = useState({
+    transaction_pin: "",
   });
 
   const [shopForm, setShopForm] = useState({ shop_name: "", shop_slug: "", bio: "" });
   const [initialized, setInitialized] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [kycOpen, setKycOpen] = useState(false);
+
+  const [isMfaEnabled, setIsMfaEnabled] = useState(false);
+  const [mfaSecret, setMfaSecret] = useState("");
+  const [mfaQr, setMfaQr] = useState("");
+  const [mfaFactorId, setMfaFactorId] = useState("");
+  const [mfaCode, setMfaCode] = useState("");
+  const [enrollingMfa, setEnrollingMfa] = useState(false);
+
+  useEffect(() => {
+    const checkMfa = async () => {
+      const { data } = await supabase.auth.mfa.listFactors();
+      if (data && data.all.some(f => f.factor_type === 'totp' && f.status === 'verified')) {
+        setIsMfaEnabled(true);
+      }
+    };
+    checkMfa();
+  }, []);
 
   const deriveAccountType = (university: string): string => {
     const raw = university?.split(" — ")[0]?.trim() || "";
@@ -65,9 +91,13 @@ const Profile = () => {
     setProfileForm({
       name: profile.name || "", email: profile.email || "",
       whatsapp: profile.whatsapp || "",
-      bank_name: profile.bank_name || "", account_number: profile.account_number || "",
+      bank_name: profile.bank_name || "", account_number: profile.account_number || "", bank_code: profile.bank_code || "",
       account_type: accountType,
       social_links: { tiktok: sl.tiktok || "", snapchat: sl.snapchat || "", instagram: sl.instagram || "", twitter: sl.twitter || "" },
+      bank_account_verified: profile.bank_account_verified || false,
+    });
+    setSecurityForm({
+      transaction_pin: profile.transaction_pin || "",
     });
     setShopForm({
       shop_name: profile.shop_name || "",
@@ -76,6 +106,8 @@ const Profile = () => {
     });
     setInitialized(true);
   }
+
+
 
   const [slugTouched, setSlugTouched] = useState(false);
   useEffect(() => {
@@ -90,14 +122,67 @@ const Profile = () => {
   const referralCode = profile?.referral_code || "VOLT";
   const isShopLive = !!profile?.shop_slug && shopProducts.length > 0;
 
+  const [verifyingBank, setVerifyingBank] = useState(false);
+
   const handleSaveProfile = async () => {
     try {
+      if (profileForm.account_number && profileForm.bank_code) {
+        // If bank details changed, verify them first
+        if (profileForm.account_number !== profile?.account_number || profileForm.bank_code !== profile?.bank_code) {
+          setVerifyingBank(true);
+          const { data, error } = await supabase.functions.invoke('verify-bank-details', {
+            body: { account_number: profileForm.account_number, bank_code: profileForm.bank_code }
+          });
+          
+          if (error || data?.error) {
+            throw new Error(data?.error || error?.message || "Failed to verify bank details");
+          }
+
+          if (data?.account_name?.toLowerCase() !== profileForm.name.toLowerCase()) {
+             toast.warning(`Bank name mismatch: Found '${data.account_name}'. Expected '${profileForm.name}'`);
+             // We can strictly block this or allow with a warning.
+             // Given the requirements, we should strictly match.
+             throw new Error(`Account name mismatch. Bank returned: ${data.account_name}. Must match your profile name exactly.`);
+          }
+          toast.success("Bank details verified securely");
+        }
+      }
+
       await updateProfile.mutateAsync({
         ...profileForm,
         social_links: profileForm.social_links,
+        security_locked_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24hr cool-off
       } as any);
       toast.success("Profile saved!");
-    } catch (err: any) { toast.error(err.message || "Failed to save"); }
+    } catch (err: any) { 
+      toast.error(err.message || "Failed to save"); 
+    } finally {
+      setVerifyingBank(false);
+    }
+  };
+
+  const hashPin = async (rawPin: string) => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(rawPin);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const handleSaveSecurity = async () => {
+    if (securityForm.transaction_pin && securityForm.transaction_pin.length !== 4) {
+      toast.error("Transaction PIN must be exactly 4 digits");
+      return;
+    }
+
+    try {
+      const hashedPin = await hashPin(securityForm.transaction_pin);
+      await updateProfile.mutateAsync({
+        transaction_pin: hashedPin,
+        security_locked_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24hr cool-off
+      } as any);
+      toast.success("Security settings updated! 24-hr cool-off period initiated for withdrawals.");
+    } catch (err: any) { toast.error(err.message || "Failed to save security settings"); }
   };
 
   const handleSaveShop = async () => {
@@ -164,10 +249,10 @@ const Profile = () => {
     corporate: "Corporate", creator: "Creator / Influencer",
   };
 
-  const ProfileField = ({ label, icon: Icon, name, type = "text" }: { label: string; icon: any; name: keyof typeof profileForm; type?: string }) => (
+  const ProfileField = ({ label, icon: Icon, name, type = "text", maxLength, placeholder = "" }: { label: string; icon: any; name: keyof typeof profileForm; type?: string; maxLength?: number; placeholder?: string }) => (
     <div className="space-y-2">
       <label className="text-sm font-medium flex items-center gap-2"><Icon className="h-3 w-3 text-muted-foreground" /> {label}</label>
-      <Input type={type} value={profileForm[name] as string} onChange={(e) => setProfileForm({ ...profileForm, [name]: e.target.value })} className="bg-secondary border-border" />
+      <Input type={type} maxLength={maxLength} placeholder={placeholder} value={profileForm[name] as string} onChange={(e) => setProfileForm({ ...profileForm, [name]: e.target.value })} className="bg-secondary border-border" />
     </div>
   );
 
@@ -227,6 +312,7 @@ const Profile = () => {
         <TabsList className="w-full">
           <TabsTrigger value="profile" className="flex-1"><User className="h-3.5 w-3.5 mr-1.5" /> Profile</TabsTrigger>
           <TabsTrigger value="shop" className="flex-1"><Store className="h-3.5 w-3.5 mr-1.5" /> My Shop</TabsTrigger>
+          <TabsTrigger value="security" className="flex-1 hidden sm:flex"><Lock className="h-3.5 w-3.5 mr-1.5" /> Security</TabsTrigger>
         </TabsList>
 
         {/* ─── PROFILE TAB ─── */}
@@ -284,6 +370,28 @@ const Profile = () => {
             </CardContent>
           </Card>
 
+          {/* KYC Details */}
+          <Card className="border-border/50">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-display font-semibold flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4" /> KYC Verification (Required for payouts)
+                </h3>
+                {profile?.nin && profile?.bvn && profile?.proof_of_address_url ? (
+                  <Badge className="bg-primary/10 text-primary border-primary/20"><ShieldCheck className="h-3 w-3 mr-1" /> Verified</Badge>
+                ) : (
+                  <Badge variant="outline" className="text-warning border-warning/30"><CircleAlert className="h-3 w-3 mr-1" /> Action Required</Badge>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Your NIN, BVN, and Proof of Address are required before you can request any withdrawals.
+              </p>
+              <Button variant="outline" onClick={() => setKycOpen(true)}>
+                {profile?.nin && profile?.bvn && profile?.proof_of_address_url ? "Update KYC Details" : "Complete KYC Details"}
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Social Links */}
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-4">
@@ -316,15 +424,115 @@ const Profile = () => {
 
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-4">
-              <h3 className="text-base font-display font-semibold">Payout Details</h3>
-              <ProfileField label="Bank Name" icon={CreditCard} name="bank_name" />
-              <ProfileField label="Account Number" icon={CreditCard} name="account_number" />
+              <div className="flex justify-between items-start">
+                  <h3 className="text-base font-display font-semibold">Payout Details</h3>
+                  {profileForm.bank_account_verified ? (
+                    <Badge className="bg-success/10 text-success border-success/20 font-medium"><ShieldCheck className="h-3 w-3 mr-1" /> Verified</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-warning border-warning/30 font-medium"><CircleAlert className="h-3 w-3 mr-1" /> Unverified</Badge>
+                  )}
+              </div>
+              <p className="text-xs text-muted-foreground mb-4">
+                You must ensure that the name on your bank account exactly matches your verified profile name.
+                {!profileForm.bank_account_verified && (
+                  <span className="text-warning block mt-1 font-medium">Bank details must be verified by an admin before payouts can be requested.</span>
+                )}
+              </p>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2"><CreditCard className="h-3 w-3 text-muted-foreground" /> Bank Name</label>
+                <Select value={profileForm.bank_code} onValueChange={(val) => {
+                    setProfileForm({ ...profileForm, bank_code: val, bank_name: "Selected Bank" /* Ideally fetch bank list from API, hardcoded for now or let users input name directly if ignoring strict select */})
+                }}>
+                    <SelectTrigger className="bg-secondary border-border">
+                        <SelectValue placeholder="Select or type Bank Name" />
+                    </SelectTrigger>
+                    {/* We are mocking popular Nigerian banks for now. Realistically fetch from Paystack */}
+                    <SelectContent>
+                        <SelectItem value="044">Access Bank</SelectItem>
+                        <SelectItem value="011">First Bank</SelectItem>
+                        <SelectItem value="058">Guaranty Trust Bank (GTB)</SelectItem>
+                        <SelectItem value="033">United Bank for Africa (UBA)</SelectItem>
+                        <SelectItem value="057">Zenith Bank</SelectItem>
+                        <SelectItem value="032">Union Bank</SelectItem>
+                        <SelectItem value="214">FCMB</SelectItem>
+                        <SelectItem value="070">Fidelity Bank</SelectItem>
+                        <SelectItem value="050">Ecobank</SelectItem>
+                        <SelectItem value="082">Keystone Bank</SelectItem>
+                        <SelectItem value="215">Unity Bank</SelectItem>
+                        <SelectItem value="035">Wema Bank</SelectItem>
+                        <SelectItem value="030">Heritage Bank</SelectItem>
+                        <SelectItem value="232">Sterling Bank</SelectItem>
+                        <SelectItem value="076">Polaris Bank</SelectItem>
+                        <SelectItem value="100004">Opay</SelectItem>
+                        <SelectItem value="090267">Kuda Bank</SelectItem>
+                        <SelectItem value="100033">Palmpay</SelectItem>
+                        <SelectItem value="090328">Moniepoint</SelectItem>
+                    </SelectContent>
+                </Select>
+              </div>
+              <ProfileField label="Account Number" icon={CreditCard} name="account_number" maxLength={10} placeholder="e.g 0123456789" />
             </CardContent>
           </Card>
 
-          <Button onClick={handleSaveProfile} className="volt-gradient w-full sm:w-auto" disabled={updateProfile.isPending}>
-            <Save className="h-4 w-4 mr-2" /> {updateProfile.isPending ? "Saving..." : "Save Profile"}
+          <Button onClick={handleSaveProfile} className="volt-gradient w-full sm:w-auto" disabled={updateProfile.isPending || verifyingBank}>
+            {verifyingBank || updateProfile.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />} 
+            {verifyingBank ? "Verifying Bank..." : updateProfile.isPending ? "Saving..." : "Save Profile"}
           </Button>
+        </TabsContent>
+
+        {/* ─── SECURITY TAB ─── */}
+        <TabsContent value="security" className="space-y-4">
+          <Card className="border-border/50">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Lock className="h-5 w-5 text-primary" />
+                <h3 className="text-base font-display font-semibold">Transaction PIN</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Set a 4-digit PIN required to make withdrawals. Changes trigger a 24-hour security cool-off period.
+              </p>
+              
+              <div className="space-y-2 mt-4 max-w-xs">
+                <label className="text-sm font-medium">New 4-Digit PIN</label>
+                <Input 
+                   type="password" 
+                   maxLength={4} 
+                   value={securityForm.transaction_pin}
+                   onChange={(e) => setSecurityForm({ ...securityForm, transaction_pin: e.target.value })}
+                   placeholder="****"
+                   className="font-mono tracking-widest text-lg h-12"
+                />
+              </div>
+
+              {profile?.security_locked_until && new Date(profile.security_locked_until) > new Date() && (
+                  <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 flex items-start gap-2 mt-4 text-warning text-xs">
+                      <Lock className="h-4 w-4 shrink-0" />
+                      <p>Your wallet is in a 24-hour security cool-off period until {new Date(profile.security_locked_until).toLocaleString()}. Withdrawals are temporarily disabled.</p>
+                  </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Button onClick={handleSaveSecurity} className="volt-gradient w-full sm:w-auto" disabled={updateProfile.isPending}>
+            <Save className="h-4 w-4 mr-2" /> Save PIN
+          </Button>
+
+           <Card className="border-border/50">
+             <CardContent className="p-6 space-y-4">
+               <div className="flex items-center gap-2 mb-2">
+                 <QrCode className="h-5 w-5 text-primary" />
+                 <h3 className="text-base font-display font-semibold">Two-Factor Authentication (Recommended)</h3>
+               </div>
+               <p className="text-sm text-muted-foreground">
+                 Enhance your account and wallet security by requiring a 6-digit code from an authenticator app.
+               </p>
+               
+               <div className="pt-2">
+                 <MfaSetup />
+               </div>
+             </CardContent>
+           </Card>
         </TabsContent>
 
         {/* ─── MY SHOP TAB ─── */}
@@ -434,6 +642,7 @@ const Profile = () => {
           </Button>
         </TabsContent>
       </Tabs>
+      <KYCModal open={kycOpen} onOpenChange={setKycOpen} />
     </div>
   );
 };
