@@ -35,6 +35,7 @@ const productTypeBadge: Record<string, { label: string; className: string }> = {
   physical: { label: "Physical", className: "bg-muted text-muted-foreground" },
   digital: { label: "Digital", className: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
   lead: { label: "Sign-Up Offer", className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
+  lead_url: { label: "Sign-Up Offer", className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
 };
 
 function getCommissionLabel(product: { commissionRate: number; commissionModel: string; productType: string }) {
@@ -182,9 +183,9 @@ const ProductPage = () => {
 
   const images = product.assets?.images?.length > 0 ? product.assets.images : [];
   const shareText = `${product.name} — ${product.description}\n\n${referralLink}`;
-  const isLead = product.productType === "lead";
-  const isDigital = product.productType === "digital";
-  const typeBadge = productTypeBadge[product.productType] || productTypeBadge.physical;
+  const isLead = product.productType === "lead" || product.delivery_type === "lead_url";
+  const isDigital = product.productType === "digital" || product.delivery_type !== "manual_provision";
+  const typeBadge = productTypeBadge[product.delivery_type] || productTypeBadge[product.productType] || productTypeBadge.physical;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">

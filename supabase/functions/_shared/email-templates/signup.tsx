@@ -10,7 +10,9 @@ import {
   Html,
   Link,
   Preview,
+  Section,
   Text,
+  Img,
 } from 'npm:@react-email/components@0.0.22'
 
 interface SignupEmailProps {
@@ -28,25 +30,42 @@ export const SignupEmail = ({
 }: SignupEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Welcome to Volt ⚡ Here's your verification code</Preview>
+    <Preview>Your Volt verification code: {token}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={brand}>⚡ Volt</Text>
-        <Heading style={h1}>Welcome to Volt! 🎉</Heading>
+        <Section style={header}>
+          <Img
+            src="https://yaojxewpkrjonrvqpsxi.supabase.co/storage/v1/object/public/logos/logo.png"
+            width="120"
+            height="auto"
+            alt="Volt Logo"
+          />
+        </Section>
+        
+        <Heading style={h1}>Verify your email</Heading>
+        
         <Text style={text}>
-          You're one step away from joining the fastest-growing seller network in Africa.
+          Welcome to Volt! We're excited to have you on board. Pan-African commerce starts here.
         </Text>
+        
+        <Section style={codeBlock}>
+          <Text style={codeTitle}>Your Verification Code</Text>
+          <Text style={codeValue}>{token}</Text>
+        </Section>
+
         <Text style={text}>
-          Enter this code to verify your email (
-          <Link href={`mailto:${recipient}`} style={link}>
-            {recipient}
-          </Link>
-          ) and claim your ₦500 signup bonus!
+          Copy and paste this code into the verification screen to claim your <strong>₦500 signup bonus</strong> and start selling.
         </Text>
-        <Text style={codeStyle}>{token}</Text>
+
         <Text style={footer}>
-          If you didn't sign up for Volt, you can safely ignore this email.
+          This code will expire in 10 minutes. If you didn't request this email, you can safely ignore it.
         </Text>
+        
+        <Section style={footerSection}>
+          <Text style={footerText}>
+            © 2026 Volt Africa. All rights reserved.
+          </Text>
+        </Section>
       </Container>
     </Body>
   </Html>
@@ -54,35 +73,83 @@ export const SignupEmail = ({
 
 export default SignupEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: "'Inter', Arial, sans-serif" }
-const container = { padding: '32px 28px', maxWidth: '480px' }
-const brand = {
-  fontSize: '20px',
-  fontWeight: 'bold' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  color: '#1E90FF',
+const main = {
+  backgroundColor: '#f6f9fc',
+  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+}
+
+const container = {
+  backgroundColor: '#ffffff',
+  margin: '40px auto',
+  padding: '40px 48px',
+  borderRadius: '12px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+  maxWidth: '560px',
+}
+
+const header = {
+  marginBottom: '32px',
+}
+
+const h1 = {
+  color: '#111827',
+  fontSize: '28px',
+  fontWeight: 'bold',
+  textAlign: 'center' as const,
   margin: '0 0 24px',
 }
-const h1 = {
-  fontSize: '24px',
-  fontWeight: 'bold' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  color: '#171717',
-  margin: '0 0 16px',
-}
+
 const text = {
-  fontSize: '15px',
-  color: '#737373',
-  lineHeight: '1.6',
-  margin: '0 0 20px',
+  color: '#4b5563',
+  fontSize: '16px',
+  lineHeight: '24px',
+  textAlign: 'center' as const,
+  margin: '0 0 24px',
 }
-const link = { color: '#1E90FF', textDecoration: 'underline' }
-const codeStyle = {
-  fontFamily: "'Space Grotesk', Courier, monospace",
-  fontSize: '28px',
-  fontWeight: 'bold' as const,
-  color: '#1E90FF',
-  letterSpacing: '4px',
-  margin: '0 0 28px',
+
+const codeBlock = {
+  backgroundColor: '#00d2ff',
+  background: 'linear-gradient(135deg, #00d2ff 0%, #0078ff 50%, #a06dee 100%)',
+  borderRadius: '12px',
+  padding: '32px 20px',
+  margin: '24px 0',
 }
-const footer = { fontSize: '12px', color: '#a3a3a3', margin: '32px 0 0' }
+
+const codeTitle = {
+  color: 'rgba(255, 255, 255, 0.9)',
+  fontSize: '14px',
+  fontWeight: 'bold',
+  textAlign: 'center' as const,
+  textTransform: 'uppercase' as const,
+  letterSpacing: '1px',
+  margin: '0 0 12px',
+}
+
+const codeValue = {
+  color: '#ffffff',
+  fontSize: '42px',
+  fontWeight: 'bold',
+  textAlign: 'center' as const,
+  letterSpacing: '8px',
+  margin: '0',
+}
+
+const footer = {
+  color: '#9ca3af',
+  fontSize: '14px',
+  textAlign: 'center' as const,
+  margin: '24px 0 0',
+}
+
+const footerSection = {
+  borderTop: '1px solid #e5e7eb',
+  paddingTop: '24px',
+  marginTop: '32px',
+}
+
+const footerText = {
+  color: '#9ca3af',
+  fontSize: '12px',
+  textAlign: 'center' as const,
+  margin: '0',
+}

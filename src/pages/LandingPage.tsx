@@ -355,11 +355,8 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border bg-background">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-10 md:flex-row md:justify-between">
-          <div className="flex items-center gap-2 font-display text-lg font-bold">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg volt-gradient">
-              <Zap className="h-3.5 w-3.5 text-primary-foreground" />
-            </div>
-            Volt
+          <div className="flex items-center">
+            <img src="/Volt1.png" alt="Volt Logo" className="h-7 w-auto object-contain" />
           </div>
           <nav className="flex gap-6 text-sm text-muted-foreground">
             <Link to="/login" className="hover:text-foreground transition-colors">Sign In</Link>

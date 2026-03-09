@@ -14,7 +14,8 @@ function mapProduct(db: DbProduct): Product {
     description: db.description,
     assets: db.assets,
     slug: db.slug,
-    productType: (db.product_type as ProductType) || "physical",
+    productType: (db.product_type as ProductType) || "Physical",
+    subcategory: db.subcategory,
     commissionModel: (db.commission_model as CommissionModel) || "percentage",
   };
 }
@@ -25,7 +26,7 @@ export function useProduct(slug: string | undefined) {
     queryFn: async () => {
       if (!slug) throw new Error("No slug");
       const { data, error } = await supabase
-        .from("products" as any)
+        .from("products")
         .select("*")
         .eq("slug", slug)
         .maybeSingle();

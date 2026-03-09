@@ -13,9 +13,11 @@ import {
   LogOut,
   Zap,
   GraduationCap,
+  ShieldCheck,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import {
   Drawer,
   DrawerContent,
@@ -43,12 +45,18 @@ export function MobileBottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { isAdmin } = useAdminRole();
   const [moreOpen, setMoreOpen] = useState(false);
 
   if (!isMobile) return null;
 
-  const isActive = (path: string) => location.pathname === path;
-  const isMoreActive = moreTabs.some((t) => isActive(t.path));
+  const currentMoreTabs = [...moreTabs];
+  if (isAdmin) {
+    currentMoreTabs.unshift({ label: "Admin", path: "/admin", icon: ShieldCheck });
+  }
+
+  const isActive = (path: string) => location.pathname === path || (path !== "/dashboard" && location.pathname.startsWith(path));
+  const isMoreActive = currentMoreTabs.some((t) => isActive(t.path));
 
   const handleNav = (path: string) => {
     navigate(path);
@@ -119,14 +127,12 @@ export function MobileBottomNav() {
         <DrawerContent>
           <DrawerHeader className="pb-2">
             <DrawerTitle className="flex items-center gap-2 justify-center">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md volt-gradient">
-                <Zap className="h-3 w-3 text-primary-foreground" />
-              </div>
+              <img src="/Volt1.png" alt="Volt Logo" className="h-6 w-auto object-contain" />
               <span className="font-display font-bold">More</span>
             </DrawerTitle>
           </DrawerHeader>
-          <div className="px-4 pb-6 grid grid-cols-4 gap-3">
-            {moreTabs.map((tab) => {
+          <div className="px-4 pb-6 grid grid-cols-4 gap-3 text-center">
+            {currentMoreTabs.map((tab) => {
               const active = isActive(tab.path);
               return (
                 <button

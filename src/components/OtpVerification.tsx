@@ -25,7 +25,7 @@ const OtpVerification = ({ email, onVerify, onResend, onBack, loading }: OtpVeri
 
   const handleComplete = useCallback(
     async (value: string) => {
-      if (value.length === 8) {
+      if (value.length === 6) {
         await onVerify(value);
       }
     },
@@ -55,13 +55,13 @@ const OtpVerification = ({ email, onVerify, onResend, onBack, loading }: OtpVeri
       <div className="space-y-2">
         <h2 className="text-xl font-semibold text-foreground">Check your email</h2>
         <p className="text-sm text-muted-foreground">
-          We sent an 8-digit code to{" "}
+          We sent a 6-digit code to{" "}
           <span className="font-medium text-foreground">{email}</span>
         </p>
       </div>
 
       <div className="flex justify-center">
-        <InputOTP maxLength={8} value={otp} onChange={setOtp} onComplete={handleComplete} disabled={loading}>
+        <InputOTP maxLength={6} value={otp} onChange={setOtp} onComplete={handleComplete} disabled={loading}>
           <InputOTPGroup>
             <InputOTPSlot index={0} />
             <InputOTPSlot index={1} />
@@ -69,8 +69,6 @@ const OtpVerification = ({ email, onVerify, onResend, onBack, loading }: OtpVeri
             <InputOTPSlot index={3} />
             <InputOTPSlot index={4} />
             <InputOTPSlot index={5} />
-            <InputOTPSlot index={6} />
-            <InputOTPSlot index={7} />
           </InputOTPGroup>
         </InputOTP>
       </div>
@@ -78,7 +76,7 @@ const OtpVerification = ({ email, onVerify, onResend, onBack, loading }: OtpVeri
       <Button
         onClick={() => handleComplete(otp)}
         className="w-full volt-gradient font-semibold"
-        disabled={otp.length < 8 || loading}
+        disabled={otp.length < 6 || loading}
       >
         {loading ? "Verifying..." : "Verify Email"}
       </Button>

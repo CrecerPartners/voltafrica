@@ -29,7 +29,7 @@ export function useSales() {
     queryKey: ["sales", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("sales" as any)
+        .from("sales")
         .select("*, products:product_id(name, category, product_type)")
         .eq("user_id", user!.id)
         .order("date", { ascending: false });
@@ -37,8 +37,8 @@ export function useSales() {
       return (data as any[]).map((s) => ({
         ...s,
         product_name: s.products?.name || "Unknown",
-        category: s.products?.category || "digital",
-        product_type: s.products?.product_type || "physical",
+        category: s.products?.category || "",
+        product_type: s.products?.product_type || "Physical",
       })) as Sale[];
     },
     enabled: !!user,
@@ -50,7 +50,7 @@ export function useDeleteSale() {
   return useMutation({
     mutationFn: async (saleId: string) => {
       const { error } = await supabase
-        .from("sales" as any)
+        .from("sales")
         .delete()
         .eq("id", saleId);
       if (error) throw error;
@@ -68,7 +68,7 @@ export function useUpdateSale() {
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Record<string, any> }) => {
       const { error } = await supabase
-        .from("sales" as any)
+        .from("sales")
         .update(data as any)
         .eq("id", id);
       if (error) throw error;

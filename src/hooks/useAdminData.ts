@@ -211,6 +211,21 @@ export function useDeleteProduct() {
   });
 }
 
+export function useInsertLicenseKeys() {
+  return useMutation({
+    mutationFn: async ({ productId, keys }: { productId: string; keys: string[] }) => {
+      const payload = keys.map((key) => ({
+        product_id: productId,
+        key_value: key,
+        is_used: false,
+      }));
+      const { error } = await supabase.from("license_keys").insert(payload);
+      if (error) throw error;
+    },
+  });
+}
+
+
 export function useUpsertCourse() {
   const qc = useQueryClient();
   return useMutation({

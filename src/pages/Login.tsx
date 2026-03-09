@@ -158,9 +158,7 @@ const Login = () => {
           <>
             <CardHeader className="text-center space-y-4">
               <div className="flex justify-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl volt-gradient volt-glow">
-                  <Zap className="h-7 w-7 text-primary-foreground" />
-                </div>
+                <img src="/Volt1.png" alt="Volt Logo" className="h-14 w-auto object-contain" />
               </div>
               <div>
                 <CardTitle className="text-2xl font-display">

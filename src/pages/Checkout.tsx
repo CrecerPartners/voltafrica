@@ -24,7 +24,15 @@ const Checkout = () => {
   const allDigital = useMemo(() => {
     return items.length > 0 && items.every((item) => {
       const product = products.find((p) => p.id === item.productId);
-      return product?.productType === "digital";
+      return product?.productType === "digital" || product?.delivery_type !== "manual_provision";
+    });
+  }, [items, products]);
+
+  // Determine if we need to ask for manual provisioning notes
+  const needsManualNotes = useMemo(() => {
+    return items.some((item) => {
+      const product = products.find((p) => p.id === item.productId);
+      return product?.delivery_type === "manual_provision" && product?.productType === "digital";
     });
   }, [items, products]);
 
@@ -34,14 +42,20 @@ const Checkout = () => {
       email: z.string().trim().email("Valid email is required").max(255),
       phone: z.string().trim().min(10, "Valid phone number is required").max(20),
     };
-    if (allDigital) return z.object(base);
+    if (allDigital) {
+      if (needsManualNotes) {
+        return z.object({ ...base, order_notes: z.string().trim().min(2, "Please provide the required account details") });
+      }
+      return z.object(base);
+    }
     return z.object({
       ...base,
       address: z.string().trim().min(5, "Delivery address is required").max(500),
       city: z.string().trim().min(2, "City is required").max(100),
       state: z.string().trim().min(2, "State is required").max(100),
+      order_notes: z.string().optional(),
     });
-  }, [allDigital]);
+  }, [allDigital, needsManualNotes]);
 
   type CheckoutForm = z.infer<typeof checkoutSchema>;
 
@@ -52,6 +66,7 @@ const Checkout = () => {
     address: "",
     city: "",
     state: "",
+    order_notes: "",
   });
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
 
@@ -75,7 +90,7 @@ const Checkout = () => {
   };
 
   const visibleFields = allDigital
-    ? (["name", "email", "phone"] as const)
+    ? (needsManualNotes ? ["name", "email", "phone", "order_notes"] as const : ["name", "email", "phone"] as const)
     : (["name", "email", "phone", "address", "city", "state"] as const);
 
   const handleSubmit = async () => {
@@ -106,6 +121,7 @@ const Checkout = () => {
           state: allDigital ? "N/A" : form.state,
           total: totalPrice,
           status: "pending",
+          notes: form.order_notes || null,
         })
         .select()
         .single();
@@ -124,29 +140,46 @@ const Checkout = () => {
       const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
       if (itemsError) throw itemsError;
 
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-        "create-paystack-payment",
-        {
-          body: {
-            orderId: order.id,
-            email: form.email,
-            amount: totalPrice,
-          },
+      // Inline Paystack Checkout configuration
+      const paystackConfig = {
+        reference: `VOLT-${order.id.slice(0, 8)}-${Date.now()}`,
+        email: form.email,
+        amount: Math.round(totalPrice * 100), // Paystack uses kobo
+        publicKey: (import.meta.env.VITE_PAYSTACK_TEST_PUBLIC_KEY || "pk_test_4e1d855c4863fc9556d8d7c419612e2b36cbf8be") as string,
+        metadata: {
+          order_id: order.id,
+          custom_fields: []
         }
-      );
+      };
 
-      if (paymentError) throw paymentError;
+      // Ensure the Paystack script is loaded dynamically or initialized
+      const script = document.createElement("script");
+      script.src = "https://js.paystack.co/v1/inline.js";
+      script.async = true;
+      script.onload = () => {
+        const handler = (window as any).PaystackPop.setup({
+          ...paystackConfig,
+          onClose: () => {
+            setLoading(false);
+            toast.info("Payment window closed.");
+          },
+          callback: (response: any) => {
+            clearCart();
+            // The webhook will process the fulfillment in the background!
+            navigate(`/order-confirmation?reference=${response.reference}`);
+          }
+        });
+        handler.openIframe();
+      };
+      script.onerror = () => {
+        setLoading(false);
+        toast.error("Failed to load Paystack. Please check your connection.");
+      };
+      document.body.appendChild(script);
 
-      if (paymentData?.authorization_url) {
-        clearCart();
-        window.location.href = paymentData.authorization_url;
-      } else {
-        throw new Error("No payment URL returned");
-      }
     } catch (err: any) {
       console.error("Checkout error:", err);
       toast.error(err.message || "Checkout failed. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -158,6 +191,7 @@ const Checkout = () => {
     address: "Address",
     city: "City",
     state: "State",
+    order_notes: needsManualNotes ? "Account Details / Provisioning Notes" : "Order Notes (Optional)",
   };
 
   const fieldPlaceholders: Record<string, string> = {
@@ -167,6 +201,7 @@ const Checkout = () => {
     address: "Street address",
     city: "Lagos",
     state: "Lagos State",
+    order_notes: needsManualNotes ? "e.g., Preferred username, existing account email..." : "Any special instructions...",
   };
 
   return (

@@ -1,14 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type ProductType = "physical" | "digital" | "lead";
+export type ProductType = "Physical" | "Digital";
+export type ProductCategory = 
+  | "Fashion & Lifestyle" 
+  | "Electronics & Gadgets" 
+  | "Fintech" 
+  | "Tech Products" 
+  | "Software & Tools" 
+  | "Subscriptions";
+
 export type CommissionModel = "percentage" | "fixed" | "per_signup" | "per_install";
 
 export interface DbProduct {
   id: string;
   name: string;
   brand: string;
-  category: "gadgets" | "telco" | "fintech" | "events" | "fashion" | "courses";
+  category: string;
   commission_rate: number;
   price: number;
   image: string;
@@ -23,7 +31,8 @@ export interface DbProduct {
     fulfillment_url?: string;
   };
   slug: string;
-  product_type: ProductType;
+  product_type: string;
+  subcategory?: string;
   commission_model: CommissionModel;
   created_at: string;
 }
@@ -32,7 +41,7 @@ export interface Product {
   id: string;
   name: string;
   brand: string;
-  category: "gadgets" | "telco" | "fintech" | "events" | "fashion" | "courses";
+  category: string;
   commissionRate: number;
   price: number;
   image: string;
@@ -40,6 +49,7 @@ export interface Product {
   assets: DbProduct["assets"];
   slug: string;
   productType: ProductType;
+  subcategory?: string;
   commissionModel: CommissionModel;
 }
 
@@ -55,7 +65,8 @@ function mapProduct(db: DbProduct): Product {
     description: db.description,
     assets: db.assets,
     slug: db.slug,
-    productType: (db.product_type as ProductType) || "physical",
+    productType: (db.product_type as ProductType) || "Physical",
+    subcategory: db.subcategory,
     commissionModel: (db.commission_model as CommissionModel) || "percentage",
   };
 }
@@ -65,11 +76,11 @@ export function useProducts() {
     queryKey: ["products"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("products" as any)
+        .from("products")
         .select("*")
         .order("commission_rate", { ascending: false });
       if (error) throw error;
-      return (data as unknown as DbProduct[]).map(mapProduct);
+      return (data as any[]).map(mapProduct);
     },
   });
 }

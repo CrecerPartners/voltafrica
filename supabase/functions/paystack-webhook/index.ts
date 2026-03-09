@@ -65,12 +65,21 @@ Deno.serve(async (req) => {
         .from("orders")
         .update({ status: newStatus, paystack_reference: reference })
         .eq("id", orderId);
+
+      // Trigger digital fulfillment processing
+      try {
+        await supabase.functions.invoke("process-order-fulfillment", {
+          body: { orderId }
+        });
+      } catch (fulfillmentErr) {
+        console.error("Fulfillment trigger error:", fulfillmentErr);
+      }
     }
 
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Webhook error:", err);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,

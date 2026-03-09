@@ -32,6 +32,7 @@ import SellerShop from "@/pages/SellerShop";
 import NotFound from "@/pages/NotFound";
 import Checkout from "@/pages/Checkout";
 import OrderConfirmation from "@/pages/OrderConfirmation";
+import BuyerOrders from "@/pages/BuyerOrders";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminProducts from "@/pages/admin/AdminProducts";
@@ -83,6 +84,7 @@ const App = () => (
             <Route path="/training" element={<Training />} />
             <Route path="/training/:courseId" element={<TrainingCourse />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/orders" element={<BuyerOrders />} />
           </Route>
           <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
             <Route path="/admin" element={<AdminDashboard />} />

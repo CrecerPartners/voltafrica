@@ -14,11 +14,8 @@ export function LandingNavbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
-        <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg volt-gradient">
-            <Zap className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <span>Volt</span>
+        <Link to="/" className="flex items-center">
+          <img src="/Volt1.png" alt="Volt Logo" className="h-8 w-auto object-contain" />
         </Link>
 
         <div className="hidden items-center gap-3 md:flex">

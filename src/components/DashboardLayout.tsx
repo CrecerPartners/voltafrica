@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
@@ -38,12 +38,13 @@ export function DashboardLayout() {
             <div className="flex items-center gap-2">
               {/* Mobile: Volt logo — Desktop: sidebar trigger */}
               {isMobile ? (
-                <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg volt-gradient">
-                    <Zap className="h-3.5 w-3.5 text-primary-foreground" />
-                  </div>
-                  <span className="text-lg font-bold font-display text-foreground">Volt</span>
-                </div>
+                <Link to="/" className="flex items-center">
+                  <img
+                    src="/Volt1.png"
+                    alt="Volt"
+                    className="h-7 w-auto object-contain"
+                  />
+                </Link>
               ) : (
                 <SidebarTrigger />
               )}

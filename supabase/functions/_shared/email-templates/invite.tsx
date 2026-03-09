@@ -10,36 +10,55 @@ import {
   Heading,
   Html,
   Preview,
+  Section,
   Text,
+  Img,
 } from 'npm:@react-email/components@0.0.22'
 
 interface InviteEmailProps {
   siteName: string
-  siteUrl: string
   confirmationUrl: string
 }
 
 export const InviteEmail = ({
   siteName,
-  siteUrl,
   confirmationUrl,
 }: InviteEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>You've been invited to join Volt ⚡</Preview>
+    <Preview>You're invited to join Volt ⚡</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={brand}>⚡ Volt</Text>
-        <Heading style={h1}>You're invited! 🎉</Heading>
+        <Section style={header}>
+          <Img
+            src="https://yaojxewpkrjonrvqpsxi.supabase.co/storage/v1/object/public/logos/logo.png"
+            width="120"
+            height="auto"
+            alt="Volt Logo"
+          />
+        </Section>
+        
+        <Heading style={h1}>You're invited!</Heading>
+        
         <Text style={text}>
-          Someone thinks you'd be a great Volt seller. Accept the invite below to create your account and start earning.
+          You've been invited to join the Volt seller network. Click the button below to accept your invitation and get started.
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Accept Invite ⚡
-        </Button>
+        
+        <Section style={btnContainer}>
+          <Button style={button} href={confirmationUrl}>
+            Accept Invitation
+          </Button>
+        </Section>
+
         <Text style={footer}>
-          If you weren't expecting this, you can safely ignore this email.
+          If you weren't expecting this invitation, you can safely ignore this email.
         </Text>
+        
+        <Section style={footerSection}>
+          <Text style={footerText}>
+            © 2026 Volt Africa. All rights reserved.
+          </Text>
+        </Section>
       </Container>
     </Body>
   </Html>
@@ -47,36 +66,74 @@ export const InviteEmail = ({
 
 export default InviteEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: "'Inter', Arial, sans-serif" }
-const container = { padding: '32px 28px', maxWidth: '480px' }
-const brand = {
-  fontSize: '20px',
-  fontWeight: 'bold' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  color: '#1E90FF',
+const main = {
+  backgroundColor: '#f6f9fc',
+  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+}
+
+const container = {
+  backgroundColor: '#ffffff',
+  margin: '40px auto',
+  padding: '40px 48px',
+  borderRadius: '12px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+  maxWidth: '560px',
+}
+
+const header = {
+  marginBottom: '32px',
+}
+
+const h1 = {
+  color: '#111827',
+  fontSize: '28px',
+  fontWeight: 'bold',
+  textAlign: 'center' as const,
   margin: '0 0 24px',
 }
-const h1 = {
-  fontSize: '24px',
-  fontWeight: 'bold' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  color: '#171717',
-  margin: '0 0 16px',
-}
+
 const text = {
-  fontSize: '15px',
-  color: '#737373',
-  lineHeight: '1.6',
-  margin: '0 0 20px',
+  color: '#4b5563',
+  fontSize: '16px',
+  lineHeight: '24px',
+  textAlign: 'center' as const,
+  margin: '0 0 24px',
 }
+
+const btnContainer = {
+  textAlign: 'center' as const,
+  margin: '32px 0',
+}
+
 const button = {
-  backgroundColor: '#1E90FF',
-  color: '#ffffff',
-  fontSize: '15px',
-  fontWeight: '600' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
+  backgroundColor: '#00d2ff',
+  background: 'linear-gradient(135deg, #00d2ff 0%, #0078ff 50%, #a06dee 100%)',
   borderRadius: '12px',
-  padding: '14px 24px',
+  color: '#fff',
+  fontSize: '16px',
+  fontWeight: 'bold',
   textDecoration: 'none',
+  textAlign: 'center' as const,
+  display: 'inline-block',
+  padding: '16px 32px',
 }
-const footer = { fontSize: '12px', color: '#a3a3a3', margin: '32px 0 0' }
+
+const footer = {
+  color: '#9ca3af',
+  fontSize: '14px',
+  textAlign: 'center' as const,
+  margin: '24px 0 0',
+}
+
+const footerSection = {
+  borderTop: '1px solid #e5e7eb',
+  paddingTop: '24px',
+  marginTop: '32px',
+}
+
+const footerText = {
+  color: '#9ca3af',
+  fontSize: '12px',
+  textAlign: 'center' as const,
+  margin: '0',
+}
