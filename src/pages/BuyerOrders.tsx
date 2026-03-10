@@ -17,18 +17,18 @@ export default function BuyerOrders() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      if (!profile?.id) return;
+      if (!profile?.user_id) return;
       try {
         const { data, error } = await supabase
           .from("orders")
           .select(`
-            id, created_at, status, total_amount, paystack_reference,
+            id, created_at, status, total, paystack_reference,
             order_items (
-              id, quantity, unit_price, delivery_details,
+              id, quantity, price, delivery_details,
               products (id, name, description)
             )
           `)
-          .eq("user_id", profile.id)
+          .eq("user_id", profile.user_id)
           .order("created_at", { ascending: false });
         
         if (error) throw error;
@@ -42,7 +42,7 @@ export default function BuyerOrders() {
     };
 
     fetchOrders();
-  }, [profile?.id]);
+  }, [profile?.user_id]);
 
   const filteredOrders = orders.filter(
     (order) =>
@@ -108,7 +108,7 @@ export default function BuyerOrders() {
                       <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className="font-bold font-display text-lg">
-                      {formatNaira(order.total_amount)}
+                      {formatNaira(order.total)}
                     </div>
                   </div>
 
@@ -120,7 +120,7 @@ export default function BuyerOrders() {
                           <div className="flex justify-between items-start">
                             <div>
                               <span className="font-medium block">{item.products?.name}</span>
-                              <span className="text-sm text-muted-foreground">Qty: {item.quantity} × {formatNaira(item.unit_price)}</span>
+                              <span className="text-sm text-muted-foreground">Qty: {item.quantity} × {formatNaira(item.price)}</span>
                             </div>
                           </div>
 
