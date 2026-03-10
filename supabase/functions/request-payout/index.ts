@@ -228,6 +228,43 @@ serve(async (req) => {
       successMessage = "Payout request submitted. Note: This bank account has been flagged for review as it is also used by another seller account.";
     }
 
+    // Send email using Resend
+    const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+    if (RESEND_API_KEY && profile?.email) {
+      const emailHtml = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Payout Request Received 💸</h2>
+          <p>Hello ${profile.name || 'Volt User'},</p>
+          <p>We've received your payout request for <strong>₦${amount.toLocaleString()}</strong>.</p>
+          <p>It will be processed and transferred to your bank account (<strong>${profile.bank_name} - ${profile.account_number}</strong>) shortly.</p>
+          <p><em>${successMessage}</em></p>
+          <br/>
+          <p>Best regards,<br/>Volt Team ⚡</p>
+        </div>
+      `;
+
+      try {
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: "Volt <hello@tryvoltapp.com>",
+            to: [profile.email],
+            subject: "Volt Payout Request Received 💸",
+            html: emailHtml,
+          }),
+        });
+        if (!res.ok) {
+          console.error("Resend API error:", await res.text());
+        }
+      } catch (emailErr) {
+        console.error("Error sending payout email:", emailErr);
+      }
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 

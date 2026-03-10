@@ -28,7 +28,7 @@ export default function BuyerOrders() {
               products (id, name, description)
             )
           `)
-          .eq("buyer_id", profile.id)
+          .eq("user_id", profile.id)
           .order("created_at", { ascending: false });
         
         if (error) throw error;
