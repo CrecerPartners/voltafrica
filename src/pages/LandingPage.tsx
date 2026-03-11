@@ -38,9 +38,9 @@ const audiences = {
   },
   brands: {
     badge: "For Brands",
-    headline: "Built for Brands Selling to Gen Z & Millennials",
+    headline: "Built for Brands Targeting Young Digital Consumers",
     subtitle:
-      "Fintech · Fashion · Food · Apps · Subscriptions · Events",
+      "Reach millions of socially connected young buyers through Volt’s trusted seller network across campuses, communities, and creator audiences.",
     cta: "Partner with Volt",
     ctaLink: "https://volt.crecerpartners.com/brand-form/",
     icon: Building2,
@@ -175,6 +175,22 @@ export default function LandingPage() {
             <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground md:text-xl">
               {active.subtitle}
             </p>
+
+            {tab === "brands" && (
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm font-medium text-muted-foreground">
+                <span>Fintech</span>
+                <span className="text-primary">·</span>
+                <span>Fashion</span>
+                <span className="text-primary">·</span>
+                <span>Apps</span>
+                <span className="text-primary">·</span>
+                <span>Subscriptions</span>
+                <span className="text-primary">·</span>
+                <span>Events</span>
+                <span className="text-primary">·</span>
+                <span>Lifestyle</span>
+              </div>
+            )}
 
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button
