@@ -342,14 +342,16 @@ const Profile = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Account Type</label>
-                {profileForm.account_type ? (
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-sm py-1 px-3">{accountTypeLabels[profileForm.account_type] || profileForm.account_type}</Badge>
-                    <span className="text-xs text-muted-foreground">Set during signup</span>
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">Not set — will be derived from your signup info</p>
-                )}
+                <Select value={profileForm.account_type || ""} onValueChange={(val) => setProfileForm({ ...profileForm, account_type: val })}>
+                  <SelectTrigger className="bg-secondary border-border w-full md:w-1/2">
+                    <SelectValue placeholder="Select Account Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(accountTypeLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {needsIdUpload && (

@@ -41,11 +41,35 @@ export default function AboutBrands() {
             For Brands
           </span>
           <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
-            Penetrate the Gen Z Urban Market at Scale
+            Built for Brands Targeting Young Digital Consumers
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Leverage youth-led distribution across campuses, cities, creators, and communities to drive consistent product sales.
+            Reach millions of socially connected young buyers through Volt’s trusted seller network across campuses, communities, and creator audiences.
           </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm font-medium text-muted-foreground">
+            <span>Fintech</span>
+            <span className="text-primary">·</span>
+            <span>Fashion</span>
+            <span className="text-primary">·</span>
+            <span>Apps</span>
+            <span className="text-primary">·</span>
+            <span>Subscriptions</span>
+            <span className="text-primary">·</span>
+            <span>Events</span>
+            <span className="text-primary">·</span>
+            <span>Lifestyle</span>
+          </div>
+          <div className="mt-10">
+            <Button
+              asChild
+              size="lg"
+              className="bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              <a href="https://volt.crecerpartners.com/brand-form/" target="_blank" rel="noopener noreferrer">
+                Partner with Volt <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+            </Button>
+          </div>
         </div>
       </section>
 

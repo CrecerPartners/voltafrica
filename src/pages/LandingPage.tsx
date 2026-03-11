@@ -266,7 +266,7 @@ export default function LandingPage() {
           {/* Why Join */}
           <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
             <div className="mb-12 text-center">
-              <h2 className="font-display text-3xl font-bold md:text-4xl">Why Join the Volt Network?</h2>
+              <h2 className="font-display text-3xl font-bold md:text-4xl">Why Join the VoltSquad?</h2>
               <p className="mt-3 text-muted-foreground">Everything you need to start earning.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -345,7 +345,7 @@ export default function LandingPage() {
                 size="lg"
                 className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
               >
-                <Link to="/join-now">Join the Volt Network</Link>
+                <Link to="/join-now">Join the VoltSquad</Link>
               </Button>
             </div>
           </div>

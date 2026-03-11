@@ -194,7 +194,7 @@ const Login = () => {
               </div>
               <div>
                 <CardTitle className="text-2xl font-display">
-                  {isSignup ? "Join the Volt Network ⚡" : "Welcome Back"}
+                  {isSignup ? "Join the VoltSquad ⚡" : "Welcome Back"}
                 </CardTitle>
                 <CardDescription className="mt-2">
                   {isSignup ? "Start earning as a Volt seller" : "Sign in to your dashboard"}
