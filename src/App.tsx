@@ -1,16 +1,29 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { CartProvider } from "@/contexts/CartContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminProtectedRoute } from "@/components/AdminProtectedRoute";
+import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
+import { App as CapApp } from "@capacitor/app";
+import { SplashScreen } from "@capacitor/splash-screen";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { Keyboard } from "@capacitor/keyboard";
+import { Network } from "@capacitor/network";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { AdminLayout } from "@/components/AdminLayout";
 import { PublicProductLayout } from "@/components/PublicProductLayout";
+import { MobileOnboarding } from "@/components/native/MobileOnboarding";
+import { NativeSplash } from "@/components/native/NativeSplash";
 import LandingPage from "@/pages/LandingPage";
 import AboutStudents from "@/pages/AboutStudents";
 import AboutBrands from "@/pages/AboutBrands";
@@ -46,23 +59,104 @@ import AdminVerification from "@/pages/admin/AdminVerification";
 import AdminOrders from "@/pages/admin/AdminOrders";
 import AdminLogin from "@/pages/admin/AdminLogin";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-    <AuthProvider>
-    <CartProvider>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+});
+
+const NativeBlockRoute = ({ children }: { children: React.ReactNode }) => {
+  const isNative = Capacitor.isNativePlatform();
+  if (isNative) return <Navigate to="/" replace />;
+  return <>{children}</>;
+};
+
+const NetworkStatusBanner = () => {
+  const [isOffline, setIsOffline] = useState(false);
+
+  useEffect(() => {
+    let handler: { remove: () => void } | undefined;
+
+    const setup = async () => {
+      const status = await Network.getStatus();
+      setIsOffline(!status.connected);
+      handler = await Network.addListener('networkStatusChange', status => {
+        setIsOffline(!status.connected);
+      });
+    };
+    setup();
+    return () => { 
+      if (handler) handler.remove(); 
+    };
+  }, []);
+
+  if (!isOffline) return null;
+
+  return (
+    <div className="fixed top-0 left-0 w-full bg-destructive text-destructive-foreground py-1 px-4 text-xs font-medium text-center z-[110] animate-in slide-in-from-top pointer-events-none">
+      No Internet Connection. Using cached data.
+    </div>
+  );
+};
+
+const App = () => {
+  const isNative = Capacitor.isNativePlatform();
+  const [splashVisible, setSplashVisible] = useState(isNative);
+  useNativeAuthCallback();
+
+  useEffect(() => {
+    if (isNative) {
+      SplashScreen.hide();
+      
+      // Native App Polish
+      const configureNative = async () => {
+        try {
+          await StatusBar.setStyle({ style: Style.Dark });
+          if (Capacitor.getPlatform() === 'ios') {
+            await Keyboard.setAccessoryBarVisible({ isVisible: true });
+          }
+
+          // Handle Android Back Button
+          CapApp.addListener('backButton', ({ canGoBack }) => {
+            if (!canGoBack) {
+              CapApp.exitApp();
+            } else {
+              window.history.back();
+            }
+          });
+        } catch (e) {
+          console.warn("Native plugin config skipped (likely web testing)");
+        }
+      };
+      
+      configureNative();
+    }
+  }, [isNative]);
+
+  return (
+    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      {isNative && splashVisible && <NativeSplash onComplete={() => setSplashVisible(false)} />}
+      <NetworkStatusBanner />
+      <AuthProvider>
+      <CartProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={isNative ? <MobileOnboarding /> : <LandingPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/about/sellers" element={<AboutStudents />} />
+          <Route path="/about/sellers" element={<NativeBlockRoute><AboutStudents /></NativeBlockRoute>} />
           <Route path="/about/students" element={<Navigate to="/about/sellers" replace />} />
-          <Route path="/about/brands" element={<AboutBrands />} />
+          <Route path="/about/brands" element={<NativeBlockRoute><AboutBrands /></NativeBlockRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/join-now" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -106,7 +200,52 @@ const App = () => (
     </CartProvider>
     </AuthProvider>
     </ThemeProvider>
-  </QueryClientProvider>
-);
+    </PersistQueryClientProvider>
+  );
+};
+
+const useNativeAuthCallback = () => {
+  const isNative = Capacitor.isNativePlatform();
+
+  useEffect(() => {
+    if (!isNative) return;
+
+    let handler: { remove: () => void } | undefined;
+
+    const setupListener = async () => {
+      handler = await CapApp.addListener('appUrlOpen', async (data: { url: string }) => {
+        // Handle the deep link
+        const url = new URL(data.url);
+        
+        // Check if it's a Supabase callback
+        if (url.hash && url.hash.includes('access_token')) {
+          const hash = url.hash.substring(1);
+          const params = new URLSearchParams(hash);
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+
+          if (accessToken && refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            
+            if (!error) {
+              window.location.href = '/dashboard';
+            }
+          }
+        }
+      });
+    };
+
+    setupListener();
+
+    return () => {
+      if (handler) {
+        handler.remove();
+      }
+    };
+  }, [isNative]);
+};
 
 export default App;

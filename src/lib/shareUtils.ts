@@ -1,6 +1,27 @@
 import { toast } from "sonner";
+import { Capacitor } from "@capacitor/core";
+import { Share } from "@capacitor/share";
+import { Clipboard } from "@capacitor/clipboard";
 
 export async function shareContent(title: string, text: string, url?: string) {
+  const isNative = Capacitor.isNativePlatform();
+
+  if (isNative) {
+    try {
+      await Share.share({
+        title,
+        text,
+        url,
+        dialogTitle: 'Share with buddies',
+      });
+      return true;
+    } catch (e) {
+      console.error("Native share failed", e);
+      await copyToClipboard(text + (url ? "\n" + url : ""), "Content");
+      return false;
+    }
+  }
+
   const shareData: ShareData = { title, text };
   if (url) shareData.url = url;
 
@@ -46,10 +67,17 @@ export function shareToSnapchat(url: string) {
 }
 
 export async function copyToClipboard(text: string, label: string) {
-  await navigator.clipboard.writeText(text);
+  const isNative = Capacitor.isNativePlatform();
+  if (isNative) {
+    await Clipboard.write({ string: text });
+  } else {
+    await navigator.clipboard.writeText(text);
+  }
   toast.success(`${label} copied!`);
 }
 
 export function canNativeShare() {
+  const isNative = Capacitor.isNativePlatform();
+  if (isNative) return true;
   return typeof navigator.share === "function";
 }

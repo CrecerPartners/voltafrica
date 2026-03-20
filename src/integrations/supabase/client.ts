@@ -2,15 +2,43 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
+import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+// Custom Storage adapter to bridge Supabase Auth with Capacitor Preferences
+const capacitorStorageAdapter = {
+  getItem: async (key: string): Promise<string | null> => {
+    if (Capacitor.isNativePlatform()) {
+      const { value } = await Preferences.get({ key });
+      return value;
+    }
+    return window.localStorage.getItem(key);
+  },
+  setItem: async (key: string, value: string): Promise<void> => {
+    if (Capacitor.isNativePlatform()) {
+      await Preferences.set({ key, value });
+      return;
+    }
+    window.localStorage.setItem(key, value);
+  },
+  removeItem: async (key: string): Promise<void> => {
+    if (Capacitor.isNativePlatform()) {
+      await Preferences.remove({ key });
+      return;
+    }
+    window.localStorage.removeItem(key);
+  },
+};
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: localStorage,
+    storage: capacitorStorageAdapter,
     persistSession: true,
     autoRefreshToken: true,
   }

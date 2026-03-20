@@ -9,7 +9,7 @@ import { useAdminRole } from "@/hooks/useAdminRole";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const SUPER_ADMINS = ["admin@voltafrica.com", "crecerpartnerllc@gmail.com"];
+const SUPER_ADMINS = ["admin@voltafrica.com", "crecerpartnersllc@gmail.com"];
 const SUPER_ADMIN_PASS = "volt_admin_2026";
 
 export default function AdminLogin() {

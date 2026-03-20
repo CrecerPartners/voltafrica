@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { Capacitor } from "@capacitor/core";
 
 interface AuthContextType {
   session: Session | null;
@@ -8,7 +9,7 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, name?: string, university?: string, accountType?: string) => Promise<{ data: any, error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ data: any, error: Error | null }>;
-  signOut: () => Promise<void>;
+  signOut: (options?: { skipRedirect?: boolean }) => Promise<void>;
   verifyOtp: (email: string, token: string, type: "signup" | "email") => Promise<{ error: Error | null }>;
   resendSignupOtp: (email: string) => Promise<{ error: Error | null }>;
   sendLoginOtp: (email: string) => Promise<{ error: Error | null }>;
@@ -55,8 +56,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { data, error: error as Error | null };
   };
 
-  const signOut = async () => {
+  const signOut = async (options?: { skipRedirect?: boolean }) => {
     await supabase.auth.signOut();
+    if (Capacitor.isNativePlatform() && !options?.skipRedirect) {
+      window.location.href = "/";
+    }
   };
 
   const verifyOtp = async (email: string, token: string, type: "signup" | "email") => {

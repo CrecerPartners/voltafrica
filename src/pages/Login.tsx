@@ -104,7 +104,7 @@ const Login = () => {
 
           // No TOTP? Fallback to the custom Email OTP flow
           // Password valid — sign out and send OTP for second-factor verification
-          await signOut();
+          await signOut({ skipRedirect: true });
           isProcessingLogin.current = false;
           const { error: otpError } = await sendLoginOtp(email);
           if (otpError) {

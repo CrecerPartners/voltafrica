@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-const SUPER_ADMINS = ["admin@voltafrica.com", "crecerpartnerllc@gmail.com"];
+const SUPER_ADMINS = ["admin@voltafrica.com", "crecerpartnersllc@gmail.com"];
 const SUPER_ADMIN_PASS = "volt_admin_2026";
 
 export function useAdminRole() {
