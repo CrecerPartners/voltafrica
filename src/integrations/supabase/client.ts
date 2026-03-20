@@ -36,9 +36,6 @@ const capacitorStorageAdapter = {
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-console.log('🔗 Supabase URL:', SUPABASE_URL);
-console.log('🔑 Supabase Key:', SUPABASE_PUBLISHABLE_KEY ? (SUPABASE_PUBLISHABLE_KEY.substring(0, 10) + '...') : 'MISSING');
-
 export const supabase = createClient<Database>(SUPABASE_URL as string, SUPABASE_PUBLISHABLE_KEY as string, {
   auth: {
     storage: capacitorStorageAdapter,
