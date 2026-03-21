@@ -13,19 +13,11 @@ import { formatNaira } from "@/lib/utils";
 import { Link2, Filter, Search, PackageOpen, Loader2, Eye, Store, Check } from "lucide-react";
 import { toast } from "sonner";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { PRODUCT_TYPES, getCategoriesByType, getSubcategoriesByCategory } from "@/lib/productTaxonomy";
 
 const productTypeLabels: Record<string, string> = {
   Physical: "Physical Products",
   Digital: "Digital Products",
-};
-
-const categoryLabels: Record<string, string> = {
-  "Fashion & Lifestyle": "Fashion & Lifestyle",
-  "Electronics & Gadgets": "Electronics & Gadgets",
-  "Fintech": "Fintech",
-  "Tech Products": "Tech Products",
-  "Software & Tools": "Software & Tools",
-  "Subscriptions": "Subscriptions",
 };
 
 const categoryColors: Record<string, string> = {
@@ -56,15 +48,10 @@ const Marketplace = () => {
   
   const [activeType, setActiveType] = useState<string>("all");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeSubcategory, setActiveSubcategory] = useState<string>("all");
   const [activeOrg, setActiveOrg] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"commission" | "name">("commission");
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Define categories based on type
-  const typeCategories: Record<string, string[]> = {
-    Physical: ["Fashion & Lifestyle", "Electronics & Gadgets"],
-    Digital: ["Fintech", "Tech Products", "Software & Tools", "Subscriptions"],
-  };
 
   // Extract unique organizations
   const organizations = Array.from(new Set(products.map(p => p.organization || p.brand)))
@@ -74,6 +61,7 @@ const Marketplace = () => {
   const filtered = products
     .filter((p) => activeType === "all" || p.productType === activeType)
     .filter((p) => activeCategory === "all" || p.category === activeCategory)
+    .filter((p) => activeSubcategory === "all" || p.subcategory === activeSubcategory)
     .filter((p) => activeOrg === "all" || (p.organization || p.brand) === activeOrg)
     .filter((p) => 
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -89,9 +77,8 @@ const Marketplace = () => {
     toast.success(`Link copied for ${product.name}!`);
   };
 
-  const currentCategories = activeType === "all" 
-    ? Object.values(typeCategories).flat() 
-    : typeCategories[activeType] || [];
+  const currentCategories = getCategoriesByType(activeType as "all" | "Physical" | "Digital");
+  const currentSubcategories = activeCategory === "all" ? [] : getSubcategoriesByCategory(activeCategory);
 
   if (isLoading) {
     return (
@@ -130,7 +117,7 @@ const Marketplace = () => {
       <div className="space-y-3">
         {/* Product Type Selection */}
         <div className="flex flex-wrap items-center gap-2">
-          {["all", "Physical", "Digital"].map((t) => (
+          {["all", ...PRODUCT_TYPES].map((t) => (
             <Button 
               key={t} 
               variant={activeType === t ? "default" : "outline"} 
@@ -138,6 +125,7 @@ const Marketplace = () => {
               onClick={() => {
                 setActiveType(t);
                 setActiveCategory("all");
+                setActiveSubcategory("all");
               }}
               className={activeType === t ? "volt-gradient h-8 text-xs font-semibold" : "h-8 text-xs"}
             >
@@ -156,7 +144,23 @@ const Marketplace = () => {
               onClick={() => setActiveCategory(cat)}
               className={activeCategory === cat ? "volt-gradient h-8 text-xs" : "h-8 text-xs font-medium text-muted-foreground hover:text-foreground"}
             >
-              {cat === "all" ? "All Categories" : categoryLabels[cat] || cat}
+              {cat === "all" ? "All Categories" : cat}
+            </Button>
+          ))}
+        </div>
+
+        {/* Subcategories Selection */}
+        <div className="flex flex-wrap items-center gap-2">
+          {["all", ...currentSubcategories].map((sub) => (
+            <Button
+              key={sub}
+              variant={activeSubcategory === sub ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveSubcategory(sub)}
+              disabled={activeCategory === "all"}
+              className={activeSubcategory === sub ? "volt-gradient h-8 text-xs" : "h-8 text-xs font-medium text-muted-foreground hover:text-foreground"}
+            >
+              {sub === "all" ? "All Subcategories" : sub}
             </Button>
           ))}
         </div>
@@ -217,7 +221,7 @@ const Marketplace = () => {
                   </div>
                   <div className="absolute top-2 right-2 flex flex-col items-end gap-1.5">
                     <Badge variant="outline" className={`${categoryColors[product.category] || "bg-muted text-muted-foreground"} text-[10px] px-2 py-0.5 backdrop-blur-md bg-white/70 dark:bg-black/70 border-white/20`}>
-                      {categoryLabels[product.category] || product.category}
+                      {product.category}
                     </Badge>
                   </div>
                 </div>

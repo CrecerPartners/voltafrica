@@ -12,20 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 import { Label } from "@/components/ui/label";
-
-const categoriesByType: Record<string, string[]> = {
-  Physical: ["Fashion & Lifestyle", "Electronics & Gadgets"],
-  Digital: ["Fintech", "Tech Products", "Software & Tools", "Subscriptions"],
-};
-
-const subcategoriesByCategory: Record<string, string[]> = {
-  "Fashion & Lifestyle": ["Clothing", "Shoes", "Bags", "Accessories", "Jewelry", "Skincare", "Haircare"],
-  "Electronics & Gadgets": ["Phones", "Laptops", "Tablets", "Accessories"],
-  "Fintech": ["Fintech App Signup", "Fintech App Install / Download"],
-  "Tech Products": ["Tech Product Signup", "Tech Product Install / Download"],
-  "Software & Tools": ["Software / Tools Signup"],
-  "Subscriptions": ["Subscriptions"],
-};
+import { PRODUCT_TYPES, getCategoriesByType, getSubcategoriesByCategory } from "@/lib/productTaxonomy";
 
 const empty = {
   name: "", brand: "", organization: "", category: "", subcategory: "", price: 0, commission_rate: 0, image: "", description: "",
@@ -46,10 +33,25 @@ export default function AdminProducts() {
   const [uploading, setUploading] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [subcategoryFilter, setSubcategoryFilter] = useState("all");
+  const [orgFilter, setOrgFilter] = useState("all");
   const [page, setPage] = useState(1);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const filtered = products?.filter(p => !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.brand.toLowerCase().includes(search.toLowerCase()));
+  const organizations = Array.from(new Set((products || []).map((p) => p.organization || p.brand))).filter(Boolean).sort();
+  const filterCategories = getCategoriesByType(typeFilter as "all" | "Physical" | "Digital");
+  const filterSubcategories = categoryFilter === "all" ? [] : getSubcategoriesByCategory(categoryFilter);
+
+  const filtered = products?.filter((p) => {
+    const matchesSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || (p.organization || p.brand || "").toLowerCase().includes(search.toLowerCase());
+    const matchesType = typeFilter === "all" || p.product_type === typeFilter;
+    const matchesCategory = categoryFilter === "all" || p.category === categoryFilter;
+    const matchesSubcategory = subcategoryFilter === "all" || p.subcategory === subcategoryFilter;
+    const matchesOrg = orgFilter === "all" || (p.organization || p.brand) === orgFilter;
+    return matchesSearch && matchesType && matchesCategory && matchesSubcategory && matchesOrg;
+  });
   const totalPages = Math.max(1, Math.ceil((filtered?.length ?? 0) / PAGE_SIZE));
   const paginated = paginateItems(filtered, page, PAGE_SIZE);
 
@@ -163,8 +165,8 @@ export default function AdminProducts() {
 
   const showFulfillmentUrl = form.product_type === "Digital";
 
-  const availableCategories = categoriesByType[form.product_type] || [];
-  const availableSubcategories = subcategoriesByCategory[form.category] || [];
+  const availableCategories = getCategoriesByType(form.product_type as "Physical" | "Digital");
+  const availableSubcategories = getSubcategoriesByCategory(form.category);
 
   return (
     <div>
@@ -177,11 +179,39 @@ export default function AdminProducts() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search products..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9" />
         </div>
+        <Select value={typeFilter} onValueChange={(v) => { setTypeFilter(v); setCategoryFilter("all"); setSubcategoryFilter("all"); setPage(1); }}>
+          <SelectTrigger className="w-[140px]"><SelectValue placeholder="Type" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Types</SelectItem>
+            {PRODUCT_TYPES.map((type) => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={categoryFilter} onValueChange={(v) => { setCategoryFilter(v); setSubcategoryFilter("all"); setPage(1); }}>
+          <SelectTrigger className="w-[180px]"><SelectValue placeholder="Category" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {filterCategories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={subcategoryFilter} onValueChange={(v) => { setSubcategoryFilter(v); setPage(1); }} disabled={categoryFilter === "all"}>
+          <SelectTrigger className="w-[200px]"><SelectValue placeholder="Subcategory" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Subcategories</SelectItem>
+            {filterSubcategories.map((sub) => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={orgFilter} onValueChange={(v) => { setOrgFilter(v); setPage(1); }}>
+          <SelectTrigger className="w-[180px]"><SelectValue placeholder="Brand" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Brands</SelectItem>
+            {organizations.map((org) => <SelectItem key={org} value={org}>{org}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
-        <div className="rounded-lg border">
+        <div className="rounded-lg border overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -259,8 +289,7 @@ export default function AdminProducts() {
                 }}>
                   <SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Physical">Physical</SelectItem>
-                    <SelectItem value="Digital">Digital</SelectItem>
+                    {PRODUCT_TYPES.map((type) => <SelectItem key={type} value={type}>{type}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

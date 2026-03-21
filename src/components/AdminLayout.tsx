@@ -12,6 +12,8 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { AdminMobileBottomNav } from "@/components/admin/AdminMobileBottomNav";
 
 const navItems = [
   { label: "Overview", path: "/admin", icon: LayoutDashboard },
@@ -29,6 +31,8 @@ const navItems = [
 
 export function AdminLayout() {
   const { pathname } = useLocation();
+  const isMobile = useIsMobile();
+  const currentNavLabel = navItems.find((item) => pathname === item.path || (item.path !== "/admin" && pathname.startsWith(item.path)))?.label ?? "Admin";
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -62,33 +66,18 @@ export function AdminLayout() {
         </nav>
       </aside>
 
-      {/* Mobile top nav */}
       <div className="flex flex-1 flex-col">
-        <header className="md:hidden flex items-center gap-2 p-4 border-b bg-card overflow-x-auto">
+        <header className="md:hidden flex items-center gap-2 p-4 border-b bg-card">
           <Link to="/dashboard" className="mr-2">
             <ArrowLeft className="h-4 w-4" />
           </Link>
-          {navItems.map((item) => {
-            const active = pathname === item.path || (item.path !== "/admin" && pathname.startsWith(item.path));
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors",
-                  active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                )}
-              >
-                <item.icon className="h-3 w-3" />
-                {item.label}
-              </Link>
-            );
-          })}
+          <h1 className="text-sm font-semibold">{currentNavLabel}</h1>
         </header>
-        <main className="flex-1 p-4 md:p-8 overflow-auto">
+        <main className={cn("flex-1 p-4 md:p-8 overflow-auto", isMobile && "pb-20")}>
           <Outlet />
         </main>
       </div>
+      <AdminMobileBottomNav />
     </div>
   );
 }
