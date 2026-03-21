@@ -21,6 +21,8 @@ const empty = {
 };
 
 const PAGE_SIZE = 20;
+const NEW_PRODUCT_DRAFT_KEY = "admin-product-draft:new";
+const EDIT_PRODUCT_DRAFT_PREFIX = "admin-product-draft:edit:";
 
 export default function AdminProducts() {
   const { data: products, isLoading } = useAdminProducts();
@@ -39,6 +41,7 @@ export default function AdminProducts() {
   const [orgFilter, setOrgFilter] = useState("all");
   const [page, setPage] = useState(1);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [draftKey, setDraftKey] = useState<string | null>(null);
 
   const organizations = Array.from(new Set((products || []).map((p) => p.organization || p.brand))).filter(Boolean).sort();
   const filterCategories = getCategoriesByType(typeFilter as "all" | "Physical" | "Digital");
@@ -56,15 +59,30 @@ export default function AdminProducts() {
   const paginated = paginateItems(filtered, page, PAGE_SIZE);
 
   const openNew = () => { 
-    setForm({ ...empty, assets: { images: [], videos: [], fulfillment_url: "" } }); 
-    setNewLicenseKeys("");
-    setVideoUrl(""); 
+    const rawDraft = localStorage.getItem(NEW_PRODUCT_DRAFT_KEY);
+    if (rawDraft) {
+      try {
+        const draft = JSON.parse(rawDraft);
+        setForm({ ...empty, ...draft.form, assets: { images: [], videos: [], fulfillment_url: "", ...(draft.form?.assets || {}) } });
+        setNewLicenseKeys(draft.newLicenseKeys || "");
+        setVideoUrl(draft.videoUrl || "");
+      } catch {
+        setForm({ ...empty, assets: { images: [], videos: [], fulfillment_url: "" } });
+        setNewLicenseKeys("");
+        setVideoUrl("");
+      }
+    } else {
+      setForm({ ...empty, assets: { images: [], videos: [], fulfillment_url: "" } });
+      setNewLicenseKeys("");
+      setVideoUrl("");
+    }
+    setDraftKey(NEW_PRODUCT_DRAFT_KEY);
     setOpen(true); 
   };
   
   const openEdit = (p: any) => {
     const assets = typeof p.assets === "object" && p.assets ? p.assets : { images: [], videos: [] };
-    setForm({
+    const baseForm = {
       ...p,
       product_type: p.product_type || "Physical",
       category: p.category || "",
@@ -74,14 +92,60 @@ export default function AdminProducts() {
       delivery_instructions: p.delivery_instructions || "",
       organization: p.organization || p.brand || "",
       assets: { images: assets.images || [], videos: assets.videos || [], fulfillment_url: assets.fulfillment_url || "" },
-    });
-    setNewLicenseKeys("");
-    setVideoUrl("");
+    };
+    const editDraftKey = `${EDIT_PRODUCT_DRAFT_PREFIX}${p.id}`;
+    const rawDraft = localStorage.getItem(editDraftKey);
+    if (rawDraft) {
+      try {
+        const draft = JSON.parse(rawDraft);
+        setForm({ ...baseForm, ...draft.form, assets: { ...(baseForm.assets || {}), ...(draft.form?.assets || {}) } });
+        setNewLicenseKeys(draft.newLicenseKeys || "");
+        setVideoUrl(draft.videoUrl || "");
+      } catch {
+        setForm(baseForm);
+        setNewLicenseKeys("");
+        setVideoUrl("");
+      }
+    } else {
+      setForm(baseForm);
+      setNewLicenseKeys("");
+      setVideoUrl("");
+    }
+    setDraftKey(editDraftKey);
     setOpen(true);
   };
 
   const save = () => {
     const toSave = { ...form };
+    const selectedType = toSave.product_type as "Physical" | "Digital";
+    const validCategories = getCategoriesByType(selectedType);
+    const validSubcategories = getSubcategoriesByCategory(toSave.category || "");
+
+    if (!toSave.organization?.trim() && !toSave.brand?.trim()) {
+      toast({ title: "Organization is required", description: "Please add a brand/organization name.", variant: "destructive" });
+      return;
+    }
+    if (!toSave.product_type) {
+      toast({ title: "Product type is required", variant: "destructive" });
+      return;
+    }
+    if (!toSave.category || !validCategories.includes(toSave.category)) {
+      toast({ title: "Invalid category", description: "Pick a valid category for the selected product type.", variant: "destructive" });
+      return;
+    }
+    if (!toSave.subcategory || !validSubcategories.includes(toSave.subcategory)) {
+      toast({ title: "Invalid subcategory", description: "Pick a valid subcategory for the selected category.", variant: "destructive" });
+      return;
+    }
+
+    if (!toSave.brand?.trim() && toSave.organization?.trim()) {
+      toSave.brand = toSave.organization.trim();
+    }
+    if (!toSave.organization?.trim() && toSave.brand?.trim()) {
+      toSave.organization = toSave.brand.trim();
+    }
+    toSave.price = Number(toSave.price || 0);
+    toSave.commission_rate = Number(toSave.commission_rate || 0);
     if (!toSave.image && toSave.assets?.images?.length > 0) {
       toSave.image = toSave.assets.images[0];
     }
@@ -100,6 +164,7 @@ export default function AdminProducts() {
           }
         }
         toast({ title: "Product saved" }); 
+        if (draftKey) localStorage.removeItem(draftKey);
         setOpen(false); 
       },
       onError: (e) => toast({ title: "Error", description: e.message, variant: "destructive" }),
@@ -132,6 +197,37 @@ export default function AdminProducts() {
     }));
     setUploading(false);
     toast({ title: "Image uploaded" });
+  };
+
+  const uploadImages = async (files: FileList | File[]) => {
+    const fileArray = Array.from(files);
+    if (fileArray.length === 0) return;
+
+    setUploading(true);
+    let successCount = 0;
+
+    for (const file of fileArray) {
+      const ext = file.name.split(".").pop();
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage.from("product-images").upload(path, file);
+      if (error) {
+        toast({ title: "Upload failed", description: `${file.name}: ${error.message}`, variant: "destructive" });
+        continue;
+      }
+      const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
+      const url = urlData.publicUrl;
+      setForm((f) => ({
+        ...f,
+        assets: { ...f.assets, images: [...(f.assets?.images || []), url] },
+        image: f.image || url,
+      }));
+      successCount++;
+    }
+
+    setUploading(false);
+    if (successCount > 0) {
+      toast({ title: `${successCount} image${successCount > 1 ? "s" : ""} uploaded` });
+    }
   };
 
   const removeImage = (idx: number) => {
@@ -167,6 +263,17 @@ export default function AdminProducts() {
 
   const availableCategories = getCategoriesByType(form.product_type as "Physical" | "Digital");
   const availableSubcategories = getSubcategoriesByCategory(form.category);
+
+  useEffect(() => {
+    if (!open || !draftKey) return;
+    const payload = JSON.stringify({
+      form,
+      newLicenseKeys,
+      videoUrl,
+      savedAt: Date.now(),
+    });
+    localStorage.setItem(draftKey, payload);
+  }, [open, draftKey, form, newLicenseKeys, videoUrl]);
 
   return (
     <div>
@@ -334,13 +441,23 @@ export default function AdminProducts() {
               </div>
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Price (₦)</label>
-                <Input type="number" placeholder="0" value={form.price} onChange={(e) => set("price", +e.target.value)} />
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={form.price ?? ""}
+                  onChange={(e) => set("price", e.target.value === "" ? "" : Number(e.target.value))}
+                />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Commission Rate / Amount</label>
-              <Input type="number" placeholder="Value" value={form.commission_rate} onChange={(e) => set("commission_rate", +e.target.value)} />
+              <Input
+                type="number"
+                placeholder="Value"
+                value={form.commission_rate ?? ""}
+                onChange={(e) => set("commission_rate", e.target.value === "" ? "" : Number(e.target.value))}
+              />
             </div>
 
             <div className="space-y-1.5">
@@ -458,7 +575,19 @@ export default function AdminProducts() {
                   </div>
                 )}
               </div>
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0])} />
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files?.length) {
+                    uploadImages(e.target.files);
+                    e.currentTarget.value = "";
+                  }
+                }}
+              />
             </div>
 
             {/* Video management */}
@@ -479,6 +608,20 @@ export default function AdminProducts() {
             </div>
           </div>
           <DialogFooter className="bg-muted/20 -mx-6 -mb-6 p-6 border-t mt-4 rounded-b-lg">
+            {draftKey && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  localStorage.removeItem(draftKey);
+                  setForm({ ...empty, assets: { images: [], videos: [], fulfillment_url: "" } });
+                  setNewLicenseKeys("");
+                  setVideoUrl("");
+                  toast({ title: "Draft cleared" });
+                }}
+              >
+                Clear Draft
+              </Button>
+            )}
             <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={save} disabled={upsert.isPending} className="volt-gradient min-w-[100px]">
               {upsert.isPending ? "Saving..." : "Save Product"}
