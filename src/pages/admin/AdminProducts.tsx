@@ -5,14 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon, Search } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 import { Label } from "@/components/ui/label";
-import { PRODUCT_TYPES, getCategoriesByType, getSubcategoriesByCategory } from "@/lib/productTaxonomy";
+import { PRODUCT_TAXONOMY, PRODUCT_TYPES, getCategoriesByType, getProductTypeForCategory, getSubcategoriesByCategory } from "@/lib/productTaxonomy";
 
 const empty = {
   name: "", brand: "", organization: "", category: "", subcategory: "", price: 0, commission_rate: 0, image: "", description: "",
@@ -261,7 +261,6 @@ export default function AdminProducts() {
 
   const showFulfillmentUrl = form.product_type === "Digital";
 
-  const availableCategories = getCategoriesByType(form.product_type as "Physical" | "Digital");
   const availableSubcategories = getSubcategoriesByCategory(form.category);
 
   useEffect(() => {
@@ -403,15 +402,33 @@ export default function AdminProducts() {
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Category</label>
                 <Select value={form.category} onValueChange={(v) => {
-                  setForm(f => ({ ...f, category: v, subcategory: "" }));
-                }} disabled={!form.product_type}>
+                  const categoryType = getProductTypeForCategory(v);
+                  setForm(f => ({
+                    ...f,
+                    product_type: categoryType || f.product_type,
+                    category: v,
+                    subcategory: "",
+                  }));
+                }}>
                   <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
-                  <SelectContent>
-                    {availableCategories.map(cat => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                    ))}
+                  <SelectContent className="max-h-80">
+                    <SelectGroup>
+                      <SelectLabel>Physical</SelectLabel>
+                      {PRODUCT_TAXONOMY.Physical.map((entry) => (
+                        <SelectItem key={entry.category} value={entry.category}>{entry.category}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>Digital</SelectLabel>
+                      {PRODUCT_TAXONOMY.Digital.map((entry) => (
+                        <SelectItem key={entry.category} value={entry.category}>{entry.category}</SelectItem>
+                      ))}
+                    </SelectGroup>
                   </SelectContent>
                 </Select>
+                <p className="text-[11px] text-muted-foreground">
+                  Selecting a category will auto-set the matching product type.
+                </p>
               </div>
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Subcategory</label>

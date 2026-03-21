@@ -52,3 +52,16 @@ export function getSubcategoriesByCategory(category: string): string[] {
   }
   return [];
 }
+
+export function getAllCategories(): string[] {
+  return PRODUCT_TYPES.flatMap((type) => PRODUCT_TAXONOMY[type].map((entry) => entry.category));
+}
+
+export function getProductTypeForCategory(category: string): ProductType | null {
+  for (const type of PRODUCT_TYPES) {
+    if (PRODUCT_TAXONOMY[type].some((entry) => entry.category === category)) {
+      return type;
+    }
+  }
+  return null;
+}
