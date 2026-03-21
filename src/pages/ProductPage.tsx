@@ -17,9 +17,11 @@ import { shareContent, canNativeShare, copyToClipboard } from "@/lib/shareUtils"
 import { supabase } from "@/integrations/supabase/client";
 import {
   Link2, Share2, Lightbulb, Copy, MessageCircle, Instagram, Twitter,
-  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check, Download, UserSearch
+  ChevronLeft, Loader2, ShoppingCart, ExternalLink, Zap, Store, Check, Download, UserSearch,
+  Truck, RotateCcw, ShieldCheck, Star
 } from "lucide-react";
 import { ReviewSection } from "@/components/ReviewSection";
+import { useProductRatingStats } from "@/hooks/useReviews";
 import { toast } from "sonner";
 
 const categoryColors: Record<string, string> = {
@@ -64,6 +66,7 @@ const ProductPage = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [leadLoading, setLeadLoading] = useState(false);
   const [sellerInfo, setSellerInfo] = useState<{ shopSlug: string; shopName: string } | null>(null);
+  const { avg: reviewAvg, count: reviewCount } = useProductRatingStats(product?.id);
 
   // Determine viewing context
   const isSeller = !!user; // Logged-in user = seller
@@ -186,6 +189,24 @@ const ProductPage = () => {
   const isLead = product.productType === "lead" || product.delivery_type === "lead_url";
   const isDigital = product.productType === "digital" || product.delivery_type !== "manual_provision";
   const typeBadge = productTypeBadge[product.delivery_type] || productTypeBadge[product.productType] || productTypeBadge.physical;
+  const productAssets = (product.assets || {}) as Record<string, unknown>;
+
+  const sellerName = (product.organization || product.brand || "Verified Merchant").toUpperCase();
+  const sellerYears = Number(productAssets.seller_years ?? 3);
+  const productQualityRate = Number(productAssets.product_quality_rate ?? 94);
+  const deliveryRate = Number(productAssets.delivery_rate ?? 70);
+  const sellerSalesCount = Number(productAssets.sales_count ?? Math.max(25, reviewCount * 12));
+
+  const estimatedDelivery = String(productAssets.estimated_delivery_time ?? (isDigital ? "Instant to 24 hours" : "1 - 9 business days"));
+  const returnPolicy = String(productAssets.return_policy ?? "Guaranteed 7-Day Return Policy");
+  const returnPolicyUrl = String(productAssets.return_policy_url ?? "");
+  const warrantyInfo = String(productAssets.warranty_info ?? "Warranty information unavailable for this item.");
+  const deliveryInformation = product.delivery_instructions || String(
+    productAssets.delivery_notes ??
+    (isDigital
+      ? "Digital fulfillment details are shared immediately after successful payment."
+      : "Delivery timeline and availability may vary by location.")
+  );
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
@@ -392,6 +413,87 @@ const ProductPage = () => {
         </div>
       </div>
 
+      {/* Seller Information + Delivery/Returns */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="border-border/50">
+          <CardContent className="p-0">
+            <div className="px-5 py-4 border-b">
+              <h3 className="font-semibold text-lg">Seller Information</h3>
+            </div>
+            <div className="p-5 space-y-5">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-lg">
+                    {sellerName.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-xl leading-none text-primary">{sellerName}</p>
+                    <p className="text-muted-foreground mt-1">{sellerYears} year{sellerYears === 1 ? "" : "s"} of marketplace activity</p>
+                  </div>
+                </div>
+                {sellerInfo?.shopSlug && (
+                  <Link to={`/s/${sellerInfo.shopSlug}`}>
+                    <Button variant="secondary" size="sm">View Merchant Store</Button>
+                  </Link>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Number of Sales</p>
+                  <p className="text-3xl font-bold mt-1">{sellerSalesCount.toLocaleString()}</p>
+                  <p className="text-sm text-muted-foreground">Successful sales</p>
+                </div>
+                <div className="space-y-4">
+                  <ProgressBar label="Product Quality" value={productQualityRate} />
+                  <ProgressBar label="Delivery Rate" value={deliveryRate} />
+                </div>
+              </div>
+
+              <div>
+                <p className="text-lg font-semibold">Merchant Reviews ({reviewCount})</p>
+                <p className="text-4xl font-bold leading-tight mt-1">{reviewAvg || 0}/5</p>
+                <div className="flex items-center gap-1 mt-1">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star key={s} className={`h-4 w-4 ${s <= Math.round(reviewAvg || 0) ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/40"}`} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50">
+          <CardContent className="p-0">
+            <div className="px-5 py-4 border-b">
+              <h3 className="font-semibold text-lg">Delivery & Returns</h3>
+            </div>
+            <div className="divide-y">
+              <div className="p-5 space-y-2">
+                <div className="flex items-center gap-2 font-semibold"><Truck className="h-4 w-4 text-primary" /> Delivery</div>
+                <p className="text-sm text-muted-foreground">Estimated delivery time {estimatedDelivery}</p>
+                <p className="text-sm text-foreground">{deliveryInformation}</p>
+              </div>
+              <div className="p-5 space-y-2">
+                <div className="flex items-center gap-2 font-semibold"><RotateCcw className="h-4 w-4 text-primary" /> Return Policy</div>
+                <p className="font-semibold">{returnPolicy}</p>
+                {returnPolicyUrl ? (
+                  <a href={returnPolicyUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                    View return policy details
+                  </a>
+                ) : (
+                  <p className="text-sm text-muted-foreground">Contact seller support for return details where applicable.</p>
+                )}
+              </div>
+              <div className="p-5 space-y-2">
+                <div className="flex items-center gap-2 font-semibold"><ShieldCheck className="h-4 w-4 text-primary" /> Warranty</div>
+                <p className="text-sm text-muted-foreground">{warrantyInfo}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Reviews Section — visible to everyone */}
       <ReviewSection productId={product.id} />
 
@@ -490,6 +592,21 @@ function CaptionCard({ icon, label, text, link, productName }: {
         ) : (
           <SharePopover text={full} url={link} triggerClassName="text-xs h-7 border border-input bg-background hover:bg-accent rounded-md px-2 inline-flex items-center" />
         )}
+      </div>
+    </div>
+  );
+}
+
+function ProgressBar({ label, value }: { label: string; value: number }) {
+  const clamped = Math.max(0, Math.min(100, value));
+  return (
+    <div className="space-y-1">
+      <p className="text-sm text-muted-foreground">{label}:</p>
+      <div className="h-4 rounded-sm bg-muted overflow-hidden relative">
+        <div className="h-full bg-primary/80" style={{ width: `${clamped}%` }} />
+        <span className="absolute inset-0 text-[11px] font-semibold text-primary-foreground flex items-center justify-center">
+          {clamped}%
+        </span>
       </div>
     </div>
   );

@@ -17,7 +17,20 @@ import { PRODUCT_TAXONOMY, PRODUCT_TYPES, getCategoriesByType, getProductTypeFor
 const empty = {
   name: "", brand: "", organization: "", category: "", subcategory: "", price: 0, commission_rate: 0, image: "", description: "",
   product_type: "Physical", commission_model: "percentage", delivery_type: "manual_provision", delivery_instructions: "",
-  assets: { images: [] as string[], videos: [] as string[], fulfillment_url: "" },
+  assets: {
+    images: [] as string[],
+    videos: [] as string[],
+    fulfillment_url: "",
+    seller_years: 3,
+    sales_count: 0,
+    product_quality_rate: 94,
+    delivery_rate: 70,
+    estimated_delivery_time: "",
+    delivery_notes: "",
+    return_policy: "Guaranteed 7-Day Return Policy",
+    return_policy_url: "",
+    warranty_info: "",
+  },
 };
 
 const PAGE_SIZE = 20;
@@ -259,8 +272,7 @@ export default function AdminProducts() {
     });
   };
 
-  const showFulfillmentUrl = form.product_type === "Digital";
-
+  const isDigitalProduct = form.product_type === "Digital";
   const availableSubcategories = getSubcategoriesByCategory(form.category);
 
   useEffect(() => {
@@ -391,7 +403,15 @@ export default function AdminProducts() {
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Product Type</label>
                 <Select value={form.product_type} onValueChange={(v) => {
-                  setForm(f => ({ ...f, product_type: v, category: "", subcategory: "" }));
+                  const nextType = v as "Physical" | "Digital";
+                  setForm((f) => ({
+                    ...f,
+                    product_type: nextType,
+                    category: "",
+                    subcategory: "",
+                    delivery_type: nextType === "Physical" ? "manual_provision" : f.delivery_type,
+                    assets: nextType === "Physical" ? { ...f.assets, fulfillment_url: "" } : f.assets,
+                  }));
                 }}>
                   <SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
                   <SelectContent>
@@ -482,26 +502,124 @@ export default function AdminProducts() {
               <Textarea placeholder="Describe the product..." value={form.description} onChange={(e) => set("description", e.target.value)} rows={3} />
             </div>
 
+            {/* Seller + Delivery Display Data */}
+            <div className="space-y-3 p-4 bg-muted/20 border rounded-lg">
+              <h3 className="text-sm font-semibold text-foreground">Seller & Delivery Display Info</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Seller Years Active</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={form.assets?.seller_years ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, seller_years: e.target.value === "" ? "" : Number(e.target.value) } }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Sales Count</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={form.assets?.sales_count ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, sales_count: e.target.value === "" ? "" : Number(e.target.value) } }))}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Product Quality Rate (%)</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={form.assets?.product_quality_rate ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, product_quality_rate: e.target.value === "" ? "" : Number(e.target.value) } }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Delivery Rate (%)</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={form.assets?.delivery_rate ?? ""}
+                    onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, delivery_rate: e.target.value === "" ? "" : Number(e.target.value) } }))}
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Estimated Delivery Time</Label>
+                <Input
+                  placeholder="e.g. 1 - 9 business days"
+                  value={form.assets?.estimated_delivery_time || ""}
+                  onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, estimated_delivery_time: e.target.value } }))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Delivery Notes</Label>
+                <Textarea
+                  placeholder="Express options, same-day cutoffs, location constraints..."
+                  rows={2}
+                  value={form.assets?.delivery_notes || ""}
+                  onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, delivery_notes: e.target.value } }))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Return Policy</Label>
+                <Input
+                  placeholder="e.g. Guaranteed 7-Day Return Policy"
+                  value={form.assets?.return_policy || ""}
+                  onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, return_policy: e.target.value } }))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Return Policy URL</Label>
+                <Input
+                  placeholder="https://..."
+                  value={form.assets?.return_policy_url || ""}
+                  onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, return_policy_url: e.target.value } }))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Warranty Information</Label>
+                <Textarea
+                  placeholder="Describe warranty coverage or leave blank."
+                  rows={2}
+                  value={form.assets?.warranty_info || ""}
+                  onChange={(e) => setForm((f) => ({ ...f, assets: { ...f.assets, warranty_info: e.target.value } }))}
+                />
+              </div>
+            </div>
+
             {/* Delivery Configuration */}
-            {form.product_type === "Digital" && (
               <div className="space-y-3 p-4 bg-muted/20 border rounded-lg">
                 <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                   Delivery Configuration
                 </h3>
                 <div className="space-y-1.5">
                   <Label>Delivery Method</Label>
-                  <Select value={form.delivery_type} onValueChange={(v) => set("delivery_type", v)}>
+                  <Select
+                    value={isDigitalProduct ? form.delivery_type : "manual_provision"}
+                    onValueChange={(v) => set("delivery_type", v)}
+                    disabled={!isDigitalProduct}
+                  >
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="lead_url">Immediate Redirect (Lead/Signup/Install)</SelectItem>
-                      <SelectItem value="direct_link">Paid Direct Download/Access Link</SelectItem>
-                      <SelectItem value="license_key">Software License Keys</SelectItem>
-                      <SelectItem value="manual_provision">Manual Provisioning (Account Setup)</SelectItem>
+                      {isDigitalProduct ? (
+                        <>
+                          <SelectItem value="lead_url">Immediate Redirect (Lead/Signup/Install)</SelectItem>
+                          <SelectItem value="direct_link">Paid Direct Download/Access Link</SelectItem>
+                          <SelectItem value="license_key">Software License Keys</SelectItem>
+                          <SelectItem value="manual_provision">Manual Provisioning (Account Setup)</SelectItem>
+                        </>
+                      ) : (
+                        <SelectItem value="manual_provision">Physical Delivery / Shipping</SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
 
-                {form.delivery_type === "lead_url" && (
+                {isDigitalProduct && form.delivery_type === "lead_url" && (
                   <div className="space-y-1.5 pt-2">
                     <Label className="text-xs text-muted-foreground uppercase">Fulfillment / Redirect URL</Label>
                     <Input
@@ -515,7 +633,7 @@ export default function AdminProducts() {
                   </div>
                 )}
 
-                {form.delivery_type === "direct_link" && (
+                {isDigitalProduct && form.delivery_type === "direct_link" && (
                   <div className="space-y-1.5 pt-2">
                     <Label className="text-xs text-muted-foreground uppercase">Private Access / Download URL</Label>
                     <Input
@@ -529,7 +647,7 @@ export default function AdminProducts() {
                   </div>
                 )}
 
-                {form.delivery_type === "license_key" && (
+                {isDigitalProduct && form.delivery_type === "license_key" && (
                   <div className="space-y-1.5 pt-2">
                     <Label className="text-xs justify-between flex text-muted-foreground uppercase">
                       <span>Add New License Keys</span>
@@ -550,20 +668,25 @@ export default function AdminProducts() {
 
                 {form.delivery_type === "manual_provision" && (
                   <div className="space-y-1.5 pt-2">
-                    <Label className="text-xs text-muted-foreground uppercase">Instructions for Buyer Post-Purchase</Label>
-                    <Textarea 
-                      placeholder="Thank you for purchasing! We will email your login credentials within 2-4 hours..." 
-                      value={form.delivery_instructions || ""} 
-                      onChange={(e) => set("delivery_instructions", e.target.value)} 
-                      rows={2} 
+                    <Label className="text-xs text-muted-foreground uppercase">
+                      {isDigitalProduct ? "Instructions for Buyer Post-Purchase" : "Delivery Information for Buyer"}
+                    </Label>
+                    <Textarea
+                      placeholder={isDigitalProduct
+                        ? "Thank you for purchasing! We will email your login credentials within 2-4 hours..."
+                        : "Delivery timeline, shipping region, pickup details, and post-purchase instructions."}
+                      value={form.delivery_instructions || ""}
+                      onChange={(e) => set("delivery_instructions", e.target.value)}
+                      rows={2}
                     />
                     <p className="text-[11px] text-muted-foreground mt-1">
-                      The buyer sees this on their receipt while they wait for you to set up their account.
+                      {isDigitalProduct
+                        ? "The buyer sees this on their receipt while they wait for you to set up their account."
+                        : "The buyer sees this during checkout and in order details after payment."}
                     </p>
                   </div>
                 )}
               </div>
-            )}
 
             {/* Image management */}
             <div className="space-y-3">

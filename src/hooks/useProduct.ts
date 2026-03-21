@@ -15,8 +15,11 @@ function mapProduct(db: DbProduct): Product {
     assets: db.assets,
     slug: db.slug,
     productType: (db.product_type as ProductType) || "Physical",
+    delivery_type: db.delivery_type || "manual_provision",
+    delivery_instructions: db.delivery_instructions || null,
     subcategory: db.subcategory,
     commissionModel: (db.commission_model as CommissionModel) || "percentage",
+    organization: db.organization || db.brand,
   };
 }
 
