@@ -162,6 +162,17 @@ export default function AdminProducts() {
     if (!toSave.image && toSave.assets?.images?.length > 0) {
       toSave.image = toSave.assets.images[0];
     }
+    // Auto-generate slug from product name if not already set
+    if (!toSave.slug) {
+      const base = (toSave.name as string)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
+      const suffix = Math.random().toString(36).slice(2, 7);
+      toSave.slug = `${base}-${suffix}`;
+    }
     upsert.mutate(toSave, {
       onSuccess: (data: any) => { 
         // If there are new license keys to insert
