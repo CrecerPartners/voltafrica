@@ -128,6 +128,113 @@ export default function AdminProducts() {
     setOpen(true);
   };
 
+  const seedDemoProducts = async () => {
+    const demos = [
+      {
+        name: "iPhone 15 Pro Max", brand: "Apple", organization: "Apple Inc.", 
+        category: "Electronics & Gadgets", subcategory: "Phones", 
+        price: 1500000, commission_rate: 2, image: "https://images.unsplash.com/photo-1696446701796-654876b50937?q=80&w=600", 
+        description: "The latest iPhone with Titanium design and A17 Pro chip.",
+        product_type: "Physical", commission_model: "percentage", delivery_type: "manual_provision",
+        assets: { ...empty.assets }
+      },
+      {
+        name: "Nike Air Jordan 1 High", brand: "Nike", organization: "Nike Global", 
+        category: "Fashion & Lifestyle", subcategory: "Shoes", 
+        price: 185000, commission_rate: 5, image: "https://images.unsplash.com/photo-1552346154-21d328109a27?q=80&w=600", 
+        description: "Iconic basketball shoes that changed the game.",
+        product_type: "Physical", commission_model: "percentage", delivery_type: "manual_provision",
+        assets: { ...empty.assets }
+      },
+      {
+        name: "Opay Account Signup", brand: "Opay", organization: "Opay Digital Services", 
+        category: "Fintech", subcategory: "Fintech App Signup", 
+        price: 0, commission_rate: 500, image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=600", 
+        description: "Earn 500 Naira for every successful signup on Opay.",
+        product_type: "Digital", commission_model: "fixed", delivery_type: "lead_url",
+        assets: { ...empty.assets, fulfillment_url: "https://opay.ng/signup" }
+      },
+      {
+        name: "MacBook Pro 14 M3", brand: "Apple", organization: "Apple Inc.", 
+        category: "Electronics & Gadgets", subcategory: "Laptops", 
+        price: 2200000, commission_rate: 1.5, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600", 
+        description: "Powerful MacBook Pro with M3 chip for professionals.",
+        product_type: "Physical", commission_model: "percentage", delivery_type: "manual_provision",
+        assets: { ...empty.assets }
+      },
+      {
+        name: "Netflix Premium Yearly", brand: "Netflix", organization: "Netflix Entertainment", 
+        category: "Subscriptions", subcategory: "Subscriptions", 
+        price: 66000, commission_rate: 10, image: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?q=80&w=600", 
+        description: "Access movie and TV shows on multiple screens.",
+        product_type: "Digital", commission_model: "percentage", delivery_type: "license_key",
+        assets: { ...empty.assets }
+      },
+      {
+        name: "SaaS Starter Kit", brand: "CodeX", organization: "CodeX Labs", 
+        category: "Software & Tools", subcategory: "Software / Tools Signup", 
+        price: 45000, commission_rate: 20, image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600", 
+        description: "A complete boilerplate for building SaaS applications.",
+        product_type: "Digital", commission_model: "percentage", delivery_type: "direct_link",
+        assets: { ...empty.assets, fulfillment_url: "https://codex.io/starter" }
+      },
+      {
+        name: "Zara Linen Shirt", brand: "Zara", organization: "Inditex Group", 
+        category: "Fashion & Lifestyle", subcategory: "Clothing", 
+        price: 35000, commission_rate: 7, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=600", 
+        description: "Casual and stylish linen shirt for the summer.",
+        product_type: "Physical", commission_model: "percentage", delivery_type: "manual_provision",
+        assets: { ...empty.assets }
+      },
+      {
+        name: "ChatGPT Plus Subscription", brand: "OpenAI", organization: "OpenAI", 
+        category: "Tech Products", subcategory: "Tech Product Signup", 
+        price: 22000, commission_rate: 5, image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=600", 
+        description: "Get advanced features with GPT-4 and faster responses.",
+        product_type: "Digital", commission_model: "percentage", delivery_type: "manual_provision",
+        assets: { ...empty.assets }
+      },
+      {
+        name: "Spotify Family Plan", brand: "Spotify", organization: "Spotify AB", 
+        category: "Subscriptions", subcategory: "Subscriptions", 
+        price: 4500, commission_rate: 500, image: "https://images.unsplash.com/photo-1614680376593-902f74cf0d41?q=80&w=600", 
+        description: "Music for everyone in the family with personalized accounts.",
+        product_type: "Digital", commission_model: "fixed", delivery_type: "direct_link",
+        assets: { ...empty.assets, fulfillment_url: "https://spotify.com/family" }
+      },
+      {
+        name: "Samsung Galaxy S24 Ultra", brand: "Samsung", organization: "Samsung Electronics", 
+        category: "Electronics & Gadgets", subcategory: "Phones", 
+        price: 1450000, commission_rate: 2, image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=600", 
+        description: "AI-powered smartphone with 200MP camera.",
+        product_type: "Physical", commission_model: "percentage", delivery_type: "manual_provision",
+        assets: { ...empty.assets }
+      }
+    ];
+
+    try {
+      setUploading(true);
+      const toInsert = demos.map(d => {
+        const baseSlug = ((d.organization || d.brand) + "-" + d.name)
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-");
+        const slug = `${baseSlug}-${Math.random().toString(36).substring(2, 7)}`;
+        return { ...d, slug };
+      });
+
+      const { error } = await supabase.from("products").insert(toInsert);
+      if (error) throw error;
+      
+      toast({ title: "Success", description: "10 demo products added!" });
+      window.location.reload();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to add demos", variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const save = () => {
     const toSave = { ...form };
     const selectedType = toSave.product_type as "Physical" | "Digital";
@@ -299,9 +406,19 @@ export default function AdminProducts() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Products</h2>
-        <Button onClick={openNew} size="sm"><Plus className="h-4 w-4 mr-1" /> Add Product</Button>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Products</h1>
+          <p className="text-muted-foreground">Manage the product catalog</p>
+        </div>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="outline" onClick={seedDemoProducts} disabled={uploading}>
+            {uploading ? "Adding..." : "Add Demo Products"}
+          </Button>
+          <Button className="flex-1 sm:flex-none" onClick={openNew}>
+            <Plus className="mr-2 h-4 w-4" /> Add Product
+          </Button>
+        </div>
       </div>
       <div className="flex flex-wrap gap-3 mb-4">
         <div className="relative max-w-sm flex-1">
