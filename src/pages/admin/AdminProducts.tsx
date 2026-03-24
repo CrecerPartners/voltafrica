@@ -218,8 +218,9 @@ export default function AdminProducts() {
         const baseSlug = ((d.organization || d.brand) + "-" + d.name)
           .toLowerCase()
           .replace(/[^a-z0-9\s-]/g, "")
-          .replace(/\s+/g, "-");
-        const slug = `${baseSlug}-${Math.random().toString(36).substring(2, 7)}`;
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-");
+        const slug = `${baseSlug}-demo-${Math.random().toString(36).substring(2, 7)}`;
         return { ...d, slug };
       });
 
@@ -230,6 +231,34 @@ export default function AdminProducts() {
       window.location.reload();
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Failed to add demos", variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeDemoProducts = async () => {
+    if (!confirm("Are you sure you want to remove all demo products?")) return;
+
+    const demoNames = [
+      "iPhone 15 Pro Max", "Nike Air Jordan 1 High", "Opay Account Signup", 
+      "MacBook Pro 14 M3", "Netflix Premium Yearly", "SaaS Starter Kit", 
+      "Zara Linen Shirt", "ChatGPT Plus Subscription", "Spotify Family Plan", 
+      "Samsung Galaxy S24 Ultra"
+    ];
+
+    try {
+      setUploading(true);
+      // Remove by name or by the demo slug pattern
+      const { error } = await supabase.from("products")
+        .delete()
+        .or(`name.in.(${demoNames.map(n => `"${n}"`).join(",")}),slug.ilike.%-demo-%`);
+
+      if (error) throw error;
+
+      toast({ title: "Success", description: "Demo products removed!" });
+      window.location.reload();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to remove demos", variant: "destructive" });
     } finally {
       setUploading(false);
     }
@@ -411,9 +440,12 @@ export default function AdminProducts() {
           <h1 className="text-2xl font-bold">Products</h1>
           <p className="text-muted-foreground">Manage the product catalog</p>
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <Button variant="outline" onClick={seedDemoProducts} disabled={uploading}>
-            {uploading ? "Adding..." : "Add Demo Products"}
+            {uploading ? "Adding..." : "Add Demos"}
+          </Button>
+          <Button variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={removeDemoProducts} disabled={uploading}>
+            {uploading ? "Removing..." : "Remove Demos"}
           </Button>
           <Button className="flex-1 sm:flex-none" onClick={openNew}>
             <Plus className="mr-2 h-4 w-4" /> Add Product
