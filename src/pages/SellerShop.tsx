@@ -87,9 +87,11 @@ const SellerShop = () => {
                     <AspectRatio ratio={4 / 3}>
                       {images.length > 0 ? (
                         <img src={images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      ) : product.image ? (
+                        <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                       ) : (
                         <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <span className="text-5xl">{product.image}</span>
+                          <span className="text-muted-foreground text-xs">No image</span>
                         </div>
                       )}
                     </AspectRatio>

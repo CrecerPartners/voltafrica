@@ -184,7 +184,11 @@ const ProductPage = () => {
     );
   }
 
-  const images = product.assets?.images?.length > 0 ? product.assets.images : [];
+  const images = product.assets?.images?.length > 0
+    ? product.assets.images
+    : product.image
+    ? [product.image]
+    : [];
   const shareText = `${product.name} — ${product.description}\n\n${referralLink}`;
   const isLead = product.productType === "lead" || product.delivery_type === "lead_url";
   const isDigital = product.productType === "digital" || product.delivery_type !== "manual_provision";
@@ -538,7 +542,7 @@ const ProductPage = () => {
                       {p.assets?.images?.length > 0 ? (
                         <img src={p.assets.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                       ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center"><span className="text-3xl">{p.image}</span></div>
+                        <div className="w-full h-full bg-muted flex items-center justify-center"><span className="text-muted-foreground text-xs">No image</span></div>
                       )}
                     </AspectRatio>
                   </div>

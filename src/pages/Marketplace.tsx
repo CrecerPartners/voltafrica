@@ -201,18 +201,22 @@ const Marketplace = () => {
               <Card className="border-border/50 group hover:border-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden h-full flex flex-col">
                 <div className="relative overflow-hidden shrink-0">
                   <AspectRatio ratio={4 / 3}>
-                    {product.assets?.images?.length > 0 ? (
-                      <img
-                        src={product.assets.images[0]}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-muted flex items-center justify-center">
-                        <span className="text-5xl">{product.image}</span>
-                      </div>
-                    )}
+                    {(() => {
+                      const src = product.assets?.images?.[0] || product.image;
+                      return src ? (
+                        <img
+                          src={src}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          loading="lazy"
+                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                          <span className="text-muted-foreground text-xs">No image</span>
+                        </div>
+                      );
+                    })()}
                   </AspectRatio>
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <div className="bg-background/90 backdrop-blur-sm rounded-full p-2.5 shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">

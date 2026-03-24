@@ -61,7 +61,18 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
         <SheetContent className="overflow-y-auto w-full sm:max-w-lg">
           <SheetHeader className="text-left pb-4">
             <div className="flex items-center gap-3">
-              <span className="text-5xl">{product.image}</span>
+              {product.image ? (
+                <img
+                  src={product.assets?.images?.[0] || product.image}
+                  alt={product.name}
+                  className="h-14 w-14 rounded-xl object-cover border border-border/50 shrink-0"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                />
+              ) : (
+                <div className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                  <span className="text-muted-foreground text-xs">No img</span>
+                </div>
+              )}
               <div>
                 <SheetTitle className="text-lg">{product.name}</SheetTitle>
                 <SheetDescription>{product.brand}</SheetDescription>
