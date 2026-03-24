@@ -28,9 +28,9 @@ import heroBrands from "@/assets/hero-brands.png";
 const audiences = {
   students: {
     badge: "For Gen Z Sellers",
-    headline: "Join 1,000+ Gen Z Sellers Earning on Volt",
+    headline: "Join 1K+ Sellers Earning from Real Brands on Volt",
     subtitle:
-      "Use your influence, audience, and network to promote products you love and earn real commissions while connecting with your community.",
+      "Promote fintech apps, fashion products, gadgets, events and more and earn commissions for every sale or signup.",
     cta: "Start Earning Today",
     ctaLink: "/join-now",
     icon: GraduationCap,

@@ -50,10 +50,10 @@ export default function AboutStudents() {
             For Gen Z Sellers
           </span>
           <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
-            Your Influence. Your Hustle. Your Earnings.
+            Join 1K+ Sellers Earning from Real Brands on Volt
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Volt turns your influence and network into real income. Promote products, track your sales, and get paid — all from your phone.
+            Promote fintech apps, fashion products, gadgets, events and more and earn commissions for every sale or signup.
           </p>
         </div>
       </section>
