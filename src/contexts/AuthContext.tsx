@@ -24,16 +24,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Initialise session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // When the token expires / refresh fails, Supabase fires SIGNED_OUT.
+      // Redirect to /login so the user isn't left on a broken/404 screen.
+      if (event === "SIGNED_OUT") {
+        // Use replace so the user can't "back" to the protected page
+        window.location.replace("/login");
+      }
     });
 
     return () => subscription.unsubscribe();
