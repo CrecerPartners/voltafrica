@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Capacitor } from "@capacitor/core";
@@ -22,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const intentionalSignOut = useRef(false);
 
   useEffect(() => {
     // Initialise session on mount
@@ -38,7 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // When the token expires / refresh fails, Supabase fires SIGNED_OUT.
       // Redirect to /login so the user isn't left on a broken/404 screen.
-      if (event === "SIGNED_OUT") {
+      // Skip if the signout was intentional (e.g. during the login OTP flow).
+      if (event === "SIGNED_OUT" && !intentionalSignOut.current) {
         // Use replace so the user can't "back" to the protected page
         window.location.replace("/login");
       }
@@ -65,7 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async (options?: { skipRedirect?: boolean }) => {
+    if (options?.skipRedirect) {
+      intentionalSignOut.current = true;
+    }
     await supabase.auth.signOut();
+    intentionalSignOut.current = false;
     if (Capacitor.isNativePlatform() && !options?.skipRedirect) {
       window.location.href = "/";
     }
