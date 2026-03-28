@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Menu, Zap, LayoutDashboard } from "lucide-react";
+import { Menu, Zap, LayoutDashboard, Briefcase } from "lucide-react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -19,6 +19,15 @@ export function LandingNavbar() {
         </Link>
 
         <div className="hidden items-center gap-3 md:flex">
+          <a
+            href="https://crecerpartners.com/sales/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+          >
+            <Briefcase className="h-4 w-4 animate-bounce" />
+            Hire Sales Executive
+          </a>
           <CartDrawer />
           {isLoggedIn ? (
             <Button asChild className="volt-gradient border-0 font-semibold shadow-lg hover:opacity-90">
@@ -48,6 +57,16 @@ export function LandingNavbar() {
           <SheetContent side="right" className="w-72">
             <SheetTitle className="sr-only">Navigation</SheetTitle>
             <div className="flex flex-col gap-6 pt-8">
+              <a
+                href="https://crecerpartners.com/sales/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-3 py-2 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                <Briefcase className="h-4 w-4 animate-bounce" />
+                Hire Sales Executive
+              </a>
               {isLoggedIn ? (
                 <Button asChild className="w-full volt-gradient border-0 font-semibold" onClick={() => setOpen(false)}>
                   <Link to="/dashboard"><LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard</Link>
