@@ -90,10 +90,10 @@ const verticals = [
 ];
 
 const processSteps = [
-  { step: 1, title: "List Your Brand", desc: "Submit your product and campaign details through our onboarding form." },
-  { step: 2, title: "Campaign Activation", desc: "We recruit and assign Gen Z sellers based on your target cities and demographics." },
-  { step: 3, title: "Sales Go Live", desc: "Your campaign launches across selected locations with WhatsApp-first content and referral tracking." },
-  { step: 4, title: "Track Sales & Scale", desc: "Monitor performance by city and seller. Scale into more locations as demand grows." },
+  { step: 1, title: "List your product", desc: "Add your product to Volt" },
+  { step: 2, title: "Sellers promote it", desc: "Our sellers push your product across their networks" },
+  { step: 3, title: "You get customers", desc: "Sales and signups are tracked" },
+  { step: 4, title: "You pay only for results", desc: "No sales, no cost" },
 ];
 
 export function BrandsContent() {
@@ -113,10 +113,11 @@ export function BrandsContent() {
         </div>
       </section>
 
-      {/* Why Brands Choose Volt */}
+      {/* Turn Distribution Into Sales */}
       <section className="mx-auto max-w-5xl px-4 py-16 md:py-24">
         <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl font-bold md:text-4xl">Why Brands Choose Volt</h2>
+          <h2 className="font-display text-3xl font-bold md:text-4xl">Turn Distribution Into Sales</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">Stop paying for impressions. Start paying for results. Reach new customers through sellers who already have access to your target market.</p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           {benefits.map((b) => (
@@ -199,7 +200,7 @@ export function BrandsContent() {
       <section className="border-y border-border bg-muted/30">
         <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
           <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold md:text-4xl">The Volt Process</h2>
+            <h2 className="font-display text-3xl font-bold md:text-4xl">How Volt Drives Sales</h2>
           </div>
           <div className="flex flex-col gap-6">
             {processSteps.map((s) => (
@@ -221,13 +222,10 @@ export function BrandsContent() {
       <section className="volt-gradient">
         <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
           <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
-            Distribution for the Next Generation
+            Partner with Volt
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/80">
-            Gen Z doesn't buy from ads — they buy from people they trust. Volt turns communities into structured sales environments powered by peer influence and real incentives. This is not influencer marketing.
-          </p>
-          <p className="mt-4 text-lg font-semibold text-primary-foreground">
-            This is Gen Z distribution infrastructure.
+            Gen Z doesn't buy from ads — they buy from people they trust. Volt turns communities into structured sales environments powered by peer influence and real incentives.
           </p>
           <div className="mt-8">
             <Button
@@ -236,11 +234,13 @@ export function BrandsContent() {
               className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
             >
               <a href="https://volt.crecerpartners.com/brand-form/" target="_blank" rel="noopener noreferrer">
-                Partner with Volt
+                Start Selling
                 <ArrowRight className="ml-2 h-4 w-4" />
               </a>
             </Button>
           </div>
+          <p className="mt-8 text-sm font-semibold text-primary-foreground/60 uppercase tracking-wider">Built for People Who Want Results</p>
+          <p className="mt-1 text-primary-foreground/80">For brands: Get customers, not just traffic</p>
         </div>
       </section>
     </>

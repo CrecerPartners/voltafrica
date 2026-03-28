@@ -27,21 +27,21 @@ import heroBrands from "@/assets/hero-brands.png";
 
 const audiences = {
   students: {
-    badge: "For Gen Z Sellers",
-    headline: "Join 1K+ Sellers Earning from Real Brands on Volt",
+    badge: "For Sellers",
+    headline: "Promote Products. Earn Commission.",
     subtitle:
-      "Promote fintech apps, fashion products, gadgets, events and more and earn commissions for every sale or signup.",
-    cta: "Start Earning Today",
+      "Work with real brands. Share products, apps, and offers with your network. Earn every time someone buys or signs up through you.",
+    cta: "Start Earning",
     ctaLink: "/join-now",
     icon: GraduationCap,
     image: heroStudent,
   },
   brands: {
     badge: "For Brands",
-    headline: "Built for Brands Targeting Young Digital Consumers",
+    headline: "Only Pay for Real Sales. Not Ads.",
     subtitle:
-      "Reach millions of socially connected young buyers through Volt’s trusted seller network across campuses, communities, and creator audiences.",
-    cta: "Partner with Volt",
+      "Get customers through a network of active sellers across campuses, communities, and online audiences. No upfront ad spend. You only pay when results happen.",
+    cta: "Start Selling",
     ctaLink: "https://volt.crecerpartners.com/brand-form/",
     icon: Building2,
     image: heroBrands,
@@ -57,13 +57,19 @@ const sellerTypes = [
   "Young urban youth sellers",
 ];
 
+const howItWorks = [
+  { title: "Pick a product", desc: "Choose from fintech apps, gadgets, fashion items, events and more" },
+  { title: "Promote it", desc: "Share with your friends, audience, or community" },
+  { title: "Earn commission", desc: "Get paid when people buy or sign up through you" },
+];
+
 const whyJoin = [
-  { icon: Star, title: "Reliable Weekly Payouts", desc: "Earn consistently. Get paid every week." },
-  { icon: GraduationCap, title: "Career Advantage", desc: "Build real sales, marketing, and audience growth skills while earning." },
-  { icon: BookOpen, title: "Free Training", desc: "Access practical training to help you sell smarter and scale faster." },
-  { icon: ShoppingBag, title: "Curated Marketplace", desc: "Browse and sell from high-demand trending products Gen Z already love." },
-  { icon: Users, title: "Refer & Earn", desc: "Build your network and earn commission on their sales." },
-  { icon: BarChart3, title: "Track Everything", desc: "Real-time dashboard for sales, earnings, and performance growth." },
+  { icon: ShoppingBag, title: "Work with Real Brands", desc: "Promote products people already use — fintech apps, fashion, gadgets, subscriptions, events." },
+  { icon: TrendingUp, title: "Multiple Ways to Earn", desc: "Earn from product sales, app signups, referrals, and bonuses." },
+  { icon: BarChart3, title: "Everything in One Place", desc: "Track your sales, commissions, referrals, and payouts inside your wallet." },
+  { icon: Star, title: "Use Ready-Made Content", desc: "Get captions, images, and media kits you can use to promote instantly." },
+  { icon: Users, title: "Create Your Own Shop", desc: "Build your page, add products, and share your link to start selling." },
+  { icon: GraduationCap, title: "Plan Your Earnings", desc: "Set a target and see how many sales you need to hit your income goal." },
 ];
 
 const stats = [
@@ -235,6 +241,24 @@ export default function LandingPage() {
             </div>
           </section>
 
+          {/* How It Works */}
+          <section className="border-b border-border bg-muted/30">
+            <div className="mx-auto max-w-5xl px-4 py-16 md:py-20">
+              <h2 className="mb-12 text-center font-display text-3xl font-bold md:text-4xl">How You Earn on Volt</h2>
+              <div className="grid gap-8 md:grid-cols-3">
+                {howItWorks.map((s, i) => (
+                  <div key={s.title} className="flex flex-col items-center text-center">
+                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full volt-gradient text-xl font-bold text-primary-foreground shadow-lg">
+                      {i + 1}
+                    </div>
+                    <h3 className="font-display text-xl font-semibold">{s.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* Who can sell */}
           <section className="border-b border-border bg-muted/30">
             <div className="mx-auto max-w-4xl px-4 py-12 md:py-16">
@@ -308,9 +332,9 @@ export default function LandingPage() {
             </div>
             <div className="relative mx-auto max-w-5xl px-4 py-16 md:py-24">
               <div className="mb-12 text-center">
-                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Categories</span>
-                <h2 className="font-display text-3xl font-bold md:text-4xl">Find Your Niche</h2>
-                <p className="mt-3 text-muted-foreground">Pick a category and start selling what you love.</p>
+                <span className="mb-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Marketplace</span>
+                <h2 className="font-display text-3xl font-bold md:text-4xl">Find Products That Already Sell</h2>
+                <p className="mt-3 text-muted-foreground">Browse high-demand products across:</p>
               </div>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {[
@@ -339,6 +363,9 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
+              <p className="mt-10 text-center text-muted-foreground">
+                Pick what fits your audience and start selling immediately.
+              </p>
             </div>
           </section>
         </>
@@ -350,10 +377,10 @@ export default function LandingPage() {
         <section className="volt-gradient">
           <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
             <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
-              Ready to Start Earning?
+              Start Earning From Your Network
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
-              Whether you're a Gen Z seller, creator, or brand, Volt helps you monetize influence and scale fast.
+              If you can recommend products, you can earn on Volt.
             </p>
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button
@@ -361,9 +388,11 @@ export default function LandingPage() {
                 size="lg"
                 className="bg-background text-foreground px-8 text-base font-semibold hover:bg-background/90"
               >
-                <Link to="/join-now">Join the VoltSquad</Link>
+                <Link to="/join-now">Join Volt Today</Link>
               </Button>
             </div>
+            <p className="mt-8 text-sm font-semibold text-primary-foreground/60 uppercase tracking-wider">Built for People Who Want Results</p>
+            <p className="mt-1 text-primary-foreground/80">For sellers: Earn from products you promote</p>
           </div>
         </section>
       )}
@@ -371,8 +400,9 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border bg-background">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-10 md:flex-row md:justify-between">
-          <div className="flex items-center">
+          <div className="flex flex-col items-start gap-1">
             <img src="/Volt1.png" alt="Volt Logo" className="h-7 w-auto object-contain" />
+            <p className="text-xs text-muted-foreground">A performance-driven sales network</p>
           </div>
           <nav className="flex gap-6 text-sm text-muted-foreground">
             <Link to="/login" className="hover:text-foreground transition-colors">Sign In</Link>
