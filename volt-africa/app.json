@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Volt",
+    "slug": "volt-africa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/Volt1.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.voltafrica.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.voltafrica.app",
+      "googleServicesFile": "./google-services.json",
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "scheme": "voltafrica",
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Volt needs access to your photos to upload proof of sale, KYC documents, and shop logo."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0c7c93f6-1c26-44a4-a1ac-3da293e3a815"
+      }
+    },
+    "owner": "crecerpartnerss-organization"
+  }
+}

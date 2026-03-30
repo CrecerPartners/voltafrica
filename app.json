@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "8f80fa36-5acc-4e0c-aa37-2117dc160c77"
+      }
+    },
+    "android": {
+      "package": "com.crecer.voltafrica"
+    }
+  }
+}
