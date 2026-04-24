@@ -164,21 +164,21 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={isNative ? <MobileOnboarding /> : <StaticRedirect to="/digihire/index.html" />} />
+            <Route path="/" element={isNative ? <MobileOnboarding /> : <StaticRedirect to="/" />} />
           <Route path="/former-landing" element={<LandingPage />} />
           <Route path="/react-landing" element={<DigiHireLanding />} />
-          <Route path="/blog" element={<StaticRedirect to="/digihire/blog.html" />} />
-          <Route path="/about" element={<StaticRedirect to="/digihire/about.html" />} />
-          <Route path="/contact" element={<StaticRedirect to="/digihire/contact.html" />} />
-          <Route path="/events" element={<StaticRedirect to="/digihire/events.html" />} />
+          <Route path="/blog" element={<StaticRedirect to="/blog" />} />
+          <Route path="/about" element={<StaticRedirect to="/about" />} />
+          <Route path="/contact" element={<StaticRedirect to="/contact" />} />
+          <Route path="/events" element={<StaticRedirect to="/events" />} />
           <Route path="/react-blog" element={<DigiHireBlog />} />
           <Route path="/react-about" element={<DigiHireAbout />} />
           <Route path="/react-contact" element={<DigiHireContact />} />
           <Route path="/react-events" element={<DigiHireEvents />} />
-          <Route path="/digihire/blog" element={<StaticRedirect to="/digihire/blog.html" />} />
-          <Route path="/digihire/about" element={<StaticRedirect to="/digihire/about.html" />} />
-          <Route path="/digihire/contact" element={<StaticRedirect to="/digihire/contact.html" />} />
-          <Route path="/digihire/events" element={<StaticRedirect to="/digihire/events.html" />} />
+          <Route path="/digihire/blog" element={<StaticRedirect to="/blog" />} />
+          <Route path="/digihire/about" element={<StaticRedirect to="/about" />} />
+          <Route path="/digihire/contact" element={<StaticRedirect to="/contact" />} />
+          <Route path="/digihire/events" element={<StaticRedirect to="/events" />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/about/sellers" element={<NativeBlockRoute><AboutStudents /></NativeBlockRoute>} />
           <Route path="/about/students" element={<Navigate to="/about/sellers" replace />} />
