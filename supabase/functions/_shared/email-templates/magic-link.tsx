@@ -54,7 +54,7 @@ export const MagicLinkEmail = ({
         
         <Section style={footerSection}>
           <Text style={footerText}>
-            © 2026 Volt Africa. All rights reserved.
+            © 2026 DigiHire. All rights reserved.
           </Text>
         </Section>
       </Container>

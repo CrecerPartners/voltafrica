@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DigiHire — Advance Your Career with Professional Growth Tools</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <style>
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanThin.ttf') format('truetype'); font-weight: 100; font-style: normal; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanThinItalic.ttf') format('truetype'); font-weight: 100; font-style: italic; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanLight.ttf') format('truetype'); font-weight: 300; font-style: normal; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanLightItalic.ttf') format('truetype'); font-weight: 300; font-style: italic; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanRegular.ttf') format('truetype'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanItalic.ttf') format('truetype'); font-weight: 400; font-style: italic; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanSemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanSemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanExtraBoldItalic.ttf') format('truetype'); font-weight: 800; font-style: italic; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBlack.ttf') format('truetype'); font-weight: 900; font-style: normal; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBlackItalic.ttf') format('truetype'); font-weight: 900; font-style: italic; }
+  </style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #06111F;
+      --navy-1:      #0B1D33;
+      --navy-2:      #0F2544;
+      --navy-3:      #162E52;
+      --navy-4:      #1D3A64;
+      --cyan:        #00C2FF;
+      --cyan-dim:    #0096C7;
+      --cyan-soft:   #33CFFF;
+      --cyan-glow:   rgba(0,194,255,0.20);
+      --cyan-ghost:  rgba(0,194,255,0.07);
+      --cyan-border: rgba(0,194,255,0.18);
+      --white:       #FFFFFF;
+      --off-white:   #F0F6FF;
+      --gray-1:      #C8DBF0;
+      --gray-2:      #7A9CC5;
+      --gray-3:      #3D5A7E;
+      --gray-bg:     #F4F8FF;
+      --border:      rgba(0,194,255,0.12);
+      --border-soft: rgba(255,255,255,0.07);
+      --radius:      10px;
+      --radius-lg:   18px;
+      --radius-xl:   28px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'CenturyGothic', sans-serif;
+      background: var(--white);
+      color: #111827;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── LUCIDE ICONS ────────────────────────────── */
+    .lucide { display: inline-block; vertical-align: middle; flex-shrink: 0; stroke: currentColor; }
+    .ic-sm  { width: 14px; height: 14px; }
+    .ic-md  { width: 16px; height: 16px; }
+    .ic-lg  { width: 20px; height: 20px; }
+    .ic-xl  { width: 24px; height: 24px; }
+    .mic-icon .lucide  { color: inherit; }
+    .bsc-icon.i1 .lucide { color: #0096C7; }
+    .bsc-icon.i2 .lucide { color: #00875A; }
+    .feature-icon-wrap .lucide { color: var(--navy); }
+    .dd-icon .lucide   { color: var(--cyan); }
+    .mv-node .lucide   { color: rgba(0,194,255,0.7); }
+    .net-node .lucide  { color: var(--cyan); }
+    .mic-icon.i1 .lucide { color: #0096C7; }
+    .mic-icon.i2 .lucide { color: #B86800; }
+    .mic-icon.i3 .lucide { color: #00875A; }
+
+    /* ── TYPOGRAPHY ──────────────────────────────── */
+    .syne { font-family: 'CenturyGothic', sans-serif; }
+    .cyan { color: var(--cyan); }
+    .white { color: var(--white); }
+    .muted { color: var(--gray-2); }
+
+    /* ── LAYOUT ──────────────────────────────────── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── BUTTONS ─────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px; border-radius: 8px; cursor: pointer;
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 700;
+      border: none; text-decoration: none; transition: all 0.22s ease;
+      letter-spacing: 0.01em; white-space: nowrap;
+    }
+    .btn-cyan {
+      background: var(--cyan); color: var(--navy);
+      box-shadow: 0 4px 20px rgba(0,194,255,0.35);
+    }
+    .btn-cyan:hover { background: var(--cyan-soft); box-shadow: 0 6px 28px rgba(0,194,255,0.5); transform: translateY(-1px); }
+    .btn-outline-white {
+      background: transparent; color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.35);
+    }
+    .btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+    .btn-outline-navy {
+      background: transparent; color: var(--navy);
+      border: 1.5px solid rgba(0,0,0,0.18);
+    }
+    .btn-outline-navy:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 10px; }
+    .btn-sm { padding: 8px 18px; font-size: 13px; }
+
+    /* ── ANIMATIONS ──────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    .stagger-grid > * {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .stagger-grid.in > *:nth-child(1) { opacity:1;transform:none;transition-delay:0s }
+    .stagger-grid.in > *:nth-child(2) { opacity:1;transform:none;transition-delay:.1s }
+    .stagger-grid.in > *:nth-child(3) { opacity:1;transform:none;transition-delay:.2s }
+    .stagger-grid.in > *:nth-child(4) { opacity:1;transform:none;transition-delay:.3s }
+    .stagger-grid.in > *:nth-child(5) { opacity:1;transform:none;transition-delay:.4s }
+    .stagger-grid.in > *:nth-child(6) { opacity:1;transform:none;transition-delay:.5s }
+
+    /* ════════════════════════════════════════════════
+       1. NAVBAR
+    ════════════════════════════════════════════════ */
+
+    /* No body padding — nav overlays the hero */
+    body { padding-top: 0; }
+
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      /* Transparent by default — hero shows through */
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition:
+        top 0.45s cubic-bezier(0.34,1.56,0.64,1),
+        left 0.45s cubic-bezier(0.34,1.56,0.64,1),
+        right 0.45s cubic-bezier(0.34,1.56,0.64,1),
+        background 0.3s ease,
+        border-radius 0.45s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+
+    /* Floated pill on scroll */
+    #navbar.scrolled {
+      top: 14px;
+      left: 20%;
+      right: 20%;
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-radius: 999px;
+      border-bottom: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06),
+                  inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px; max-width: 1340px; width: 100%; margin: 0 auto; padding: 0 28px;
+      transition: height 0.3s ease, padding 0.3s ease;
+    }
+    #navbar.scrolled .nav-inner { height: 54px; padding: 0 24px; }
+
+    /* Logo + links grouped on the left */
+    .nav-left { display: flex; align-items: center; gap: 0; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0;
+      text-decoration: none; flex-shrink: 0; margin-right: 32px;
+    }
+    /* Two logo images — swap on scroll */
+    .nav-logo-img {
+      height: 36px; width: auto; display: block;
+      transition: opacity 0.3s;
+    }
+    .nav-logo-img.logo-white { opacity: 1; }
+    .nav-logo-img.logo-color { opacity: 0; position: absolute; }
+    #navbar.scrolled .nav-logo-img.logo-white { opacity: 0; }
+    #navbar.scrolled .nav-logo-img.logo-color { opacity: 1; }
+    .nav-logo-wrap-img { position: relative; display: flex; align-items: center; }
+
+    /* Nav links — white on transparent hero */
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a {
+      font-size: 14px; color: rgba(255,255,255,0.82); text-decoration: none;
+      font-weight: 500; padding: 6px 14px; border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: #ffffff; background: rgba(255,255,255,0.10); }
+
+    /* Scrolled — links go dark */
+    #navbar.scrolled .nav-links a { color: #374151; }
+    #navbar.scrolled .nav-links a:hover { color: var(--navy); background: rgba(0,0,0,0.05); }
+    #navbar.scrolled .btn-get-started { color: #1E293B; border-color: #CBD5E1; }
+    #navbar.scrolled .btn-get-started:hover { background: rgba(0,0,0,0.04); border-color: #94A3B8; }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+    /* Get Started button — white outlined on hero */
+    .btn-get-started {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: 8px; cursor: pointer;
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 700;
+      border: 1.5px solid rgba(255,255,255,0.45); background: transparent;
+      color: #ffffff; text-decoration: none; transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-get-started:hover { border-color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.08); }
+    .btn-get-started svg { width: 14px; height: 14px; transition: transform 0.2s; }
+    .btn-get-started:hover svg { transform: rotate(180deg); }
+
+    /* Dropdown */
+    .nav-dropdown-wrap { position: relative; }
+    .nav-dropdown {
+      position: absolute; top: calc(100% + 10px); right: 0;
+      background: #ffffff; border: 1px solid #E2ECF5;
+      border-radius: 16px; padding: 20px 20px 16px; min-width: 210px; z-index: 300;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+      opacity: 0; visibility: hidden; transform: translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    }
+    .nav-dropdown-wrap:hover .nav-dropdown,
+    .nav-dropdown-wrap:focus-within .nav-dropdown {
+      opacity: 1; visibility: visible; transform: translateY(0);
+    }
+    .dd-section-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #9AAFC7; margin-bottom: 6px;
+    }
+    .nav-dropdown a {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 0; text-decoration: none;
+      font-size: 14px; color: #374151; font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-dropdown a:hover { color: var(--cyan); }
+    .nav-dropdown a .dd-arrow { font-size: 13px; color: #C0CCDA; transition: color 0.15s; }
+    .nav-dropdown a:hover .dd-arrow { color: var(--cyan); }
+    .nav-dropdown-divider { height: 1px; background: #EEF2F8; margin: 14px 0; }
+
+    /* Launch Campaign CTA */
+    .btn-launch {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border-radius: 8px; cursor: pointer;
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 800;
+      border: none; background: var(--cyan); color: var(--navy);
+      text-decoration: none; transition: all 0.22s ease;
+      white-space: nowrap; letter-spacing: 0.01em;
+      box-shadow: 0 3px 16px rgba(0,194,255,0.35);
+    }
+    .btn-launch:hover {
+      background: #33CFFF;
+      box-shadow: 0 5px 24px rgba(0,194,255,0.5);
+      transform: translateY(-1px);
+    }
+
+    /* ── Why DigiHire mega-dropdown ───────────────── */
+    .nav-mega-wrap { position: static; }
+
+    .nav-mega-trigger {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 14px; color: rgba(255,255,255,0.82); text-decoration: none;
+      font-weight: 500; padding: 6px 14px; border-radius: 6px;
+      transition: color 0.2s, background 0.2s; cursor: pointer;
+      border: none; background: transparent; font-family: 'CenturyGothic', sans-serif;
+    }
+    .nav-mega-trigger:hover,
+    .nav-mega-wrap:hover .nav-mega-trigger,
+    .nav-mega-wrap:focus-within .nav-mega-trigger {
+      color: var(--cyan) !important; background: var(--cyan-ghost) !important;
+    }
+    .nav-mega-trigger svg { width: 13px; height: 13px; transition: transform 0.25s; }
+    .nav-mega-wrap:hover .nav-mega-trigger svg,
+    .nav-mega-wrap:focus-within .nav-mega-trigger svg { transform: rotate(180deg); }
+    #navbar.scrolled .nav-mega-trigger { color: #374151; }
+
+    /* Panel */
+    .nav-mega {
+      position: fixed; left: 32px; top: 76px;
+      width: min(1000px, 72vw);
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #E8EEF5;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.13), 0 4px 16px rgba(0,0,0,0.06);
+      z-index: 190;
+      opacity: 0; visibility: hidden; transform: translateY(-10px);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+    }
+    .nav-mega-wrap:hover .nav-mega,
+    .nav-mega-wrap:focus-within .nav-mega {
+      opacity: 1; visibility: visible; transform: translateY(0);
+    }
+    #navbar.scrolled .nav-mega { top: 82px; }
+
+    /* ── LEFT: navy main block ── */
+    .mega-left {
+      background: var(--navy);
+      padding: 32px 32px 28px;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .mega-headline {
+      font-family: 'CenturyGothic', sans-serif; font-size: 18px; font-weight: 800;
+      color: #ffffff; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .mega-body {
+      font-size: 13px; color: rgba(255,255,255,0.58);
+      line-height: 1.65; margin-bottom: 18px; flex: 1;
+    }
+    .mega-learn {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 700; color: var(--cyan);
+      text-decoration: none; font-family: 'CenturyGothic', sans-serif; transition: gap 0.2s;
+      margin-bottom: 24px;
+    }
+    .mega-learn:hover { gap: 9px; }
+
+    /* SVG network visual */
+    .mega-visual-svg {
+      border-radius: 14px; overflow: hidden;
+      background: linear-gradient(135deg, var(--navy-2) 0%, var(--navy-4) 100%);
+      border: 1px solid rgba(0,194,255,0.12);
+      flex: 1; min-height: 180px;
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    /* Pulsing rings on center node */
+    @keyframes ringPulse {
+      0%   { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
+      100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
+    }
+    .mv-ring {
+      position: absolute; top: 50%; left: 50%;
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1.5px solid rgba(0,194,255,0.4);
+      animation: ringPulse 2.2s ease-out infinite;
+    }
+    .mv-ring:nth-child(2) { animation-delay: 0.7s; }
+    .mv-ring:nth-child(3) { animation-delay: 1.4s; }
+    /* center node */
+    .mv-center {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--cyan); z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'CenturyGothic', sans-serif; font-size: 9px; font-weight: 800; color: var(--navy);
+      text-align: center; line-height: 1.1;
+      box-shadow: 0 0 0 6px rgba(0,194,255,0.15);
+    }
+    /* satellite nodes */
+    .mv-node {
+      position: absolute;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--navy-3); border: 2px solid rgba(0,194,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; z-index: 2;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .mv-node:hover { transform: scale(1.15) !important; border-color: var(--cyan); }
+    /* SVG lines */
+    .mv-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+    /* ── RIGHT: cards grid ── */
+    .mega-right {
+      padding: 28px 28px 24px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    /* Top row — 3 info cards */
+    .mega-top-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .mega-info-card {
+      padding: 18px 16px; border-radius: 12px;
+      border: 1px solid #EEF2F8; text-decoration: none;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .mega-info-card:hover {
+      border-color: rgba(0,194,255,0.3);
+      background: #F7FBFF;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .mic-icon {
+      width: 32px; height: 32px; border-radius: 8px; margin-bottom: 4px;
+      display: flex; align-items: center; justify-content: center; font-size: 15px;
+    }
+    .mic-icon.i1 { background: #E6F4FF; }
+    .mic-icon.i2 { background: #FFF5E6; }
+    .mic-icon.i3 { background: #E8FDF5; }
+    .mic-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 13px; font-weight: 800;
+      color: #0D1B33;
+    }
+    .mic-desc { font-size: 12px; color: #6B849E; line-height: 1.5; flex: 1; }
+    .mic-cta {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      font-family: 'CenturyGothic', sans-serif; margin-top: 6px;
+      transition: gap 0.15s;
+    }
+    .mega-info-card:hover .mic-cta { gap: 7px; }
+
+    /* Divider */
+    .mega-divider { height: 1px; background: #EEF2F8; }
+
+    /* Bottom row — 2 feature cards */
+    .mega-feat-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .mega-feat-card {
+      border-radius: 14px; padding: 20px 20px 18px;
+      text-decoration: none; position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .mega-feat-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.10); }
+
+    /* VoltSquad — strong visual */
+    .mfc-voltsquad {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-3) 100%);
+      border: 1px solid rgba(0,194,255,0.2);
+    }
+    /* glowing orb */
+    .mfc-voltsquad::before {
+      content: ''; position: absolute;
+      top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,194,255,0.25) 0%, transparent 70%);
+    }
+    .mfc-volt-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--cyan); color: var(--navy);
+      font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 5px;
+      font-family: 'CenturyGothic', sans-serif; letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .mfc-volt-badge .lucide { width: 10px; height: 10px; }
+    .mfc-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .mfc-voltsquad .mfc-title { color: #ffffff; }
+    .mfc-voltsquad .mfc-desc  { font-size: 12px; color: rgba(255,255,255,0.58); line-height: 1.55; margin-bottom: 12px; }
+    .mfc-cta {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700;
+      font-family: 'CenturyGothic', sans-serif; transition: gap 0.15s;
+    }
+    .mfc-voltsquad .mfc-cta { color: var(--cyan); }
+    .mega-feat-card:hover .mfc-cta { gap: 7px; }
+
+    /* Solutions — clean light card */
+    .mfc-solutions {
+      background: #F4F8FF;
+      border: 1px solid #E2ECF5;
+    }
+    .mfc-sol-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(0,194,255,0.12); color: var(--cyan-dim);
+      font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 5px;
+      font-family: 'CenturyGothic', sans-serif; letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .mfc-sol-badge .lucide { width: 10px; height: 10px; }
+    .mfc-solutions .mfc-title { color: #0D1B33; }
+    .mfc-solutions .mfc-desc  { font-size: 12px; color: #6B849E; line-height: 1.55; margin-bottom: 12px; }
+    .mfc-solutions .mfc-cta   { color: var(--cyan-dim); }
+
+    /* ── Brands mega-dropdown ───────────────────────── */
+    .brands-mega {
+      grid-template-columns: 320px 1fr;
+    }
+
+    /* Left: featured highlight card inside navy block */
+    .mega-feat-highlight {
+      margin-top: 20px;
+      background: linear-gradient(135deg, var(--navy-2) 0%, var(--navy-3) 100%);
+      border: 1px solid rgba(0,194,255,0.2);
+      border-radius: 14px;
+      padding: 20px 20px 18px;
+      position: relative; overflow: hidden;
+      flex: 1;
+    }
+    .mega-feat-highlight::before {
+      content: '';
+      position: absolute; top: -30px; right: -30px;
+      width: 110px; height: 110px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,194,255,0.2) 0%, transparent 70%);
+    }
+    .feat-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--cyan); color: var(--navy);
+      font-size: 9px; font-weight: 800; padding: 3px 9px; border-radius: 5px;
+      font-family: 'CenturyGothic', sans-serif; letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .feat-product {
+      font-family: 'CenturyGothic', sans-serif; font-size: 16px; font-weight: 800;
+      color: #ffffff; margin-bottom: 8px;
+    }
+    .feat-desc {
+      font-size: 12px; color: rgba(255,255,255,0.58); line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .feat-cta {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      font-family: 'CenturyGothic', sans-serif; text-decoration: none;
+      transition: gap 0.15s;
+    }
+    .feat-cta:hover { gap: 8px; }
+
+    /* Right: 2 supporting cards stacked */
+    .brands-right {
+      padding: 28px 28px 24px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .brand-supp-card {
+      padding: 20px 20px 18px; border-radius: 12px;
+      border: 1px solid #EEF2F8; text-decoration: none;
+      display: flex; flex-direction: column; gap: 6px;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      flex: 1;
+    }
+    .brand-supp-card:hover {
+      border-color: rgba(0,194,255,0.3);
+      background: #F7FBFF;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .bsc-icon {
+      width: 34px; height: 34px; border-radius: 9px; margin-bottom: 4px;
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .bsc-icon.i1 { background: #E6F4FF; }
+    .bsc-icon.i2 { background: #E8FDF5; }
+    .bsc-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 13px; font-weight: 800;
+      color: #0D1B33;
+    }
+    .bsc-desc { font-size: 12px; color: #6B849E; line-height: 1.55; flex: 1; }
+    .bsc-cta {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      font-family: 'CenturyGothic', sans-serif; margin-top: 6px;
+      transition: gap 0.15s;
+    }
+    .brand-supp-card:hover .bsc-cta { gap: 7px; }
+
+    /* ── No bold anywhere ────────────────────────── */
+    *, *::before, *::after { font-weight: 400 !important; }
+
+    /* ── Mode toggle system ──────────────────────── */
+    .mode-brand { display: none; }
+    .mode-talent { display: block; }
+    body[data-mode="brand"] .mode-talent { display: none; }
+    body[data-mode="brand"] .mode-brand { display: block; }
+
+    /* Smooth section transitions */
+    .mode-talent, .mode-brand {
+      animation: modeFadeIn 0.4s ease;
+    }
+    @keyframes modeFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Brand mode sections ─────────────────────── */
+
+    /* Services grid */
+    .brand-services-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+    }
+    .brand-service-card {
+      background: #ffffff; border: 1px solid #E8EEF5;
+      border-radius: 20px; padding: 32px 28px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .brand-service-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.07); transform: translateY(-3px); }
+    .bsv-label {
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 4px;
+    }
+    .bsv-title {
+      font-size: 20px; color: #0D1B33; line-height: 1.25; margin-bottom: 4px;
+    }
+    .bsv-desc { font-size: 14px; color: #6B849E; line-height: 1.65; flex: 1; }
+
+    /* Use cases */
+    .brand-usecases-section { padding: 80px 0; background: var(--white); text-align: center; }
+    .brand-usecases-slider {
+      position: relative; overflow: hidden;
+      margin: 36px auto 28px; padding: 4px 0;
+      max-width: 960px;
+    }
+    .brand-usecases-slider::before,
+    .brand-usecases-slider::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
+    }
+    .brand-usecases-slider::before { left: 0; background: linear-gradient(to right, #ffffff, transparent); }
+    .brand-usecases-slider::after  { right: 0; background: linear-gradient(to left, #ffffff, transparent); }
+    .brand-usecases-track {
+      display: flex; align-items: center; gap: 12px;
+      width: max-content;
+      animation: usecasesScroll 25s linear infinite;
+    }
+    .brand-usecases-track:hover { animation-play-state: paused; }
+    @keyframes usecasesScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .brand-usecase-pill {
+      padding: 10px 20px; border-radius: 999px;
+      border: 1px solid #D0DFF0; background: #F4F8FF;
+      font-size: 14px; color: #2C4A6E; white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .brand-usecase-pill:hover { border-color: var(--cyan); background: rgba(0,194,255,0.06); color: var(--navy); }
+
+    /* Distribution */
+    .brand-distribution { padding: 80px 0; background: var(--navy); }
+    .brand-distribution .section-label { color: rgba(0,194,255,0.7); }
+    .brand-distribution .section-heading { color: #ffffff; }
+    .brand-dist-inner {
+      display: grid; grid-template-columns: 40% 60%; gap: 64px; align-items: start;
+    }
+    .brand-dist-left { display: flex; flex-direction: column; gap: 40px; }
+    .brand-dist-left .section-heading { font-size: clamp(28px, 3.5vw, 42px); margin-bottom: 0; }
+    .brand-stats-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .brand-stat { display: flex; flex-direction: column; gap: 6px; }
+    .brand-stat-num {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(32px, 4vw, 48px);
+      color: var(--cyan); line-height: 1; font-weight: 800;
+    }
+    .brand-stat-label { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    .brand-audience-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    }
+    .brand-audience-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(0,194,255,0.12);
+      border-radius: 14px; padding: 20px 18px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .brand-audience-card:hover { background: rgba(0,194,255,0.08); border-color: rgba(0,194,255,0.3); }
+    .brand-audience-card .lucide { color: var(--cyan); }
+    .brand-audience-card h4 { font-size: 14px; font-weight: 700; color: #ffffff; }
+    .brand-audience-card p  { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.55; }
+    @media (max-width: 768px) {
+      .brand-dist-inner { grid-template-columns: 1fr; gap: 40px; }
+      .brand-audience-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Who this is for */
+    .brand-who-section { padding: 80px 0; background: #F7FBFF; text-align: center; }
+    .brand-who-slider {
+      position: relative; overflow: hidden;
+      margin: 36px auto 20px; padding: 4px 0;
+      max-width: 960px;
+    }
+    .brand-who-slider::before,
+    .brand-who-slider::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
+    }
+    .brand-who-slider::before { left: 0; background: linear-gradient(to right, #F7FBFF, transparent); }
+    .brand-who-slider::after  { right: 0; background: linear-gradient(to left, #F7FBFF, transparent); }
+    .brand-who-track {
+      display: flex; align-items: center; gap: 12px;
+      width: max-content;
+      animation: whoScroll 28s linear infinite;
+    }
+    .brand-who-track:hover { animation-play-state: paused; }
+    @keyframes whoScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .bwt {
+      padding: 10px 20px; border-radius: 999px;
+      border: 1px solid #D0DFF0; background: #ffffff;
+      font-size: 14px; color: #2C4A6E; white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .bwt:hover { border-color: var(--cyan); color: var(--navy); }
+
+    @media (max-width: 960px) { .nav-links { display: none; } }
+    @media (max-width: 600px) { .btn-get-started { display: none; } }
+
+    /* ════════════════════════════════════════════════
+       2. HERO — full viewport, nav overlays it
+    ════════════════════════════════════════════════ */
+    .hero-wrapper { background: var(--navy); }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--navy);
+      padding-bottom: 80px; /* room for the overlap */
+    }
+
+    /* ── Gradient bars ── */
+    #hero-bars {
+      position: absolute; inset: 0;
+      display: flex; align-items: flex-end;
+      width: 100%; height: 100%;
+      z-index: 0;
+      transform: translateZ(0);
+    }
+    .hero-bar {
+      flex: 1;
+      height: 100%;
+      transform-origin: bottom;
+      background: linear-gradient(to top, rgba(0,194,255,0.55), transparent);
+    }
+    @keyframes pulseBar {
+      0%   { transform: scaleY(var(--bar-scale)); }
+      100% { transform: scaleY(calc(var(--bar-scale) * 0.68)); }
+    }
+
+    /* ── Dark overlay above bars, below content ── */
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(
+        180deg,
+        rgba(6,17,31,0.62) 0%,
+        rgba(6,17,31,0.48) 50%,
+        rgba(6,17,31,0.72) 100%
+      );
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* ── Hero content — all centered like Blakskill ── */
+    .hero-content {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 72px 24px 80px; width: 100%;
+    }
+
+    /* Dotted border box wrapping hero centered content */
+    .hero-content-box {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 52px 64px 56px;
+      border: 1.5px dashed rgba(255,255,255,0.28);
+      border-radius: 24px;
+      background: rgba(6,17,31,0.18);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      max-width: 1140px; width: 100%;
+    }
+
+    /* Toggle tabs — white pill style matching Blakskill exactly */
+    .hero-tabs {
+      display: inline-flex;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px; padding: 4px; gap: 0;
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
+    }
+    .hero-tab {
+      padding: 9px 24px; border-radius: 999px;
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.28s ease;
+      color: rgba(255,255,255,0.75); border: none; background: transparent;
+      white-space: nowrap;
+    }
+    .hero-tab.active {
+      background: #ffffff;
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .hero-tab:not(.active):hover { color: #ffffff; }
+
+    /* Large centered headline */
+    .hero-headline {
+      font-family: 'CenturyGothic', sans-serif;
+      font-size: clamp(34px, 5vw, 62px);
+      font-weight: 300; line-height: 1.1; letter-spacing: -0.01em;
+      color: #ffffff;
+      max-width: 780px; margin-bottom: 20px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.25);
+    }
+
+    /* Subtitle */
+    .hero-sub {
+      font-size: clamp(15px, 1.8vw, 17px);
+      color: rgba(255,255,255,0.80);
+      max-width: 520px; margin-bottom: 36px;
+      line-height: 1.65; text-align: center;
+    }
+
+    /* Single centered CTA — solid cyan, wide pill */
+    .hero-cta-single {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 16px 44px; border-radius: 10px;
+      background: var(--cyan); color: var(--navy);
+      font-family: 'CenturyGothic', sans-serif; font-size: 16px; font-weight: 800;
+      text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 6px 32px rgba(0,194,255,0.45);
+      transition: all 0.22s ease; letter-spacing: 0.01em;
+    }
+    .hero-cta-single:hover {
+      background: #33CFFF;
+      box-shadow: 0 8px 40px rgba(0,194,255,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* keep .hero-ctas for any other use */
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ════════════════════════════════════════════════
+       3. LOGOS STRIP
+    ════════════════════════════════════════════════ */
+    .logos-strip {
+      background: var(--white); padding: 32px 0;
+      border-bottom: 1px solid #E5EDF7;
+      border-radius: 56px 56px 0 0;
+      position: relative; z-index: 10;
+      margin-top: -64px;
+      box-shadow: none;
+    }
+    .logos-strip-inner {
+      display: flex; align-items: center; gap: 0;
+    }
+    .logos-label-col {
+      width: 30%; flex-shrink: 0; padding-right: 32px;
+      border-right: 1px solid #E5EDF7;
+    }
+    .logos-label {
+      font-size: 13px; color: #6B849E; font-weight: 600;
+      line-height: 1.6; margin: 0;
+    }
+    /* Slider track */
+    .logos-slider {
+      width: 70%; overflow: hidden; position: relative; padding-left: 32px;
+    }
+    .logos-slider::before,
+    .logos-slider::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+    }
+    .logos-slider::before { left: 0; background: linear-gradient(to right, #ffffff, transparent); }
+    .logos-slider::after  { right: 0; background: linear-gradient(to left, #ffffff, transparent); }
+    .logos-track {
+      display: flex; align-items: center; gap: 56px;
+      animation: logoScroll 22s linear infinite;
+      width: max-content;
+    }
+    .logos-track:hover { animation-play-state: paused; }
+    @keyframes logoScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .logo-item {
+      display: inline-flex; align-items: center; flex-shrink: 0;
+    }
+    .logo-item img {
+      height: 28px; width: auto; max-width: 130px;
+      filter: grayscale(1) opacity(0.45);
+      transition: filter 0.25s;
+      object-fit: contain;
+    }
+    .logo-item img:hover { filter: grayscale(0) opacity(0.8); }
+    .logo-item .logo-fallback {
+      display: none;
+      font-family: 'CenturyGothic', sans-serif; font-size: 15px; font-weight: 800;
+      color: #BDC8D8; letter-spacing: -0.02em; white-space: nowrap;
+    }
+
+    /* ════════════════════════════════════════════════
+       4. TALENT UNLOCK
+    ════════════════════════════════════════════════ */
+    .talent-unlock {
+      background: var(--white); padding: 80px 0;
+    }
+    .section-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 10px;
+    }
+    .section-heading {
+      font-family: 'CenturyGothic', sans-serif;
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800; letter-spacing: -0.025em; line-height: 1.15;
+      color: #0D1B33; margin-bottom: 12px;
+    }
+    .section-sub {
+      font-size: 16px; color: #6B849E; max-width: 540px; line-height: 1.6;
+    }
+    .talent-header { text-align: center; margin-bottom: 48px; }
+    .talent-cards {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    }
+    .talent-card {
+      border-radius: var(--radius-lg); overflow: hidden;
+      position: relative; aspect-ratio: 3/4;
+      background: var(--navy-2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .talent-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.18); }
+    .talent-card-img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(100%) contrast(1.05);
+      transition: filter 0.4s ease;
+      display: block;
+    }
+    .talent-card:hover .talent-card-img { filter: grayscale(40%) contrast(1.05); }
+    /* Avatar placeholder when no image */
+    .talent-card-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(160deg, var(--navy-2) 0%, var(--navy-4) 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'CenturyGothic', sans-serif; font-size: 42px; font-weight: 800;
+      color: var(--cyan);
+    }
+    .talent-card-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 16px 16px;
+      background: linear-gradient(0deg, rgba(6,17,31,0.92) 0%, transparent 100%);
+    }
+    .talent-card-name {
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 700;
+      color: var(--white); margin-bottom: 2px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .talent-card-name .flag { font-size: 14px; }
+    .talent-card-role { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+    .talent-verified {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--cyan); color: var(--navy);
+      font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px;
+      font-family: 'CenturyGothic', sans-serif;
+    }
+    .talent-verified::before { content: '✓'; font-size: 9px; }
+
+    @media (max-width: 768px) { .talent-cards { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .talent-cards { grid-template-columns: 1fr 1fr; } }
+
+    /* ════════════════════════════════════════════════
+       5. FEATURES + STATS (2-col)
+    ════════════════════════════════════════════════ */
+    .features-stats {
+      background: #F4F8FF; padding: 80px 0;
+    }
+    .features-stats-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+    }
+    .features-col-header { margin-bottom: 36px; }
+    .features-list { display: flex; flex-direction: column; gap: 24px; }
+    .feature-item { display: flex; gap: 16px; align-items: flex-start; }
+    .feature-icon-wrap {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: var(--cyan-ghost); border: 1px solid var(--cyan-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .feature-item-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 15px; font-weight: 700;
+      color: #0D1B33; margin-bottom: 4px;
+    }
+    .feature-item-desc { font-size: 14px; color: #6B849E; line-height: 1.55; }
+
+    .stats-col { display: flex; flex-direction: column; gap: 16px; }
+
+    /* stat card */
+    .stat-highlight {
+      background: var(--navy); border-radius: var(--radius-lg);
+      padding: 28px 28px 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    }
+    .stat-h-item {}
+    .stat-h-value {
+      font-family: 'CenturyGothic', sans-serif; font-size: 36px; font-weight: 800;
+      color: var(--cyan); line-height: 1; margin-bottom: 4px;
+    }
+    .stat-h-label { font-size: 13px; color: var(--gray-2); }
+
+    /* testimonial card */
+    .testi-card {
+      background: var(--white); border: 1px solid #E2EBF5; border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .testi-stars { color: #F59E0B; font-size: 14px; margin-bottom: 10px; letter-spacing: 2px; }
+    .testi-text {
+      font-size: 14px; color: #374151; line-height: 1.6; margin-bottom: 14px;
+      font-style: italic;
+    }
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+    .testi-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--navy-2); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'CenturyGothic', sans-serif; font-size: 13px; font-weight: 800; color: var(--cyan);
+    }
+    .testi-name { font-size: 13px; font-weight: 700; color: #0D1B33; }
+    .testi-role { font-size: 12px; color: #6B849E; }
+
+    /* value badge */
+    .value-badge {
+      background: var(--cyan); border-radius: var(--radius-lg);
+      padding: 22px 24px;
+    }
+    .value-badge-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 17px; font-weight: 800;
+      color: var(--navy); margin-bottom: 6px;
+    }
+    .value-badge-desc { font-size: 14px; color: rgba(6,17,31,0.75); line-height: 1.5; }
+
+    .features-ctas { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+
+    @media (max-width: 900px) {
+      .features-stats-inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    /* ════════════════════════════════════════════════
+       6. PLATFORM DISCOVER
+    ════════════════════════════════════════════════ */
+    .platform-discover {
+      background: var(--white); padding: 80px 0;
+    }
+    .platform-header { text-align: center; margin-bottom: 48px; }
+    .platform-header .section-sub { margin: 12px auto 0; }
+
+    .platform-hero-card {
+      background: linear-gradient(135deg, #E8F4FF 0%, #D0EAFF 100%);
+      border-radius: var(--radius-xl); overflow: hidden;
+      display: grid; grid-template-columns: 1fr 1fr; min-height: 300px;
+      border: 1px solid rgba(0,194,255,0.12);
+      margin-bottom: 20px;
+    }
+    .phc-content { padding: 48px 44px; display: flex; flex-direction: column; justify-content: center; }
+    .phc-tag {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--cyan-dim); margin-bottom: 14px;
+    }
+    .phc-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800; color: #0D1B33; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .phc-desc { font-size: 15px; color: #5B7A9E; line-height: 1.6; }
+
+    .phc-visual {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, var(--navy-2) 0%, var(--navy-4) 100%);
+      display: flex; flex-direction: column; align-items: stretch; justify-content: flex-end;
+      min-height: 300px;
+    }
+    .phc-visual-bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=900&h=600&fit=crop&crop=center&q=80') center/cover no-repeat;
+    }
+    .phc-visual-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(6,17,31,0.72) 0%, rgba(13,27,51,0.80) 100%);
+    }
+    .phc-visual-body {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      padding: 28px; width: 100%;
+      margin-top: auto;
+    }
+    .phc-avatars {
+      display: flex; align-items: center;
+    }
+    .phc-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 3px solid rgba(6,17,31,0.9);
+      overflow: hidden; margin-left: -10px; object-fit: cover;
+    }
+    .phc-avatar:first-child { margin-left: 0; }
+    .phc-cards-row {
+      display: flex; gap: 12px; width: 100%; justify-content: center;
+    }
+    .phc-stat-card {
+      background: rgba(6,17,31,0.75); backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,194,255,0.25); border-radius: 14px;
+      padding: 16px 20px; text-align: center; flex: 1;
+    }
+    .phc-stat-val { font-family: 'CenturyGothic', sans-serif; font-size: 24px; font-weight: 800; color: var(--cyan); margin-bottom: 4px; }
+    .phc-float-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 5px; }
+    .phc-stat-label { font-size: 12px; color: rgba(255,255,255,0.55); }
+
+    @media (max-width: 768px) {
+      .platform-hero-card { grid-template-columns: 1fr; }
+    }
+
+    /* 3-col sub-cards */
+    .platform-sub-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    }
+    .psc {
+      border-radius: var(--radius-lg); padding: 32px 28px;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .psc:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.10); }
+    .psc-1 { background: linear-gradient(135deg, #E6F4FF 0%, #CCE8FF 100%); }
+    .psc-2 { background: linear-gradient(135deg, #E8FDF5 0%, #C8F5E8 100%); }
+    .psc-3 { background: linear-gradient(135deg, #E6F4FF 0%, #D0EAFF 100%); }
+    .psc-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--cyan-dim); margin-bottom: 14px;
+    }
+    .psc-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 18px; font-weight: 800;
+      color: #0D1B33; margin-bottom: 8px; letter-spacing: -0.015em;
+    }
+    .psc-desc { font-size: 13px; color: #5B7A9E; line-height: 1.55; }
+    .psc-visual {
+      margin-top: 20px; background: rgba(0,0,0,0.05);
+      border-radius: 10px; height: 90px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'CenturyGothic', sans-serif; font-size: 28px; color: var(--cyan);
+      overflow: hidden;
+    }
+    .psc-visual img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: 10px;
+      display: block;
+    }
+    .psc-visual-img { height: 160px !important; }
+
+    @media (max-width: 768px) { .platform-sub-cards { grid-template-columns: 1fr; } }
+
+    /* ════════════════════════════════════════════════
+       7. FIND TALENT ANYWHERE
+    ════════════════════════════════════════════════ */
+    .find-anywhere {
+      background: #F4F8FF; padding: 80px 0;
+    }
+    .find-anywhere-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .find-content-tag { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan-dim); margin-bottom: 12px; }
+    .find-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800; letter-spacing: -0.025em; color: #0D1B33; margin-bottom: 16px; line-height: 1.15;
+    }
+    .find-desc { font-size: 15px; color: #6B849E; line-height: 1.65; margin-bottom: 28px; }
+    .find-cta { }
+    /* network viz */
+    .network-viz {
+      position: relative; height: 320px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .net-center {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--cyan); display: flex; align-items: center; justify-content: center;
+      font-family: 'CenturyGothic', sans-serif; font-size: 11px; font-weight: 800; color: var(--navy);
+      position: absolute; z-index: 2;
+      box-shadow: 0 0 0 12px rgba(0,194,255,0.12), 0 0 0 24px rgba(0,194,255,0.06);
+    }
+    .net-node {
+      position: absolute; width: 48px; height: 48px; border-radius: 50%;
+      background: var(--navy); border: 2px solid var(--cyan-border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'CenturyGothic', sans-serif; font-size: 12px; font-weight: 800; color: var(--cyan);
+      transition: transform 0.3s; z-index: 1;
+    }
+    .net-node:hover { transform: scale(1.15); }
+    .net-node-1 { top: 20px; left: 50%; transform: translateX(-50%); }
+    .net-node-2 { top: 50%; right: 20px; transform: translateY(-50%); }
+    .net-node-3 { bottom: 20px; left: 50%; transform: translateX(-50%); }
+    .net-node-4 { top: 50%; left: 20px; transform: translateY(-50%); }
+    .net-node-5 { top: 22%; right: 22%; }
+    .net-node-6 { bottom: 22%; left: 22%; }
+    .net-line {
+      position: absolute; background: var(--cyan); opacity: 0.15;
+      transform-origin: left center; height: 1px;
+    }
+
+    @media (max-width: 768px) {
+      .find-anywhere-inner { grid-template-columns: 1fr; }
+      .network-viz { height: 220px; }
+    }
+
+    /* ════════════════════════════════════════════════
+       8. HIRING PROCESS (dark CTA)
+    ════════════════════════════════════════════════ */
+    .hiring-cta {
+      background: var(--navy); padding: 80px 0;
+    }
+    .hiring-cta-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    }
+    .hiring-content {}
+    .hiring-tag { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; }
+    .hiring-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800; color: var(--white); line-height: 1.12; letter-spacing: -0.025em; margin-bottom: 14px;
+    }
+    .hiring-desc { font-size: 15px; color: var(--gray-2); line-height: 1.65; margin-bottom: 32px; }
+    .hiring-steps { display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
+    .hiring-step {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.8);
+    }
+    .hiring-step-check {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: var(--cyan); display: flex; align-items: center; justify-content: center;
+      color: var(--navy); font-size: 11px; font-weight: 900;
+    }
+    .hiring-visual {
+      border-radius: var(--radius-xl); overflow: hidden;
+      position: relative; height: 420px;
+      background: linear-gradient(135deg, var(--navy-2) 0%, var(--navy-4) 100%);
+    }
+    .hiring-visual-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.65; }
+    .hiring-visual-card {
+      position: absolute; bottom: 24px; left: 24px;
+      background: rgba(6,17,31,0.88); backdrop-filter: blur(12px);
+      border: 1px solid var(--cyan-border); border-radius: 12px;
+      padding: 14px 18px; min-width: 180px;
+    }
+    .hvc-name { font-family: 'CenturyGothic', sans-serif; font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+    .hvc-role { font-size: 12px; color: var(--gray-2); margin-bottom: 8px; }
+    .hvc-verified {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--cyan); color: var(--navy);
+      font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 4px;
+    }
+
+    /* hiring bar steps */
+    .hiring-process-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border-soft); border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg); overflow: hidden; margin-top: 16px;
+    }
+    .hpg-item {
+      background: var(--navy-1); padding: 24px 20px;
+      transition: background 0.2s;
+    }
+    .hpg-item:hover { background: var(--navy-2); }
+    .hpg-num { font-family: 'CenturyGothic', sans-serif; font-size: 22px; font-weight: 800; color: var(--cyan); margin-bottom: 6px; }
+    .hpg-label { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 4px; font-family: 'CenturyGothic', sans-serif; }
+    .hpg-desc { font-size: 12px; color: var(--gray-2); line-height: 1.5; }
+
+    @media (max-width: 768px) {
+      .hiring-cta-inner { grid-template-columns: 1fr; }
+      .hiring-process-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ════════════════════════════════════════════════
+       9. INSIGHTS / BLOG
+    ════════════════════════════════════════════════ */
+    .insights { background: var(--white); padding: 80px 0; }
+    .insights-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 40px;
+    }
+    .insights-header h2 {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800; color: #0D1B33;
+    }
+    .insights-link { font-size: 14px; color: var(--cyan); font-weight: 600; text-decoration: none; }
+    .insights-link:hover { text-decoration: underline; }
+    .insights-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .insight-card {
+      border: 1px solid #E2EBF5; border-radius: var(--radius-lg); overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
+    }
+    .insight-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); border-color: var(--cyan-border); }
+    .insight-card-img {
+      height: 180px; overflow: hidden;
+    }
+    .insight-card-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.4s ease;
+    }
+    .insight-card:hover .insight-card-img img { transform: scale(1.05); }
+    .insight-card-body { padding: 20px; }
+    .insight-card-cat {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 8px;
+    }
+    .insight-card-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 16px; font-weight: 700;
+      color: #0D1B33; line-height: 1.35; margin-bottom: 8px;
+    }
+    .insight-card-desc { font-size: 13px; color: #6B849E; line-height: 1.55; }
+
+    @media (max-width: 768px) { .insights-grid { grid-template-columns: 1fr; } }
+
+    /* ════════════════════════════════════════════════
+       10. FINAL CTA
+    ════════════════════════════════════════════════ */
+    .final-cta {
+      background: var(--navy); padding: 72px 0;
+      text-align: center;
+    }
+    .final-cta-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(26px, 4.5vw, 44px);
+      font-weight: 800; color: var(--white); letter-spacing: -0.025em;
+      margin-bottom: 14px; line-height: 1.12;
+    }
+    .final-cta-sub {
+      font-size: 16px; color: var(--gray-2); max-width: 480px; margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+
+    /* ════════════════════════════════════════════════
+       11. FOOTER
+    ════════════════════════════════════════════════ */
+    footer {
+      background: var(--navy); border-top: 1px solid var(--border);
+      padding: 56px 0 28px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 48px;
+    }
+    .footer-logo-wrap { margin-bottom: 14px; }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'CenturyGothic', sans-serif; font-size: 18px; font-weight: 800;
+      color: var(--white); text-decoration: none;
+    }
+    .footer-logo-mark {
+      width: 28px; height: 28px; border-radius: 6px; background: var(--cyan);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer-logo-mark svg { width: 15px; height: 15px; fill: var(--navy); }
+    .footer-logo em { font-style: normal; color: var(--cyan); }
+    .footer-tagline { font-size: 13px; color: var(--gray-2); line-height: 1.6; max-width: 220px; margin-bottom: 20px; }
+    .footer-socials { display: flex; gap: 10px; }
+    .footer-social {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--navy-2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; text-decoration: none; transition: all 0.2s;
+      color: var(--gray-2);
+    }
+    .footer-social:hover { background: var(--cyan-ghost); border-color: var(--cyan-border); color: var(--cyan); }
+    .footer-col-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-3); margin-bottom: 16px;
+    }
+    .footer-col-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col-links a { font-size: 14px; color: var(--gray-2); text-decoration: none; transition: color 0.2s; }
+    .footer-col-links a:hover { color: var(--white); }
+    .footer-bottom {
+      padding-top: 24px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 13px; color: var(--gray-3); }
+    .footer-locations { font-size: 12px; color: var(--gray-3); display: flex; gap: 8px; flex-wrap: wrap; }
+    .footer-location-item { display: flex; align-items: center; gap: 4px; }
+
+    @media (max-width: 900px) {
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .footer-grid > :first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 560px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Logos label mode switch ─────────────────── */
+    .logos-label-talent-mode { display: block; }
+    .logos-label-brand-mode  { display: none; }
+    body[data-mode="brand"] .logos-label-talent-mode { display: none; }
+    body[data-mode="brand"] .logos-label-brand-mode  { display: block; }
+    .logos-label-title {
+      font-size: 14px; color: #0D1B33;
+      line-height: 1.4; margin-bottom: 8px;
+      font-family: 'CenturyGothic', sans-serif;
+    }
+
+    /* ── What You Can Do (talent) ─────────────────── */
+    .talent-what-section { background: #F4F8FF; padding: 80px 0; }
+    .talent-what-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .twc {
+      border-radius: 20px; padding: 36px 28px;
+      border: 1px solid #E8EEF5; display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .twc:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.10); transform: translateY(-4px); }
+    .twc-1 { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-3) 100%); border-color: rgba(0,194,255,0.2); }
+    .twc-2 { background: var(--white); }
+    .twc-3 { background: linear-gradient(135deg, #E8FDF5 0%, #CCF5E8 100%); border-color: rgba(0,150,100,0.15); }
+    .twc-tag { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+    .twc-1 .twc-tag { color: rgba(0,194,255,0.8); }
+    .twc-2 .twc-tag, .twc-3 .twc-tag { color: var(--cyan-dim); }
+    .twc-title { font-family: 'CenturyGothic', sans-serif; font-size: 22px; line-height: 1.2; margin-bottom: 6px; }
+    .twc-1 .twc-title { color: var(--white); }
+    .twc-2 .twc-title, .twc-3 .twc-title { color: #0D1B33; }
+    .twc-desc { font-size: 14px; line-height: 1.65; flex: 1; }
+    .twc-1 .twc-desc { color: rgba(255,255,255,0.65); }
+    .twc-2 .twc-desc, .twc-3 .twc-desc { color: #6B849E; }
+    .twc-cta { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; margin-top: 8px; text-decoration: none; transition: gap 0.15s; }
+    .twc-1 .twc-cta { color: var(--cyan); }
+    .twc-2 .twc-cta, .twc-3 .twc-cta { color: var(--cyan-dim); }
+    .twc:hover .twc-cta { gap: 9px; }
+
+    /* ── Talent polaroid split section ──────────────── */
+    .talent-split-section { background: var(--white); padding: 80px 0; }
+    .talent-split-row { border-radius: 24px; padding: 72px 64px; margin-bottom: 20px; }
+    .talent-split-row:last-child { margin-bottom: 0; }
+    .talent-split-community { background: #FFF9F0; }
+    .talent-split-roles     { background: #F0F5FF; }
+    .talent-split-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .talent-split-tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan); margin-bottom: 12px; }
+    .talent-split-title { font-family: 'CenturyGothic', sans-serif; font-size: clamp(26px, 3.5vw, 40px); color: #0D1B33; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .talent-split-desc { font-size: 15px; color: #6B849E; line-height: 1.65; margin-bottom: 28px; }
+    .talent-role-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .talent-role-pill { padding: 8px 16px; border-radius: 999px; background: var(--white); border: 1px solid #D0DFF0; font-size: 13px; color: #2C4A6E; transition: all 0.2s; }
+    .talent-role-pill:hover { border-color: var(--cyan); background: rgba(0,194,255,0.06); color: var(--navy); }
+    .talent-role-supporting { font-size: 13px; color: #9AAFC7; line-height: 1.65; }
+
+    /* Polaroid cards */
+    .talent-polaroid-wrap { position: relative; height: 430px; }
+    .tpcard {
+      position: absolute;
+      width: 210px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 56px rgba(0,0,0,0.12), 0 4px 14px rgba(0,0,0,0.07);
+      padding: 10px 10px 22px;
+    }
+    .tpcard-1 { transform: rotate(-5deg); left: 8%; top: 24px; z-index: 1; }
+    .tpcard-2 { transform: rotate(3.5deg); right: 6%; top: 54px; z-index: 2; }
+    .tpcard-photo { width: 100%; height: 252px; border-radius: 10px; object-fit: cover; display: block; }
+    .tpcard-body { padding: 12px 4px 0; }
+    .tpcard-bar { height: 8px; background: #EEF2F8; border-radius: 4px; margin-bottom: 6px; }
+    .tpcard-bar.short { width: 55%; margin-bottom: 0; }
+    .tpcard-badge {
+      position: absolute; top: 16px; right: 16px;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .tpcard-badge.b-blue { background: #1565C0; }
+    .tpcard-badge.b-cyan { background: var(--cyan); }
+    .tpcard-badge .lucide { width: 12px; height: 12px; color: white; }
+
+    @media (max-width: 900px) {
+      .talent-split-inner { grid-template-columns: 1fr; gap: 40px; }
+      .talent-polaroid-wrap { height: 340px; }
+    }
+
+    /* ── Brands you can work with ─────────────────── */
+    .talent-brands-section { background: var(--white); padding: 80px 0; text-align: center; }
+    .talent-brands-slider {
+      position: relative; overflow: hidden;
+      margin: 36px auto 28px; padding: 4px 0;
+      max-width: 960px;
+    }
+    .talent-brands-slider::before,
+    .talent-brands-slider::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2; pointer-events: none;
+    }
+    .talent-brands-slider::before { left: 0; background: linear-gradient(to right, #ffffff, transparent); }
+    .talent-brands-slider::after  { right: 0; background: linear-gradient(to left, #ffffff, transparent); }
+    .talent-brands-track {
+      display: flex; align-items: center; gap: 12px;
+      width: max-content;
+      animation: brandsScroll 30s linear infinite;
+    }
+    .talent-brands-track:hover { animation-play-state: paused; }
+    @keyframes brandsScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .tbp {
+      padding: 10px 22px; border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+      border: 1px solid #D0DFF0; background: #F4F8FF;
+      font-size: 14px; color: #2C4A6E; transition: all 0.2s; cursor: default;
+    }
+    .tbp:hover { border-color: var(--cyan); background: rgba(0,194,255,0.06); color: var(--navy); }
+    .talent-brands-supporting { font-size: 14px; color: #9AAFC7; max-width: 560px; margin: 0 auto; line-height: 1.65; }
+
+    /* ── Why Join Digihire ────────────────────────── */
+    .talent-why-section { background: var(--navy); padding: 80px 0; }
+    .talent-why-inner { display: grid; grid-template-columns: 400px 1fr; gap: 64px; align-items: start; }
+    .talent-why-left .section-label { color: rgba(0,194,255,0.7); }
+    .talent-why-left .section-heading { color: var(--white); }
+    .talent-why-left .section-sub { color: var(--gray-2); margin-top: 12px; }
+    .talent-why-benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .twb { background: rgba(255,255,255,0.05); border: 1px solid rgba(0,194,255,0.12); border-radius: 14px; padding: 20px 18px; display: flex; align-items: flex-start; gap: 12px; transition: background 0.2s, border-color 0.2s; }
+    .twb:hover { background: rgba(0,194,255,0.08); border-color: rgba(0,194,255,0.3); }
+    .twb-check { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; background: var(--cyan); display: flex; align-items: center; justify-content: center; color: var(--navy); font-size: 10px; margin-top: 2px; }
+    .twb-text { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+    @media (max-width: 900px) {
+      .talent-why-inner { grid-template-columns: 1fr; gap: 40px; }
+      .talent-why-benefits { grid-template-columns: 1fr; }
+      .talent-what-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ 1. NAVBAR ════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <!-- LEFT: logo + links grouped together -->
+    <div class="nav-left">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-wrap-img">
+          <!-- White version: visible on transparent hero navbar -->
+          <img src="assets/logo-white.png" alt="DigiHire" class="nav-logo-img logo-white" />
+          <!-- Colour version: visible when navbar scrolls to pill -->
+          <img src="assets/logo-color.png" alt="DigiHire" class="nav-logo-img logo-color" />
+        </div>
+      </a>
+      <ul class="nav-links">
+        <!-- Why DigiHire? — mega dropdown -->
+        <li class="nav-mega-wrap">
+          <button class="nav-mega-trigger">
+            Why DigiHire?
+            <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div class="nav-mega">
+            <!-- LEFT: navy hero block with network visual -->
+            <div class="mega-left">
+              <h3 class="mega-headline">Building the sales network where <em>brands, talent,</em> and opportunity connect.</h3>
+              <p class="mega-body">DigiHire helps brands grow through structured sales campaigns, recruitment, activations, and training — while helping sales talent access gigs, jobs, and career-building opportunities.</p>
+              <a href="#" class="mega-learn">Learn more <span>→</span></a>
+
+              <!-- SVG network visualization -->
+              <div class="mega-visual-svg">
+                <!-- Pulsing rings -->
+                <div class="mv-ring"></div>
+                <div class="mv-ring"></div>
+                <div class="mv-ring"></div>
+                <!-- Center node -->
+                <div class="mv-center">DIGI<br>HIRE</div>
+                <!-- Satellite nodes -->
+                <div class="mv-node" style="top:18%;left:18%;"><i data-lucide="building-2" class="lucide ic-md"></i></div>
+                <div class="mv-node" style="top:18%;right:18%;"><i data-lucide="target" class="lucide ic-md"></i></div>
+                <div class="mv-node" style="bottom:18%;left:18%;"><i data-lucide="user" class="lucide ic-md"></i></div>
+                <div class="mv-node" style="bottom:18%;right:18%;"><i data-lucide="zap" class="lucide ic-md"></i></div>
+                <!-- SVG connecting lines -->
+                <svg class="mv-svg" viewBox="0 0 280 200" preserveAspectRatio="none">
+                  <line x1="140" y1="100" x2="55" y2="45"  stroke="rgba(0,194,255,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
+                  <line x1="140" y1="100" x2="225" y2="45" stroke="rgba(0,194,255,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
+                  <line x1="140" y1="100" x2="55" y2="155" stroke="rgba(0,194,255,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
+                  <line x1="140" y1="100" x2="225" y2="155" stroke="rgba(0,194,255,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- RIGHT: info cards + feature cards -->
+            <div class="mega-right">
+              <!-- Top row: 3 info cards -->
+              <div class="mega-top-row">
+                <a href="about.html" class="mega-info-card">
+                  <div class="mic-icon i1"><i data-lucide="info" class="lucide ic-md"></i></div>
+                  <p class="mic-title">About Us</p>
+                  <p class="mic-desc">Get to know who we are, what we are building, and how Digihire helps brands and sales talent grow together.</p>
+                  <span class="mic-cta">Learn more →</span>
+                </a>
+                <a href="#" class="mega-info-card">
+                  <div class="mic-icon i2"><i data-lucide="book-open" class="lucide ic-md"></i></div>
+                  <p class="mic-title">Blogs</p>
+                  <p class="mic-desc">Insights, strategies, and stories on sales, growth, activations, hiring, and the future of work.</p>
+                  <span class="mic-cta">Learn more →</span>
+                </a>
+                <a href="#" class="mega-info-card">
+                  <div class="mic-icon i3"><i data-lucide="calendar" class="lucide ic-md"></i></div>
+                  <p class="mic-title">Events</p>
+                  <p class="mic-desc">Stay connected to our latest events, campaigns, activations, training sessions, and community experiences.</p>
+                  <span class="mic-cta">Learn more →</span>
+                </a>
+              </div>
+
+              <div class="mega-divider"></div>
+
+              <!-- Bottom row: 2 feature cards -->
+              <div class="mega-feat-row">
+                <a href="#" class="mega-feat-card mfc-voltsquad">
+                  <span class="mfc-volt-badge"><i data-lucide="zap" class="lucide"></i> VoltSquad</span>
+                  <p class="mfc-title">Campaign Marketplace</p>
+                  <p class="mfc-desc">Our campaign marketplace for sales talent, built to help brands launch structured campaigns and help sellers earn through real sales opportunities.</p>
+                  <span class="mfc-cta">Explore VoltSquad →</span>
+                </a>
+                <a href="#" class="mega-feat-card mfc-solutions">
+                  <span class="mfc-sol-badge"><i data-lucide="link-2" class="lucide"></i> Solutions</span>
+                  <p class="mfc-title">Wider Solutions</p>
+                  <p class="mfc-desc">Explore Digihire's wider solutions, from sales recruitment and outsourcing to field activations, merchandising support, and practical sales training.</p>
+                  <span class="mfc-cta">See all solutions →</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Brands — mega dropdown -->
+        <li class="nav-mega-wrap">
+          <button class="nav-mega-trigger">
+            Brands
+            <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div class="nav-mega brands-mega">
+            <!-- LEFT: headline + body + featured VoltSquad card -->
+            <div class="mega-left">
+              <h3 class="mega-headline">Launch campaigns, hire sales talent, and activate markets with <em>Digihire.</em></h3>
+              <p class="mega-body">Digihire helps brands grow through structured sales campaigns, end-to-end sales recruitment, and field activations designed to drive visibility, traction, and revenue.</p>
+
+              <!-- Featured VoltSquad highlight card -->
+              <div class="mega-feat-highlight">
+                <span class="feat-badge"><i data-lucide="star" class="lucide" style="width:9px;height:9px"></i> FEATURED</span>
+                <p class="feat-product">VoltSquad</p>
+                <p class="feat-desc">Launch structured sales campaigns through VoltSquad. Activate sellers across target audiences and locations, drive users or sales, and grow through performance-based selling.</p>
+                <a href="#" class="feat-cta">Launch on VoltSquad →</a>
+              </div>
+            </div>
+
+            <!-- RIGHT: 2 supporting service cards -->
+            <div class="mega-right brands-right">
+              <a href="#" class="brand-supp-card">
+                <div class="bsc-icon i1"><i data-lucide="users" class="lucide ic-lg"></i></div>
+                <p class="bsc-title">Sales Recruitment</p>
+                <p class="bsc-desc">Hire the right sales talent for your business, from tech sales and B2B sales to field reps, closers, SDRs, merchandisers, and contract sales roles.</p>
+                <span class="bsc-cta">Learn more →</span>
+              </a>
+              <a href="#" class="brand-supp-card">
+                <div class="bsc-icon i2"><i data-lucide="map-pin" class="lucide ic-lg"></i></div>
+                <p class="bsc-title">Activations & Field Marketing</p>
+                <p class="bsc-desc">Take your product to the field through mall activations, high-traffic area campaigns, neighbourhood outreach, and temporary field support built for visibility and traction.</p>
+                <span class="bsc-cta">Learn more →</span>
+              </a>
+            </div>
+          </div>
+        </li>
+        <!-- For Talents — mega dropdown -->
+        <li class="nav-mega-wrap">
+          <button class="nav-mega-trigger">
+            For Talents
+            <svg viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div class="nav-mega brands-mega">
+            <!-- LEFT: headline + body + featured VoltSquad card -->
+            <div class="mega-left">
+              <h3 class="mega-headline">Work with brands. Earn through sales. Grow with <em>Digihire.</em></h3>
+              <p class="mega-body">Access sales gigs, commission-based campaigns, job opportunities, and practical training built for people who want to earn more and build real career value through sales.</p>
+
+              <!-- Featured VoltSquad highlight card -->
+              <div class="mega-feat-highlight">
+                <span class="feat-badge"><i data-lucide="star" class="lucide" style="width:9px;height:9px"></i> FEATURED</span>
+                <p class="feat-product">VoltSquad</p>
+                <p class="feat-desc">Campaign marketplace for sales talent. Join active brand campaigns, promote products and apps, earn commissions, track your wallet, set revenue targets, and grow your income through real sales opportunities.</p>
+                <a href="#" class="feat-cta">Join VoltSquad →</a>
+              </div>
+            </div>
+
+            <!-- RIGHT: 2 supporting cards stacked -->
+            <div class="mega-right brands-right">
+              <a href="#" class="brand-supp-card">
+                <div class="bsc-icon i1"><i data-lucide="user-plus" class="lucide ic-lg"></i></div>
+                <p class="bsc-title">Enter Our Talent Pool</p>
+                <p class="bsc-desc">Create your profile, upload your CV, and get discovered for part-time, full-time, and project-based sales roles with brands hiring through Digihire.</p>
+                <span class="bsc-cta">Learn more →</span>
+              </a>
+              <a href="#" class="brand-supp-card">
+                <div class="bsc-icon i2"><i data-lucide="graduation-cap" class="lucide ic-lg"></i></div>
+                <p class="bsc-title">Sales Academy</p>
+                <p class="bsc-desc">Learn practical sales skills, get certified, and gain hands-on experience that prepares you for stronger opportunities, internships, and long-term career growth.</p>
+                <span class="bsc-cta">Learn more →</span>
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right: Get Started dropdown + Launch a Campaign CTA -->
+    <div class="nav-actions">
+      <!-- Get Started with hover dropdown -->
+      <div class="nav-dropdown-wrap">
+        <a href="#" class="btn-get-started">
+          Get Started
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <div class="nav-dropdown">
+          <!-- Talent section -->
+          <p class="dd-section-label">Talent</p>
+          <a href="/login?role=talent">
+            <span>Log in</span>
+            <span class="dd-arrow">›</span>
+          </a>
+          <a href="/join-now?role=talent">
+            <span>Sign up</span>
+            <span class="dd-arrow">›</span>
+          </a>
+
+          <div class="nav-dropdown-divider"></div>
+
+          <!-- Brand section -->
+          <p class="dd-section-label">Brand</p>
+          <a href="/login?role=brand">
+            <span>Log in</span>
+            <span class="dd-arrow">›</span>
+          </a>
+          <a href="/join-now?role=brand">
+            <span>Sign up</span>
+            <span class="dd-arrow">›</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Main CTA -->
+      <a href="#" class="btn-launch">
+        Launch a Campaign
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════ 2. HERO ══════════════════════════════════ -->
+<div class="hero-wrapper">
+  <section class="hero">
+    <!-- Gradient bars (injected by JS) -->
+    <div id="hero-bars"></div>
+    <!-- Dark overlay above bars -->
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-content-box">
+        <!-- Toggle: exactly matching Blakskill's "I'm Looking for Jobs / I'm Hiring Talent" -->
+        <div class="hero-tabs">
+          <button class="hero-tab" onclick="setHeroTab(this,'job-seeker')">For Talent</button>
+          <button class="hero-tab active" onclick="setHeroTab(this,'employer')">For Brands</button>
+        </div>
+
+        <h1 class="hero-headline" id="hero-headline">
+          Acquire users, recruit sales talent, and run field activations with Digihire
+        </h1>
+
+        <p class="hero-sub" id="hero-sub">
+          Digihire helps brands grow through structured sales campaigns, targeted recruitment, and field activations designed to drive visibility, users, and revenue.
+        </p>
+
+        <a href="#" class="hero-cta-single" id="hero-cta-primary">Get Started</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ════ 3. LOGOS STRIP ═══════════════════════════ -->
+<section class="logos-strip">
+  <div class="container">
+    <div class="logos-strip-inner">
+      <!-- Left 30%: label -->
+      <div class="logos-label-col">
+        <div class="logos-label-talent-mode">
+          <p class="logos-label-title">Work with brands that need real sales talent</p>
+          <p class="logos-label">From fintechs and SaaS products to consumer brands and fast-growing businesses, Digihire connects talent to brands looking for sellers, closers, field reps, merchandisers, and sales teams that can drive results.</p>
+        </div>
+        <div class="logos-label-brand-mode">
+          <p class="logos-label">Leading companies worldwide trust DigiHire to source and activate the best sales talent across Africa</p>
+        </div>
+      </div>
+      <!-- Right 70%: infinite slider -->
+      <div class="logos-slider">
+        <div class="logos-track" id="logos-track"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     MODE-SENSITIVE SECTIONS — talent / brand
+══════════════════════════════════════════════════ -->
+
+<!-- ▼ TALENT MODE ▼ -->
+<div class="mode-talent">
+
+<!-- ════ T1. WHAT YOU CAN DO ════════════════════ -->
+<section class="talent-what-section">
+  <div class="container">
+    <div class="platform-header reveal">
+      <p class="section-label">Opportunities</p>
+      <h2 class="section-heading">What You Can Do on Digihire</h2>
+    </div>
+    <div class="talent-what-grid stagger-grid">
+
+      <div class="twc twc-1">
+        <div class="twc-tag">Be a part of campaigns and start earning</div>
+        <h3 class="twc-title">Join VoltSquad</h3>
+        <p class="twc-desc">Campaign marketplace for sales talent. Join active brand campaigns, promote apps and products, earn commissions, track your wallet, set revenue targets, and grow your income through real sales opportunities.</p>
+        <a href="#" class="twc-cta">Join VoltSquad →</a>
+      </div>
+
+      <div class="twc twc-2">
+        <div class="twc-tag">Get discovered for roles</div>
+        <h3 class="twc-title">Join Our Talent Pool</h3>
+        <p class="twc-desc">Create your profile, upload your CV, and position yourself for part-time, full-time, and project-based opportunities with brands hiring through Digihire.</p>
+        <a href="#" class="twc-cta">Set Up Your Profile →</a>
+      </div>
+
+      <div class="twc twc-3">
+        <div class="twc-tag">Learn, get certified, and grow</div>
+        <h3 class="twc-title">Join our Sales Academy</h3>
+        <p class="twc-desc">Join the Digihire Sales Academy to learn practical sales skills, earn certifications, gain internship experience, and prepare for stronger opportunities in the future of work.</p>
+        <a href="#" class="twc-cta">Join the Academy →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ T2. COMMUNITY + ROLES SPLIT ════════════ -->
+<section class="talent-split-section">
+  <div class="container">
+
+    <!-- Community: text left, polaroid cards right -->
+    <div class="talent-split-row talent-split-community">
+      <div class="talent-split-inner">
+
+        <div class="reveal">
+          <div class="talent-split-tag">Community</div>
+          <h2 class="talent-split-title">Join 1K+ sellers earning on Digihire</h2>
+          <p class="talent-split-desc">Work with real brands, earn from campaigns, access job opportunities, and grow your sales career alongside a fast-growing community of sellers and sales talent.</p>
+          <a href="#" class="btn btn-cyan btn-lg">Get Started →</a>
+        </div>
+
+        <div class="talent-polaroid-wrap reveal" style="transition-delay:0.15s">
+          <div class="tpcard tpcard-1">
+            <img class="tpcard-photo" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300&h=400&fit=crop&crop=face&q=80" alt="Seller" />
+            <div class="tpcard-badge b-blue"><i data-lucide="briefcase" class="lucide"></i></div>
+            <div class="tpcard-body">
+              <div class="tpcard-bar"></div>
+              <div class="tpcard-bar short"></div>
+            </div>
+          </div>
+          <div class="tpcard tpcard-2">
+            <img class="tpcard-photo" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=400&fit=crop&crop=face&q=80" alt="Seller" />
+            <div class="tpcard-badge b-cyan"><i data-lucide="zap" class="lucide"></i></div>
+            <div class="tpcard-body">
+              <div class="tpcard-bar"></div>
+              <div class="tpcard-bar short"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Roles: polaroid cards left, text right -->
+    <div class="talent-split-row talent-split-roles">
+      <div class="talent-split-inner">
+
+        <div class="talent-polaroid-wrap reveal">
+          <div class="tpcard tpcard-1">
+            <img class="tpcard-photo" src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=300&h=400&fit=crop&crop=face&q=80" alt="Sales rep" />
+            <div class="tpcard-badge b-cyan"><i data-lucide="users" class="lucide"></i></div>
+            <div class="tpcard-body">
+              <div class="tpcard-bar"></div>
+              <div class="tpcard-bar short"></div>
+            </div>
+          </div>
+          <div class="tpcard tpcard-2">
+            <img class="tpcard-photo" src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=300&h=400&fit=crop&crop=face&q=80" alt="Sales rep" />
+            <div class="tpcard-badge b-blue"><i data-lucide="trending-up" class="lucide"></i></div>
+            <div class="tpcard-body">
+              <div class="tpcard-bar"></div>
+              <div class="tpcard-bar short"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal" style="transition-delay:0.15s">
+          <div class="talent-split-tag">Sales Roles</div>
+          <h2 class="talent-split-title">Opportunities across multiple sales roles</h2>
+          <div class="talent-role-pills">
+            <span class="talent-role-pill">B2B Sales Executives</span>
+            <span class="talent-role-pill">Tech Sales &amp; SaaS Sales Executives</span>
+            <span class="talent-role-pill">Closers &amp; Account Executives</span>
+            <span class="talent-role-pill">Business Development Executives</span>
+            <span class="talent-role-pill">SDRs &amp; Lead Qualification Teams</span>
+            <span class="talent-role-pill">Field &amp; External Sales Agents</span>
+            <span class="talent-role-pill">Merchandisers</span>
+            <span class="talent-role-pill">Field Sales Reps</span>
+          </div>
+          <p class="talent-role-supporting">Whether you are just starting out or already have experience, Digihire gives you access to opportunities across different sales paths.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ T3. BRANDS YOU CAN WORK WITH ═══════════ -->
+<section class="talent-brands-section">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Brand Partners</p>
+      <h2 class="section-heading">The Kind of Brands You Can Work With</h2>
+    </div>
+  </div>
+
+  <!-- Boxed sliding marquee -->
+  <div class="talent-brands-slider">
+    <div class="talent-brands-track">
+      <span class="tbp">Fintechs</span>
+      <span class="tbp">SaaS Products</span>
+      <span class="tbp">Consumer Brands</span>
+      <span class="tbp">Telecom-Related Products</span>
+      <span class="tbp">Businesses Entering New Cities</span>
+      <span class="tbp">Foreign Brands Entering Nigeria</span>
+      <span class="tbp">Businesses Running Product Launches</span>
+      <span class="tbp">Companies Hiring Sales Reps &amp; Merchandisers</span>
+      <span class="tbp">E-commerce Platforms</span>
+      <span class="tbp">Healthtech Companies</span>
+      <span class="tbp">Edtech &amp; Learning Platforms</span>
+      <span class="tbp">Logistics &amp; Delivery Brands</span>
+      <span class="tbp">Real Estate &amp; PropTech</span>
+      <span class="tbp">Crypto &amp; Web3 Products</span>
+      <span class="tbp">Food &amp; Beverage Brands</span>
+      <span class="tbp">Media &amp; Entertainment</span>
+      <span class="tbp">Insurance &amp; InsurTech</span>
+      <span class="tbp">B2B Services Companies</span>
+      <!-- duplicate for seamless loop -->
+      <span class="tbp">Fintechs</span>
+      <span class="tbp">SaaS Products</span>
+      <span class="tbp">Consumer Brands</span>
+      <span class="tbp">Telecom-Related Products</span>
+      <span class="tbp">Businesses Entering New Cities</span>
+      <span class="tbp">Foreign Brands Entering Nigeria</span>
+      <span class="tbp">Businesses Running Product Launches</span>
+      <span class="tbp">Companies Hiring Sales Reps &amp; Merchandisers</span>
+      <span class="tbp">E-commerce Platforms</span>
+      <span class="tbp">Healthtech Companies</span>
+      <span class="tbp">Edtech &amp; Learning Platforms</span>
+      <span class="tbp">Logistics &amp; Delivery Brands</span>
+      <span class="tbp">Real Estate &amp; PropTech</span>
+      <span class="tbp">Crypto &amp; Web3 Products</span>
+      <span class="tbp">Food &amp; Beverage Brands</span>
+      <span class="tbp">Media &amp; Entertainment</span>
+      <span class="tbp">Insurance &amp; InsurTech</span>
+      <span class="tbp">B2B Services Companies</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <p class="talent-brands-supporting reveal">Digihire helps talent work on campaigns, roles, and projects across industries that actively need sales support.</p>
+  </div>
+</section>
+
+<!-- ════ T4. FEATURES + STATS ════════════════════ -->
+<section class="features-stats" id="features">
+  <div class="container">
+    <div class="features-stats-inner">
+
+      <div class="reveal">
+        <div class="features-col-header">
+          <p class="section-label">Ready for Your Next Role?</p>
+          <h2 class="section-heading">Your career in sales starts here.</h2>
+          <p class="section-sub" style="margin-top:12px">Digihire gives you the tools, campaigns, and opportunities to earn more, get hired faster, and grow your sales career over time.</p>
+        </div>
+        <div class="features-list">
+          <div class="feature-item">
+            <div class="feature-icon-wrap"><i data-lucide="zap" class="lucide ic-xl"></i></div>
+            <div>
+              <p class="feature-item-title">Join Active Brand Campaigns</p>
+              <p class="feature-item-desc">Access campaigns on VoltSquad, promote products and apps, earn commissions, and track your wallet and revenue goals in real time.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon-wrap"><i data-lucide="user-plus" class="lucide ic-xl"></i></div>
+            <div>
+              <p class="feature-item-title">Build Your Profile &amp; Get Discovered</p>
+              <p class="feature-item-desc">Upload your CV, set up your talent profile, and get found by brands hiring part-time, full-time, and project-based sales roles.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon-wrap"><i data-lucide="graduation-cap" class="lucide ic-xl"></i></div>
+            <div>
+              <p class="feature-item-title">Learn Skills &amp; Earn Certifications</p>
+              <p class="feature-item-desc">Join the Sales Academy, complete practical courses, earn recognised certifications, and access internship and career growth pathways.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon-wrap"><i data-lucide="bar-chart-2" class="lucide ic-xl"></i></div>
+            <div>
+              <p class="feature-item-title">Track Your Earnings &amp; Goals</p>
+              <p class="feature-item-desc">Monitor campaign performance, wallet balance, and income targets from your dashboard. Know exactly how you're growing.</p>
+            </div>
+          </div>
+        </div>
+        <div class="features-ctas">
+          <a href="#" class="btn btn-cyan">Get Started →</a>
+          <a href="#" class="btn btn-outline-navy">Explore Campaigns</a>
+        </div>
+      </div>
+
+      <div class="stats-col reveal" style="transition-delay:0.15s">
+        <div class="stat-highlight">
+          <div class="stat-h-item">
+            <div class="stat-h-value" data-target="1" data-suffix="K+">0+</div>
+            <div class="stat-h-label">Sellers on the platform</div>
+          </div>
+          <div class="stat-h-item">
+            <div class="stat-h-value" data-target="50" data-suffix="+">0+</div>
+            <div class="stat-h-label">Active brand campaigns</div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"I joined a VoltSquad campaign and made my first ₦50,000 in three weeks. Digihire made it genuinely easy to find real brand work and earn from it."</p>
+          <div class="testi-author">
+            <div class="testi-av">TA</div>
+            <div>
+              <div class="testi-name">Temi Adeyemi</div>
+              <div class="testi-role">VoltSquad Seller · Lagos</div>
+            </div>
+          </div>
+        </div>
+        <div class="value-badge">
+          <div class="value-badge-title">Earn while you build</div>
+          <p class="value-badge-desc">Sellers on VoltSquad earn commission on every sale and signup they drive — real income from brand campaigns while growing experience and career profile.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ T5. WHY JOIN DIGIHIRE ════════════════════ -->
+<section class="talent-why-section">
+  <div class="container">
+    <div class="talent-why-inner reveal">
+      <div class="talent-why-left">
+        <p class="section-label">Why Digihire</p>
+        <h2 class="section-heading">More than random gigs</h2>
+        <p class="section-sub">Digihire helps you move beyond scattered opportunities by giving you a more structured way to work with brands, earn from sales, access jobs, and build long-term career value.</p>
+      </div>
+      <div class="talent-why-benefits stagger-grid">
+        <div class="twb">
+          <div class="twb-check">✓</div>
+          <span class="twb-text">Access real brand campaigns</span>
+        </div>
+        <div class="twb">
+          <div class="twb-check">✓</div>
+          <span class="twb-text">Earn through commissions and paid opportunities</span>
+        </div>
+        <div class="twb">
+          <div class="twb-check">✓</div>
+          <span class="twb-text">Get considered for sales roles</span>
+        </div>
+        <div class="twb">
+          <div class="twb-check">✓</div>
+          <span class="twb-text">Build experience that grows over time</span>
+        </div>
+        <div class="twb">
+          <div class="twb-check">✓</div>
+          <span class="twb-text">Learn practical sales skills</span>
+        </div>
+        <div class="twb">
+          <div class="twb-check">✓</div>
+          <span class="twb-text">Track your earnings and goals</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ T6. FINAL CTA ════════════════════════════ -->
+<section class="final-cta" id="training">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="final-cta-title">Ready to start earning and growing<br/>with Digihire?</h2>
+      <p class="final-cta-sub">Join Digihire to access campaigns, jobs, and practical growth opportunities designed for people who want to work with brands and build real sales income.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="#" class="btn btn-cyan btn-lg">Join Digihire</a>
+        <a href="#" class="btn btn-outline-white btn-lg">Set Up Your Profile</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end .mode-talent -->
+
+<!-- ▼ BRAND MODE ▼ -->
+<div class="mode-brand">
+
+<!-- ════ B1. TALENT GRID ══════════════════════════ -->
+<section class="talent-unlock" id="brand-talent">
+  <div class="container">
+    <div class="talent-header reveal">
+      <h2 class="section-heading">Ready to deploy sales talent that can deliver?</h2>
+    </div>
+    <div class="talent-cards stagger-grid">
+      <div class="talent-card">
+        <img class="talent-card-img" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=533&fit=crop&crop=face&q=80" alt="Sales Rep" />
+        <div class="talent-card-overlay">
+          <div class="talent-card-name">Sales Executive</div>
+          <div class="talent-card-role">B2B & Tech Sales</div>
+          <span class="talent-verified">Verified</span>
+        </div>
+      </div>
+      <div class="talent-card">
+        <img class="talent-card-img" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=533&fit=crop&crop=face&q=80" alt="Field Agent" />
+        <div class="talent-card-overlay">
+          <div class="talent-card-name">Field Activation Agent</div>
+          <div class="talent-card-role">Campus & Community</div>
+          <span class="talent-verified">Verified</span>
+        </div>
+      </div>
+      <div class="talent-card">
+        <img class="talent-card-img" src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=400&h=533&fit=crop&crop=face&q=80" alt="SDR" />
+        <div class="talent-card-overlay">
+          <div class="talent-card-name">SDR / BDR</div>
+          <div class="talent-card-role">Pipeline & Outbound</div>
+          <span class="talent-verified">Verified</span>
+        </div>
+      </div>
+      <div class="talent-card">
+        <img class="talent-card-img" src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=533&fit=crop&crop=face&q=80" alt="Merchandiser" />
+        <div class="talent-card-overlay">
+          <div class="talent-card-name">Merchandiser</div>
+          <div class="talent-card-role">Retail & Distribution</div>
+          <span class="talent-verified">Verified</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ B2. ALL-IN-ONE PLATFORM ════════════════════ -->
+<section class="platform-discover" id="brand-platform">
+  <div class="container">
+    <div class="platform-header reveal">
+      <p class="section-label">All in one platform</p>
+      <h2 class="section-heading">Built for the moments when brands need traction fast</h2>
+      <p class="section-sub">Whether you are launching a product, entering a new market, or trying to grow across cities, Digihire helps you execute with the right campaigns, talent, and on-ground presence.</p>
+    </div>
+
+    <!-- Hero feature card -->
+    <div class="platform-hero-card reveal">
+      <div class="phc-content">
+        <div class="phc-tag">VoltSquad</div>
+        <h3 class="phc-title">Launch sales campaigns on VoltSquad</h3>
+        <p class="phc-desc">VoltSquad helps brands launch targeted sales campaigns across campuses, communities, cities, and distribution networks using real sellers who drive signups, users, leads, and product sales.</p>
+        <a href="#" class="btn btn-cyan" style="margin-top:20px;align-self:flex-start;">Launch a Campaign</a>
+      </div>
+      <div class="phc-visual">
+        <div class="phc-visual-bg"></div>
+        <div class="phc-visual-body">
+          <div class="phc-avatars">
+            <img class="phc-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=104&h=104&fit=crop&crop=face&q=80" alt="Seller" />
+            <img class="phc-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=104&h=104&fit=crop&crop=face&q=80" alt="Field Agent" />
+            <img class="phc-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=104&h=104&fit=crop&crop=face&q=80" alt="Brand Driver" />
+          </div>
+          <div class="phc-cards-row">
+            <div class="phc-stat-card">
+              <div class="phc-stat-val">12 Active</div>
+              <div class="phc-stat-label">Campaigns running today</div>
+            </div>
+            <div class="phc-stat-card">
+              <div class="phc-float-label">Avg. campaign launch</div>
+              <div class="phc-stat-val">48hrs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 sub-cards -->
+    <div class="platform-sub-cards stagger-grid" style="margin-top:20px">
+      <div class="psc psc-1">
+        <div class="psc-label">Sales Campaigns</div>
+        <h4 class="psc-title">Launch sales campaigns on VoltSquad</h4>
+        <p class="psc-desc">Performance-based campaigns tied to real outcomes, signups, users, leads, and sales across campuses, communities, and cities.</p>
+        <div class="psc-visual psc-visual-img">
+          <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=700&h=320&fit=crop&crop=center&q=80" alt="Sales campaign team" />
+        </div>
+      </div>
+      <div class="psc psc-2">
+        <div class="psc-label">Sales Recruitment</div>
+        <h4 class="psc-title">Hire sales talent built for<br>execution</h4>
+        <p class="psc-desc">From tech sales reps and SDRs to merchandisers, closers, and field teams project-based or long-term hires that can sell.</p>
+        <div class="psc-visual psc-visual-img">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=700&h=320&fit=crop&crop=top&q=80" alt="Sales recruitment interview" />
+        </div>
+      </div>
+      <div class="psc psc-3">
+        <div class="psc-label">Sales Activations & Field Marketing</div>
+        <h4 class="psc-title">Run on-ground activations that drive traction</h4>
+        <p class="psc-desc">Malls, campuses, high-traffic areas, and target locations, field marketing that creates awareness, engagement, and conversions.</p>
+        <div class="psc-visual psc-visual-img">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=320&fit=crop&crop=center&q=80" alt="Field activation event" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ B3. WHAT BRANDS USE DIGIHIRE FOR ═══════════ -->
+<section class="brand-usecases-section reveal">
+  <div class="container">
+    <p class="section-label">Use Cases</p>
+    <h2 class="section-heading">What business owners use Digihire for</h2>
+  </div>
+  <div class="brand-usecases-slider">
+    <div class="brand-usecases-track">
+      <span class="brand-usecase-pill">Acquire users</span>
+      <span class="brand-usecase-pill">Recruit sales talent</span>
+      <span class="brand-usecase-pill">Launch new products</span>
+      <span class="brand-usecase-pill">Enter new markets</span>
+      <span class="brand-usecase-pill">Activate cities</span>
+      <span class="brand-usecase-pill">Drive visibility in high-traffic areas</span>
+      <span class="brand-usecase-pill">Grow through human-led sales</span>
+      <span class="brand-usecase-pill">Run field activations</span>
+      <span class="brand-usecase-pill">Scale distribution networks</span>
+      <!-- duplicate for seamless loop -->
+      <span class="brand-usecase-pill">Acquire users</span>
+      <span class="brand-usecase-pill">Recruit sales talent</span>
+      <span class="brand-usecase-pill">Launch new products</span>
+      <span class="brand-usecase-pill">Enter new markets</span>
+      <span class="brand-usecase-pill">Activate cities</span>
+      <span class="brand-usecase-pill">Drive visibility in high-traffic areas</span>
+      <span class="brand-usecase-pill">Grow through human-led sales</span>
+      <span class="brand-usecase-pill">Run field activations</span>
+      <span class="brand-usecase-pill">Scale distribution networks</span>
+    </div>
+  </div>
+  <div class="container">
+    <p class="section-sub" style="margin-top:12px;text-align:center;max-width:none;white-space:nowrap;">From product launches to city-wide activations, Digihire gives brands the people and structure to execute at scale.</p>
+  </div>
+</section>
+
+<!-- ════ B4. STRUCTURED DISTRIBUTION ════════════════ -->
+<section class="brand-distribution">
+  <div class="container">
+    <div class="brand-dist-inner reveal">
+      <!-- LEFT: label + heading + 2×2 stats -->
+      <div class="brand-dist-left">
+        <div>
+          <p class="section-label">Distribution</p>
+          <h2 class="section-heading">Structured Distribution Across the Audiences That Move Markets</h2>
+        </div>
+        <div class="brand-stats-row">
+          <div class="brand-stat">
+            <div class="brand-stat-num">107M+</div>
+            <div class="brand-stat-label">Digitally connected users in Nigeria</div>
+          </div>
+          <div class="brand-stat">
+            <div class="brand-stat-num">150M+</div>
+            <div class="brand-stat-label">Active mobile connections in Nigeria</div>
+          </div>
+          <div class="brand-stat">
+            <div class="brand-stat-num">2M+</div>
+            <div class="brand-stat-label">Students enrolled in tertiary institutions</div>
+          </div>
+          <div class="brand-stat">
+            <div class="brand-stat-num">130M+</div>
+            <div class="brand-stat-label">Working-age Nigerians aged 15–64</div>
+          </div>
+        </div>
+      </div>
+      <!-- RIGHT: 2×3 audience cards -->
+      <div class="brand-audience-grid stagger-grid">
+        <div class="brand-audience-card">
+          <i data-lucide="graduation-cap" class="lucide ic-lg"></i>
+          <h4>Campuses</h4>
+          <p>Tap into student communities with strong peer influence and fast product spread.</p>
+        </div>
+        <div class="brand-audience-card">
+          <i data-lucide="flag" class="lucide ic-lg"></i>
+          <h4>Corps Members</h4>
+          <p>Activate ambitious young professionals with reach across cities, networks, and local communities.</p>
+        </div>
+        <div class="brand-audience-card">
+          <i data-lucide="users" class="lucide ic-lg"></i>
+          <h4>Youth Communities</h4>
+          <p>Reach engaged groups where trust, conversation, and recommendations drive action.</p>
+        </div>
+        <div class="brand-audience-card">
+          <i data-lucide="smartphone" class="lucide ic-lg"></i>
+          <h4>Digital-First Users</h4>
+          <p>Connect with active online consumers who discover, download, try, and share products quickly.</p>
+        </div>
+        <div class="brand-audience-card">
+          <i data-lucide="trending-up" class="lucide ic-lg"></i>
+          <h4>Millennials</h4>
+          <p>Reach working-age consumers with stronger spending power and everyday purchase potential.</p>
+        </div>
+        <div class="brand-audience-card">
+          <i data-lucide="map-pin" class="lucide ic-lg"></i>
+          <h4>Local City Networks</h4>
+          <p>Activate neighborhood-level visibility through real people embedded in local markets and communities.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ B5. WHO THIS IS FOR ═════════════════════════ -->
+<section class="brand-who-section">
+  <div class="container reveal">
+    <p class="section-label">Who This Is For</p>
+    <h2 class="section-heading">Built for brands that need traction</h2>
+  </div>
+  <div class="brand-who-slider">
+    <div class="brand-who-track">
+      <span class="bwt">Fintechs</span>
+      <span class="bwt">SaaS products</span>
+      <span class="bwt">Consumer brands</span>
+      <span class="bwt">Telecom-related products</span>
+      <span class="bwt">Businesses entering new cities</span>
+      <span class="bwt">Foreign brands entering Nigeria</span>
+      <span class="bwt">Businesses running product launches</span>
+      <span class="bwt">Companies hiring sales reps &amp; merchandisers</span>
+      <!-- duplicate for seamless loop -->
+      <span class="bwt">Fintechs</span>
+      <span class="bwt">SaaS products</span>
+      <span class="bwt">Consumer brands</span>
+      <span class="bwt">Telecom-related products</span>
+      <span class="bwt">Businesses entering new cities</span>
+      <span class="bwt">Foreign brands entering Nigeria</span>
+      <span class="bwt">Businesses running product launches</span>
+      <span class="bwt">Companies hiring sales reps &amp; merchandisers</span>
+    </div>
+  </div>
+  <div class="container">
+    <p class="section-sub" style="text-align:center;max-width:none;white-space:nowrap;margin-top:12px;">People-powered sales infrastructure for growing brands across Africa.</p>
+    <a href="#" class="btn btn-cyan btn-lg" style="margin-top:28px;display:inline-block;">Get Started</a>
+  </div>
+</section>
+
+<!-- ════ B6. FINAL CTA ═══════════════════════════════ -->
+<section class="final-cta">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="final-cta-title">Grow through the people who can actually sell</h2>
+      <p class="final-cta-sub">Launch campaigns, hire sales talent, and run activations that put your brand in front of the right people across Africa.</p>
+      <a href="#" class="btn btn-cyan btn-lg">Get Started</a>
+    </div>
+  </div>
+</section>
+
+</div><!-- end .mode-brand -->
+
+<!-- ════ INSIGHTS / BLOG — shared across both modes ═══════════════ -->
+<section class="insights" id="insights">
+  <div class="container">
+    <div class="insights-header reveal" id="insights-hdr">
+      <h2>Insights &amp; Resources</h2>
+      <a href="blog.html" class="insights-link">Explore our Blog →</a>
+    </div>
+    <div class="insights-grid stagger-grid" id="insights-grid">
+      <div class="insight-card">
+        <div class="insight-card-img">
+          <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=700&h=360&fit=crop&crop=center&q=80" alt="Career Growth" />
+        </div>
+        <div class="insight-card-body">
+          <div class="insight-card-cat">Career Growth</div>
+          <h4 class="insight-card-title">How to Break Into Tech Sales with Zero Experience</h4>
+          <p class="insight-card-desc">A practical guide to landing your first tech sales role in Africa's booming technology sector — even without prior experience.</p>
+        </div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-card-img">
+          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=360&fit=crop&crop=center&q=80" alt="Hiring Strategy" />
+        </div>
+        <div class="insight-card-body">
+          <div class="insight-card-cat">Hiring Strategy</div>
+          <h4 class="insight-card-title">Why African Companies Are Winning with Remote-First Hiring</h4>
+          <p class="insight-card-desc">Discover how forward-thinking companies are accessing top talent pools across the continent with DigiHire's remote hiring solutions.</p>
+        </div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-card-img">
+          <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=700&h=360&fit=crop&crop=center&q=80" alt="Platform Update" />
+        </div>
+        <div class="insight-card-body">
+          <div class="insight-card-cat">Platform Update</div>
+          <h4 class="insight-card-title">DigiHire Launches Advanced AI Resume Optimization</h4>
+          <p class="insight-card-desc">Our new AI-powered resume builder helps professionals get past ATS filters and land interviews at top global tech companies.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ 11. FOOTER ═══════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <!-- brand -->
+      <div>
+        <div class="footer-logo-wrap">
+          <a href="#" class="footer-logo">
+            <img src="assets/logo-white.png" alt="DigiHire" style="height:32px;width:auto;" />
+          </a>
+        </div>
+        <p class="footer-tagline">Africa's premier tech sales talent platform. Connecting top professionals with forward-thinking companies.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social">𝕏</a>
+          <a href="#" class="footer-social">in</a>
+          <a href="#" class="footer-social">f</a>
+          <a href="#" class="footer-social">ig</a>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <p class="footer-col-title">Company</p>
+        <ul class="footer-col-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+
+      <!-- Solutions -->
+      <div>
+        <p class="footer-col-title">Solutions</p>
+        <ul class="footer-col-links">
+          <li><a href="#">VoltSquad</a></li>
+          <li><a href="#">Sales Recruitment</a></li>
+          <li><a href="#">Activations &amp; Field Marketing</a></li>
+          <li><a href="#">Sales Academy</a></li>
+        </ul>
+      </div>
+
+      <!-- Talent -->
+      <div>
+        <p class="footer-col-title">Talent</p>
+        <ul class="footer-col-links">
+          <li><a href="#">Join the Talent Pool</a></li>
+          <li><a href="#">Sales Academy</a></li>
+          <li><a href="#">VoltSquad</a></li>
+        </ul>
+      </div>
+
+      <!-- Brands -->
+      <div>
+        <p class="footer-col-title">Brands</p>
+        <ul class="footer-col-links">
+          <li><a href="#">VoltSquad</a></li>
+          <li><a href="#">Sales Recruitment</a></li>
+          <li><a href="#">Activations &amp; Field Marketing</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 DigiHire Africa Ltd. All rights reserved.</p>
+      <div class="footer-locations">
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Lagos, Nigeria — 7 Adewale Close, Surulere</span></div>
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Accra, Ghana</span></div>
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Nairobi, Kenya — Kilimani Business Hub</span></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Gradient bars ────────────────────────────── */
+  (function() {
+    const NUM_BARS = 18;
+    const DURATION = 2.5; // seconds per pulse cycle
+    const container = document.getElementById('hero-bars');
+    if (!container) return;
+
+    for (let i = 0; i < NUM_BARS; i++) {
+      // Bars taller at edges, shorter in center (mirrored wave)
+      const pos = i / (NUM_BARS - 1);
+      const dist = Math.abs(pos - 0.5);
+      const scale = 0.30 + 0.70 * Math.pow(dist * 2, 1.2);
+
+      const bar = document.createElement('div');
+      bar.className = 'hero-bar';
+      bar.style.cssText = `
+        --bar-scale: ${scale};
+        transform: scaleY(${scale});
+        animation: pulseBar ${DURATION}s ease-in-out ${(i * 0.1).toFixed(1)}s infinite alternate;
+      `;
+      container.appendChild(bar);
+    }
+  })();
+
+  /* ── Hero tab toggle ──────────────────────────── */
+  const heroContent = {
+    'job-seeker': {
+      headline: 'Join Digihire to access sales gigs, jobs, and growth opportunities',
+      sub: 'Access commission-based campaigns, project-based gigs, part-time roles, full-time jobs, and career-building opportunities with brands looking for people who can sell.',
+      cta: 'Get Started'
+    },
+    'employer': {
+      headline: 'Acquire users, recruit sales talent, and run field activations with Digihire',
+      sub: 'Digihire helps brands grow through structured sales campaigns, targeted recruitment, and field activations designed to drive visibility, users, and revenue.',
+      cta: 'Get Started'
+    }
+  };
+
+  function setHeroTab(btn, key) {
+    document.querySelectorAll('.hero-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const c = heroContent[key];
+    const hl = document.getElementById('hero-headline');
+    const sub = document.getElementById('hero-sub');
+    const cta = document.getElementById('hero-cta-primary');
+    hl.style.opacity = 0; hl.style.transform = 'translateY(10px)';
+    sub.style.opacity = 0;
+    setTimeout(() => {
+      hl.textContent = c.headline;
+      sub.textContent = c.sub;
+      cta.textContent = c.cta;
+      hl.style.transition = 'opacity 0.4s, transform 0.4s';
+      hl.style.opacity = 1; hl.style.transform = 'none';
+      sub.style.transition = 'opacity 0.4s'; sub.style.opacity = 1;
+    }, 200);
+
+    /* Switch page-wide content mode */
+    document.body.dataset.mode = (key === 'employer') ? 'brand' : 'talent';
+    setTimeout(() => lucide.createIcons(), 50);
+  }
+
+  /* Set default mode on load */
+  document.body.dataset.mode = 'brand';
+
+  /* ── Scroll reveal ────────────────────────────── */
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal, .stagger-grid').forEach(el => revealObs.observe(el));
+
+  /* ── Count-up stats ───────────────────────────── */
+  const countObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('[data-target]').forEach(el => {
+          const target = parseInt(el.dataset.target);
+          const suffix = el.dataset.suffix || '';
+          const start = performance.now();
+          const dur = 2200;
+          const step = (now) => {
+            const p = Math.min((now - start) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.floor(eased * target) + suffix;
+            if (p < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        });
+        countObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const statEl = document.querySelector('.stat-highlight');
+  if (statEl) countObs.observe(statEl);
+
+  /* ── Logo slider ─────────────────────────────── */
+  (function() {
+    const logos = [
+      { src: 'logos/westgate.png',       name: 'Westgate' },
+      { src: 'logos/hp.png',             name: 'HP' },
+      { src: 'logos/british-council.png',name: 'British Council' },
+      { src: 'logos/jumia.png',          name: 'Jumia' },
+      { src: 'logos/picknfix.png',       name: 'PicknFix' },
+      { src: 'logos/konga.png',          name: 'Konga' },
+      { src: 'logos/blakskill.png',      name: 'Blakskill' },
+      { src: 'logos/betking.png',        name: 'BetKing' },
+      { src: 'logos/cloudmylab.png',     name: 'CloudmyLab' },
+      { src: 'logos/ezipay.png',         name: 'eziPay' },
+      { src: 'logos/9mobile.png',        name: '9mobile' },
+      { src: 'logos/breet.png',          name: 'Breet' },
+      { src: 'logos/cardtonic.png',      name: 'Cardtonic' },
+      { src: 'logos/sabi.png',           name: 'SABI Bank' },
+      { src: 'logos/ginger.png',         name: 'Ginger' },
+      { src: 'logos/bluerock.png',       name: 'BlueRock' },
+      { src: 'logos/nett-pharmacy.png',  name: 'Nett Pharmacy' },
+    ];
+    const track = document.getElementById('logos-track');
+    if (!track) return;
+    // render original + duplicate for seamless loop
+    [...logos, ...logos].forEach(({ src, name }) => {
+      const span = document.createElement('span');
+      span.className = 'logo-item';
+      const img = document.createElement('img');
+      img.src = src; img.alt = name;
+      const fallback = document.createElement('span');
+      fallback.className = 'logo-fallback';
+      fallback.textContent = name;
+      img.onerror = function() {
+        this.style.display = 'none';
+        fallback.style.display = 'inline';
+      };
+      span.appendChild(img);
+      span.appendChild(fallback);
+      track.appendChild(span);
+    });
+  })();
+
+  /* ── Lucide icons ────────────────────────────── */
+  lucide.createIcons();
+
+  /* ── Navbar: float + shrink + blur on scroll ─── */
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>

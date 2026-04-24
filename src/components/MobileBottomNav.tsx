@@ -127,7 +127,7 @@ export function MobileBottomNav() {
         <DrawerContent>
           <DrawerHeader className="pb-2">
             <DrawerTitle className="flex items-center gap-2 justify-center">
-              <img src="/Volt1.png" alt="Volt Logo" className="h-6 w-auto object-contain" />
+              <img src="/assets/logo-color.png" alt="DigiHire Logo" className="h-6 w-auto object-contain" />
               <span className="font-display font-bold">More</span>
             </DrawerTitle>
           </DrawerHeader>

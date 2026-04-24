@@ -38,17 +38,17 @@ const benefits = [
   {
     icon: Target,
     title: "Sales Density, Not Surface Reach",
-    desc: "Volt deploys Gen Z sellers across campuses, cities, and communities, ensuring saturation through peer networks — not one-off visibility from a few creators.",
+    desc: "DigiHire deploys Gen Z sellers across campuses, cities, and communities, ensuring saturation through peer networks — not one-off visibility from a few creators.",
   },
   {
     icon: Share2,
     title: "Social-First Sales Content",
-    desc: "Gen Z buys on WhatsApp, Telegram & TikTok. Volt converts your product assets into high-conversion flyers, stickers, and status-ready content designed for social sharing.",
+    desc: "Gen Z buys on WhatsApp, Telegram & TikTok. DigiHire converts your product assets into high-conversion flyers, stickers, and status-ready content designed for social sharing.",
   },
   {
     icon: Rocket,
     title: "Faster Time-to-Market",
-    desc: "Campaigns can go live in days, not months. Volt eliminates the long setup cycles of traditional field marketing and influencer campaigns.",
+    desc: "Campaigns can go live in days, not months. DigiHire eliminates the long setup cycles of traditional field marketing and influencer campaigns.",
   },
   {
     icon: RefreshCw,
@@ -58,12 +58,12 @@ const benefits = [
   {
     icon: ShieldCheck,
     title: "Vetted Seller Network",
-    desc: "Volt recruits and manages trusted sellers — students, NYSC members, micro-influencers, and content creators who already influence real buying decisions.",
+    desc: "DigiHire recruits and manages trusted sellers — students, NYSC members, micro-influencers, and content creators who already influence real buying decisions.",
   },
   {
     icon: Handshake,
     title: "Direct Peer-to-Peer Trust & Selling",
-    desc: "Gen Z doesn't buy from ads; they buy from people they know. Volt leverages peer-to-peer recommendation, demos, and everyday conversations to drive faster adoption.",
+    desc: "Gen Z doesn't buy from ads; they buy from people they know. DigiHire leverages peer-to-peer recommendation, demos, and everyday conversations to drive faster adoption.",
   },
   {
     icon: BarChart3,
@@ -90,7 +90,7 @@ const verticals = [
 ];
 
 const processSteps = [
-  { step: 1, title: "List your product", desc: "Add your product to Volt" },
+  { step: 1, title: "List your product", desc: "Add your product to DigiHire" },
   { step: 2, title: "Sellers promote it", desc: "Our sellers push your product across their networks" },
   { step: 3, title: "You get customers", desc: "Sales and signups are tracked" },
   { step: 4, title: "You pay only for results", desc: "No sales, no cost" },
@@ -134,11 +134,11 @@ export function BrandsContent() {
         </div>
       </section>
 
-      {/* The Volt Advantage */}
+      {/* The DigiHire Advantage */}
       <section className="border-y border-border bg-muted/30">
         <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
           <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold md:text-4xl">The Volt Advantage</h2>
+            <h2 className="font-display text-3xl font-bold md:text-4xl">The DigiHire Advantage</h2>
           </div>
           <div className="overflow-hidden rounded-xl border border-border">
             <table className="w-full text-sm">
@@ -146,7 +146,7 @@ export function BrandsContent() {
                 <tr className="border-b border-border bg-muted/60">
                   <th className="px-4 py-3 text-left font-semibold text-muted-foreground" />
                   <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Traditional Ads</th>
-                  <th className="px-4 py-3 text-left font-semibold text-primary">The Volt Way</th>
+                  <th className="px-4 py-3 text-left font-semibold text-primary">The DigiHire Way</th>
                 </tr>
               </thead>
               <tbody>
@@ -178,7 +178,7 @@ export function BrandsContent() {
         <div className="mb-4 text-center">
           <h2 className="font-display text-3xl font-bold md:text-4xl">Product Verticals We Distribute</h2>
           <p className="mt-3 text-muted-foreground">
-            Volt focuses on fast-moving, high-demand products that Gen Z already buys.
+            DigiHire focuses on fast-moving, high-demand products that Gen Z already buys.
           </p>
         </div>
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -196,11 +196,11 @@ export function BrandsContent() {
         </div>
       </section>
 
-      {/* The Volt Process */}
+      {/* The DigiHire Process */}
       <section className="border-y border-border bg-muted/30">
         <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
           <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold md:text-4xl">How Volt Drives Sales</h2>
+            <h2 className="font-display text-3xl font-bold md:text-4xl">How DigiHire Drives Sales</h2>
           </div>
           <div className="flex flex-col gap-6">
             {processSteps.map((s) => (
@@ -222,10 +222,10 @@ export function BrandsContent() {
       <section className="volt-gradient">
         <div className="mx-auto max-w-4xl px-4 py-16 text-center md:py-20">
           <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
-            Partner with Volt
+            Partner with DigiHire
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/80">
-            Gen Z doesn't buy from ads — they buy from people they trust. Volt turns communities into structured sales environments powered by peer influence and real incentives.
+            Gen Z doesn't buy from ads — they buy from people they trust. DigiHire turns communities into structured sales environments powered by peer influence and real incentives.
           </p>
           <div className="mt-8">
             <Button

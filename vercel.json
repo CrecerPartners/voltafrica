@@ -1,8 +1,13 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/events", "destination": "/events.html" },
+    { "source": "/dashboard/:path*", "destination": "/app.html" },
+    { "source": "/login", "destination": "/app.html" },
+    { "source": "/join-now", "destination": "/app.html" },
+    { "source": "/admin/:path*", "destination": "/app.html" },
+    { "source": "/onboarding/:path*", "destination": "/app.html" }
   ]
 }

@@ -40,8 +40,8 @@ export function DashboardLayout() {
               {isMobile ? (
                 <Link to="/" className="flex items-center">
                   <img
-                    src="/Volt1.png"
-                    alt="Volt"
+                    src="/assets/logo-color.png"
+                    alt="DigiHire"
                     className="h-7 w-auto object-contain"
                   />
                 </Link>

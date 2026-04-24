@@ -24,7 +24,12 @@ import { AdminLayout } from "@/components/AdminLayout";
 import { PublicProductLayout } from "@/components/PublicProductLayout";
 import { MobileOnboarding } from "@/components/native/MobileOnboarding";
 import { NativeSplash } from "@/components/native/NativeSplash";
-import LandingPage from "@/pages/LandingPage";
+import LandingPage from "@/pages/former/LandingPage";
+import DigiHireLanding from "@/pages/DigiHireLanding";
+import DigiHireBlog from "@/pages/DigiHireBlog";
+import DigiHireAbout from "@/pages/DigiHireAbout";
+import DigiHireContact from "@/pages/DigiHireContact";
+import DigiHireEvents from "@/pages/DigiHireEvents";
 import AboutStudents from "@/pages/AboutStudents";
 import AboutBrands from "@/pages/AboutBrands";
 import Login from "@/pages/Login";
@@ -76,6 +81,13 @@ const NativeBlockRoute = ({ children }: { children: React.ReactNode }) => {
   const isNative = Capacitor.isNativePlatform();
   if (isNative) return <Navigate to="/" replace />;
   return <>{children}</>;
+};
+
+const StaticRedirect = ({ to }: { to: string }) => {
+  useEffect(() => {
+    window.location.replace(to);
+  }, [to]);
+  return null;
 };
 
 const NetworkStatusBanner = () => {
@@ -152,7 +164,21 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={isNative ? <MobileOnboarding /> : <LandingPage />} />
+            <Route path="/" element={isNative ? <MobileOnboarding /> : <StaticRedirect to="/digihire/index.html" />} />
+          <Route path="/former-landing" element={<LandingPage />} />
+          <Route path="/react-landing" element={<DigiHireLanding />} />
+          <Route path="/blog" element={<StaticRedirect to="/digihire/blog.html" />} />
+          <Route path="/about" element={<StaticRedirect to="/digihire/about.html" />} />
+          <Route path="/contact" element={<StaticRedirect to="/digihire/contact.html" />} />
+          <Route path="/events" element={<StaticRedirect to="/digihire/events.html" />} />
+          <Route path="/react-blog" element={<DigiHireBlog />} />
+          <Route path="/react-about" element={<DigiHireAbout />} />
+          <Route path="/react-contact" element={<DigiHireContact />} />
+          <Route path="/react-events" element={<DigiHireEvents />} />
+          <Route path="/digihire/blog" element={<StaticRedirect to="/digihire/blog.html" />} />
+          <Route path="/digihire/about" element={<StaticRedirect to="/digihire/about.html" />} />
+          <Route path="/digihire/contact" element={<StaticRedirect to="/digihire/contact.html" />} />
+          <Route path="/digihire/events" element={<StaticRedirect to="/digihire/events.html" />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/about/sellers" element={<NativeBlockRoute><AboutStudents /></NativeBlockRoute>} />
           <Route path="/about/students" element={<Navigate to="/about/sellers" replace />} />

@@ -9,7 +9,7 @@ import { useAdminRole } from "@/hooks/useAdminRole";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const SUPER_ADMINS = ["admin@voltafrica.com", "crecerpartnersllc@gmail.com"];
+const SUPER_ADMINS = ["admin@digihire.ng", "crecerpartnersllc@gmail.com"];
 const SUPER_ADMIN_PASS = "volt_admin_2026";
 
 export default function AdminLogin() {
@@ -98,7 +98,7 @@ export default function AdminLogin() {
               <label className="text-sm font-medium text-foreground">Email</label>
               <Input
                 type="email"
-                placeholder="admin@voltafrica.com"
+                placeholder="admin@digihire.ng"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-secondary border-border"

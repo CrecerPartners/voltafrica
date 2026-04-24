@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Digihire — Talk to Us</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <style>
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanRegular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanSemiBold.ttf') format('truetype'); font-weight: 600; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBold.ttf') format('truetype'); font-weight: 700; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanExtraBold.ttf') format('truetype'); font-weight: 800; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBlack.ttf') format('truetype'); font-weight: 900; }
+  </style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #06111F;
+      --navy-1:      #0B1D33;
+      --navy-2:      #0F2544;
+      --navy-3:      #162E52;
+      --cyan:        #00C2FF;
+      --cyan-dim:    #0096C7;
+      --cyan-soft:   #33CFFF;
+      --cyan-border: rgba(0,194,255,0.18);
+      --white:       #FFFFFF;
+      --gray-2:      #7A9CC5;
+      --gray-bg:     #F4F8FF;
+      --border:      rgba(0,194,255,0.12);
+      --radius-lg:   18px;
+      --radius-xl:   28px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'CenturyGothic', sans-serif; background: var(--white); color: #111827; line-height: 1.6; overflow-x: hidden; }
+
+    .lucide { display: inline-block; vertical-align: middle; flex-shrink: 0; stroke: currentColor; }
+    .ic-sm { width: 14px; height: 14px; }
+    .ic-md { width: 18px; height: 18px; }
+    .ic-lg { width: 22px; height: 22px; }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px; border-radius: 8px; cursor: pointer;
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 700;
+      border: none; text-decoration: none; transition: all 0.22s ease; white-space: nowrap;
+    }
+    .btn-cyan { background: var(--cyan); color: var(--navy); box-shadow: 0 4px 20px rgba(0,194,255,0.35); }
+    .btn-cyan:hover { background: var(--cyan-soft); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,194,255,0.5); }
+    .btn-outline-white { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,0.35); }
+    .btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+    .btn-outline-navy { background: transparent; color: var(--navy); border: 1.5px solid rgba(0,0,0,0.15); }
+    .btn-outline-navy:hover { border-color: var(--cyan); color: var(--cyan-dim); }
+    .btn-whatsapp { background: #25D366; color: var(--white); box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
+    .btn-whatsapp:hover { background: #1ebe5a; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(37,211,102,0.45); }
+    .btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 10px; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    .stagger-grid > * { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .stagger-grid.in > *:nth-child(1) { opacity:1;transform:none;transition-delay:0s }
+    .stagger-grid.in > *:nth-child(2) { opacity:1;transform:none;transition-delay:.1s }
+    .stagger-grid.in > *:nth-child(3) { opacity:1;transform:none;transition-delay:.2s }
+    .stagger-grid.in > *:nth-child(4) { opacity:1;transform:none;transition-delay:.3s }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: transparent; border-bottom: 1px solid transparent;
+      transition: top 0.45s cubic-bezier(0.34,1.56,0.64,1), left 0.45s cubic-bezier(0.34,1.56,0.64,1),
+                  right 0.45s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease,
+                  border-radius 0.45s ease, box-shadow 0.3s ease;
+    }
+    #navbar.scrolled {
+      top: 14px; left: 20%; right: 20%;
+      background: rgba(255,255,255,0.78); backdrop-filter: blur(22px);
+      border-radius: 999px; border-bottom: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px; max-width: 1340px; width: 100%; margin: 0 auto; padding: 0 28px;
+      transition: height 0.3s, padding 0.3s;
+    }
+    #navbar.scrolled .nav-inner { height: 54px; padding: 0 24px; }
+    .nav-left { display: flex; align-items: center; }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; margin-right: 32px; }
+    .nav-logo-wrap-img { position: relative; display: flex; align-items: center; }
+    .nav-logo-img { height: 36px; width: auto; display: block; transition: opacity 0.3s; }
+    .nav-logo-img.logo-white { opacity: 1; }
+    .nav-logo-img.logo-color { opacity: 0; position: absolute; }
+    #navbar.scrolled .nav-logo-img.logo-white { opacity: 0; }
+    #navbar.scrolled .nav-logo-img.logo-color { opacity: 1; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a {
+      font-size: 14px; color: rgba(255,255,255,0.82); text-decoration: none;
+      font-weight: 500; padding: 6px 14px; border-radius: 6px; transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    #navbar.scrolled .nav-links a { color: #1E3A5F; }
+    #navbar.scrolled .nav-links a:hover { color: var(--navy); background: rgba(0,0,0,0.04); }
+    .nav-links a.active-page { color: var(--cyan); font-weight: 700; }
+    #navbar.scrolled .nav-links a.active-page { color: var(--cyan-dim); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .btn-get-started {
+      font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.88);
+      border: 1.5px solid rgba(255,255,255,0.3); border-radius: 8px;
+      padding: 7px 18px; background: transparent; cursor: pointer;
+      text-decoration: none; transition: all 0.2s; font-family: 'CenturyGothic', sans-serif;
+    }
+    .btn-get-started:hover { border-color: var(--white); color: var(--white); }
+    #navbar.scrolled .btn-get-started { color: var(--navy); border-color: rgba(0,0,0,0.18); }
+    #navbar.scrolled .btn-get-started:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-launch-campaign {
+      font-size: 14px; font-weight: 700; background: var(--cyan); color: var(--navy);
+      border: none; border-radius: 8px; padding: 9px 20px; cursor: pointer;
+      text-decoration: none; transition: all 0.22s; font-family: 'CenturyGothic', sans-serif;
+      box-shadow: 0 3px 12px rgba(0,194,255,0.35);
+    }
+    .btn-launch-campaign:hover { background: var(--cyan-soft); transform: translateY(-1px); }
+
+    /* ════════════════════════════════
+       HERO
+    ════════════════════════════════ */
+    .contact-hero {
+      background: var(--navy); padding: 160px 0 100px;
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .contact-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(0,194,255,0.13) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .contact-hero-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(0,194,255,0.7); margin-bottom: 18px;
+    }
+    .contact-hero-title {
+      font-family: 'CenturyGothic', sans-serif;
+      font-size: clamp(44px, 7vw, 80px);
+      font-weight: 900; color: var(--white); line-height: 1.05;
+      letter-spacing: -0.03em; margin-bottom: 22px;
+    }
+    .contact-hero-sub {
+      font-size: clamp(15px, 1.8vw, 17px); color: rgba(255,255,255,0.6);
+      max-width: 580px; margin: 0 auto 52px; line-height: 1.7;
+    }
+    .contact-hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ════════════════════════════════
+       MAIN CONTACT SECTION
+    ════════════════════════════════ */
+    .contact-main { padding: 100px 0; background: var(--white); }
+    .contact-main-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+
+    /* Left — Talk to Sales */
+    .contact-talk-card {
+      background: var(--navy); border-radius: var(--radius-xl);
+      padding: 52px 48px; position: relative; overflow: hidden;
+    }
+    .contact-talk-card::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,194,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .contact-talk-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(0,194,255,0.7); margin-bottom: 16px;
+    }
+    .contact-talk-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(24px, 3vw, 32px);
+      font-weight: 800; color: var(--white); line-height: 1.15;
+      letter-spacing: -0.02em; margin-bottom: 14px;
+    }
+    .contact-talk-desc { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.7; margin-bottom: 32px; }
+    .contact-talk-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 32px 0; }
+
+    /* Right — Contact info */
+    .contact-info-block { display: flex; flex-direction: column; gap: 32px; }
+    .contact-info-group {}
+    .contact-info-group-title {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--cyan-dim); margin-bottom: 14px;
+    }
+    .contact-info-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 0; border-bottom: 1px solid #EEF3FA;
+    }
+    .contact-info-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .contact-info-icon {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      background: var(--gray-bg); border: 1px solid #E2EBF5;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cyan-dim);
+    }
+    .contact-info-text {}
+    .contact-info-heading { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .contact-info-val { font-size: 13px; color: #5B7A9E; line-height: 1.6; }
+    .contact-info-val a { color: var(--cyan-dim); text-decoration: none; font-weight: 600; }
+    .contact-info-val a:hover { text-decoration: underline; }
+
+    /* ════════════════════════════════
+       BOTTOM CTA STRIP
+    ════════════════════════════════ */
+    .contact-cta-strip { background: var(--gray-bg); padding: 72px 0; }
+    .contact-cta-strip-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 40px; flex-wrap: wrap;
+    }
+    .contact-cta-strip-text h2 {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(22px, 3vw, 32px);
+      font-weight: 800; color: var(--navy); margin-bottom: 8px; letter-spacing: -0.015em;
+    }
+    .contact-cta-strip-text p { font-size: 15px; color: #6B849E; max-width: 440px; line-height: 1.6; }
+    .contact-cta-strip-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
+    footer { background: var(--navy); border-top: 1px solid rgba(0,194,255,0.1); padding: 56px 0 28px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-tagline { font-size: 13px; color: var(--gray-2); line-height: 1.65; max-width: 220px; margin-bottom: 20px; }
+    .footer-socials { display: flex; gap: 8px; }
+    .footer-social {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--gray-2); display: flex; align-items: center; justify-content: center;
+      font-size: 13px; text-decoration: none; transition: all 0.2s;
+    }
+    .footer-social:hover { border-color: rgba(0,194,255,0.4); color: var(--cyan); }
+    .footer-logo-wrap { margin-bottom: 16px; }
+    .footer-col-title { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+    .footer-col-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col-links a { font-size: 14px; color: var(--gray-2); text-decoration: none; transition: color 0.2s; }
+    .footer-col-links a:hover { color: var(--white); }
+    .footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .footer-locations { display: flex; flex-wrap: wrap; gap: 20px; }
+    .footer-location-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    @media (max-width: 900px) {
+      .contact-main-inner { grid-template-columns: 1fr; }
+      .contact-cta-strip-inner { flex-direction: column; align-items: flex-start; }
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .footer-grid > :first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 600px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAVBAR ════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-wrap-img">
+          <img src="assets/logo-white.png" alt="DigiHire" class="nav-logo-img logo-white" />
+          <img src="assets/logo-color.png" alt="DigiHire" class="nav-logo-img logo-color" />
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Why DigiHire?</a></li>
+        <li><a href="index.html">Brands</a></li>
+        <li><a href="index.html">For Talents</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active-page">Contact</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="btn-get-started">Get Started</a>
+      <a href="https://wa.me/2347073848138" target="_blank" class="btn-launch-campaign">Chat on WhatsApp →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════ HERO ══════════════════════════════════════ -->
+<section class="contact-hero">
+  <div class="container">
+    <div class="reveal">
+      <p class="contact-hero-label">Contact Digihire</p>
+      <h1 class="contact-hero-title">Talk to us</h1>
+      <p class="contact-hero-sub">Whether you want to launch a campaign, hire sales talent, book activations, or learn more about Digihire, our team is ready to help.</p>
+      <div class="contact-hero-actions">
+        <a href="https://calendly.com/digihire" target="_blank" class="btn btn-cyan btn-lg">
+          <i data-lucide="calendar" class="lucide ic-md"></i> Book a Call
+        </a>
+        <a href="mailto:hey@digihire.io" class="btn btn-outline-white btn-lg">
+          <i data-lucide="mail" class="lucide ic-md"></i> Email Us
+        </a>
+        <a href="https://wa.me/2347073848138" target="_blank" class="btn btn-whatsapp btn-lg">
+          <i data-lucide="message-circle" class="lucide ic-md"></i> Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MAIN CONTACT SECTION ══════════════════════ -->
+<section class="contact-main">
+  <div class="container">
+    <div class="contact-main-inner reveal">
+
+      <!-- LEFT: Talk to Sales -->
+      <div class="contact-talk-card">
+        <p class="contact-talk-label">Sales &amp; Partnerships</p>
+        <h2 class="contact-talk-title">Talk to Sales</h2>
+        <p class="contact-talk-desc">Book a call with our team to discuss campaigns, recruitment, activations, or partnerships. We will help you find the right solution for your goals.</p>
+        <a href="https://calendly.com/digihire" target="_blank" class="btn btn-cyan btn-lg">
+          <i data-lucide="calendar" class="lucide ic-md"></i> Book a Call
+        </a>
+
+        <div class="contact-talk-divider"></div>
+
+        <!-- Quick contact links on the card -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <a href="mailto:sales@digihire.io" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:rgba(255,255,255,0.6);font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#00C2FF'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+            <i data-lucide="mail" class="lucide ic-md"></i> sales@digihire.io
+          </a>
+          <a href="https://wa.me/2347073848138" target="_blank" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:rgba(255,255,255,0.6);font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#25D366'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+            <i data-lucide="message-circle" class="lucide ic-md"></i> Chat with us on WhatsApp
+          </a>
+          <a href="tel:07073848138" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:rgba(255,255,255,0.6);font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#00C2FF'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+            <i data-lucide="phone" class="lucide ic-md"></i> 0707 384 8138
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT: Contact Information -->
+      <div class="contact-info-block">
+
+        <!-- Offices -->
+        <div class="contact-info-group">
+          <p class="contact-info-group-title">Our Offices</p>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i data-lucide="map-pin" class="lucide ic-md"></i></div>
+            <div class="contact-info-text">
+              <p class="contact-info-heading">Nigeria Headquarters</p>
+              <p class="contact-info-val">39 Ikorodu Road, Jibowu, Yaba, Lagos, Nigeria</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i data-lucide="map-pin" class="lucide ic-md"></i></div>
+            <div class="contact-info-text">
+              <p class="contact-info-heading">United Kingdom Headquarters</p>
+              <p class="contact-info-val">Unit 82a James Carter Road, Mildenhall, Bury St. Edmunds, IP28 7DE</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="contact-info-group">
+          <p class="contact-info-group-title">Email</p>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i data-lucide="mail" class="lucide ic-md"></i></div>
+            <div class="contact-info-text">
+              <p class="contact-info-heading">General Enquiries</p>
+              <p class="contact-info-val"><a href="mailto:hey@digihire.io">hey@digihire.io</a></p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i data-lucide="briefcase" class="lucide ic-md"></i></div>
+            <div class="contact-info-text">
+              <p class="contact-info-heading">Sales &amp; Campaigns</p>
+              <p class="contact-info-val"><a href="mailto:sales@digihire.io">sales@digihire.io</a></p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i data-lucide="flag" class="lucide ic-md"></i></div>
+            <div class="contact-info-text">
+              <p class="contact-info-heading">Nigeria Office</p>
+              <p class="contact-info-val"><a href="mailto:digihirenigeria@gmail.com">digihirenigeria@gmail.com</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone & WhatsApp -->
+        <div class="contact-info-group">
+          <p class="contact-info-group-title">Phone &amp; WhatsApp</p>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i data-lucide="phone" class="lucide ic-md"></i></div>
+            <div class="contact-info-text">
+              <p class="contact-info-heading">Phone</p>
+              <p class="contact-info-val"><a href="tel:07073848138">0707 384 8138</a></p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="background:#E8FFF0;border-color:#C3F0D2;color:#1A9E4A;"><i data-lucide="message-circle" class="lucide ic-md"></i></div>
+            <div class="contact-info-text">
+              <p class="contact-info-heading">WhatsApp</p>
+              <p class="contact-info-val">
+                <a href="https://wa.me/2347073848138" target="_blank">Chat with us on WhatsApp →</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ BOTTOM CTA STRIP ══════════════════════════ -->
+<section class="contact-cta-strip">
+  <div class="container">
+    <div class="contact-cta-strip-inner reveal">
+      <div class="contact-cta-strip-text">
+        <h2>Ready to get started?</h2>
+        <p>Pick the channel that works best for you and our team will take it from there.</p>
+      </div>
+      <div class="contact-cta-strip-actions">
+        <a href="https://calendly.com/digihire" target="_blank" class="btn btn-cyan btn-lg">
+          <i data-lucide="calendar" class="lucide ic-md"></i> Book a Call
+        </a>
+        <a href="mailto:hey@digihire.io" class="btn btn-outline-navy btn-lg">
+          <i data-lucide="mail" class="lucide ic-md"></i> Email Us
+        </a>
+        <a href="https://wa.me/2347073848138" target="_blank" class="btn btn-whatsapp btn-lg">
+          <i data-lucide="message-circle" class="lucide ic-md"></i> Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ═════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-wrap">
+          <a href="index.html">
+            <img src="assets/logo-white.png" alt="DigiHire" style="height:32px;width:auto;" />
+          </a>
+        </div>
+        <p class="footer-tagline">Africa's premier sales ecosystem connecting brands, talent, and opportunity.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social">𝕏</a>
+          <a href="#" class="footer-social">in</a>
+          <a href="#" class="footer-social">f</a>
+          <a href="#" class="footer-social">ig</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <ul class="footer-col-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Solutions</p>
+        <ul class="footer-col-links">
+          <li><a href="#">VoltSquad</a></li>
+          <li><a href="#">Sales Recruitment</a></li>
+          <li><a href="#">Activations &amp; Field Marketing</a></li>
+          <li><a href="#">Sales Academy</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Talent</p>
+        <ul class="footer-col-links">
+          <li><a href="#">Join the Talent Pool</a></li>
+          <li><a href="#">Sales Academy</a></li>
+          <li><a href="#">VoltSquad</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Brands</p>
+        <ul class="footer-col-links">
+          <li><a href="#">VoltSquad</a></li>
+          <li><a href="#">Sales Recruitment</a></li>
+          <li><a href="#">Activations &amp; Field Marketing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 DigiHire Africa Ltd. All rights reserved.</p>
+      <div class="footer-locations">
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Lagos, Nigeria</span></div>
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Bury St. Edmunds, UK</span></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal, .stagger-grid').forEach(el => revealObs.observe(el));
+
+  lucide.createIcons();
+</script>
+</body>
+</html>

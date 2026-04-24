@@ -22,8 +22,8 @@ export function NativeSplash({ onComplete }: { onComplete: () => void }) {
         
         {/* Animated Logo */}
         <img 
-          src="/Volt1.png" 
-          alt="Volt Logo" 
+          src="/assets/logo-color.png" 
+          alt="DigiHire Logo" 
           className="h-24 w-auto relative z-10 animate-bounce transition-transform duration-1000 ease-in-out"
           style={{ animationDuration: '2s' }}
         />

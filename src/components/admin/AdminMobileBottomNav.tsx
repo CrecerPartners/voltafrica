@@ -94,7 +94,7 @@ export function AdminMobileBottomNav() {
         <DrawerContent>
           <DrawerHeader className="pb-2">
             <DrawerTitle className="flex items-center gap-2 justify-center">
-              <span className="font-bold">Admin</span>
+              <span className="font-bold">DigiHire Admin</span>
             </DrawerTitle>
           </DrawerHeader>
           <div className="px-4 pb-6 grid grid-cols-4 gap-3 text-center">

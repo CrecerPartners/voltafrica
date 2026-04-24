@@ -128,7 +128,7 @@ const Login = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success(isSignup ? "Email verified! Welcome to Volt ⚡" : "Verified! Welcome back ⚡");
+        toast.success(isSignup ? "Email verified! Welcome to DigiHire ⚡" : "Verified! Welcome back ⚡");
         navigate("/dashboard", { replace: true });
       }
     } finally {
@@ -190,14 +190,14 @@ const Login = () => {
           <>
             <CardHeader className="text-center space-y-4">
               <div className="flex justify-center">
-                <img src="/Volt1.png" alt="Volt Logo" className="h-14 w-auto object-contain" />
+                <img src="/assets/logo-color.png" alt="DigiHire Logo" className="h-14 w-auto object-contain" />
               </div>
               <div>
                 <CardTitle className="text-2xl font-display">
-                  {isSignup ? "Join the VoltSquad ⚡" : "Welcome Back"}
+                  {isSignup ? "Join the DigiHireSquad ⚡" : "Welcome Back"}
                 </CardTitle>
                 <CardDescription className="mt-2">
-                  {isSignup ? "Start earning as a Volt seller" : "Sign in to your dashboard"}
+                  {isSignup ? "Start earning as a DigiHire seller" : "Sign in to your dashboard"}
                 </CardDescription>
               </div>
               {isSignup && (

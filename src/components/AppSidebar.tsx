@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Talent Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Marketplace", url: "/marketplace", icon: ShoppingBag },
   { title: "My Orders", url: "/orders", icon: ShoppingBag },
   { title: "Calculator", url: "/calculator", icon: Calculator },
@@ -57,8 +57,8 @@ export function AppSidebar() {
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2 overflow-hidden h-8">
           <img 
-            src="/Volt1.png" 
-            alt="Volt" 
+            src="/assets/logo-color.png" 
+            alt="DigiHire" 
             className={cn(
               "h-8 object-contain transition-all duration-300",
               collapsed ? "w-8 object-left" : "w-auto"
@@ -99,7 +99,7 @@ export function AppSidebar() {
         {!collapsed && (
           <div className="rounded-lg bg-secondary p-3 text-center">
             <div className="flex items-center justify-center mt-1 scale-90 opacity-80">
-              <img src="/Volt1.png" alt="Volt" className="h-5 w-auto object-contain" />
+              <img src="/assets/logo-color.png" alt="DigiHire" className="h-5 w-auto object-contain" />
             </div>
           </div>
         )}

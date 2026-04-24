@@ -39,7 +39,7 @@ export function AdminLayout() {
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 flex-col border-r bg-card">
         <div className="p-6 border-b">
-          <h1 className="text-xl font-bold">Admin Panel</h1>
+          <h1 className="text-xl font-bold">DigiHire Admin</h1>
           <Link to="/dashboard" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mt-1">
             <ArrowLeft className="h-3 w-3" /> Back to Dashboard
           </Link>
