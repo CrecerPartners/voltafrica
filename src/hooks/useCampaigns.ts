@@ -102,7 +102,8 @@ export function useMyCampaignMemberships() {
       const { data, error } = await supabase
         .from("campaign_memberships" as any)
         .select("*, campaign:campaigns(*)")
-        .eq("seller_id", profile!.id);
+        .eq("seller_id", profile!.id)
+        .order("joined_at", { ascending: false });
       if (error) throw error;
       return data as Array<CampaignMembership & { campaign: Campaign }>;
     },
@@ -133,6 +134,7 @@ export function useJoinCampaign() {
   const { data: profile } = useProfile();
   return useMutation({
     mutationFn: async (campaignId: string) => {
+      if (!profile?.id) throw new Error("Profile not loaded");
       const { data: campaign, error: cErr } = await supabase
         .from("campaigns" as any)
         .select("join_type, tracking_link_base")
@@ -191,6 +193,7 @@ export function useSubmitEntry() {
       evidenceUrl?: string;
       notes?: string;
     }) => {
+      if (!profile?.id) throw new Error("Profile not loaded");
       const { error } = await supabase.from("campaign_submissions" as any).insert({
         campaign_id: input.campaignId,
         seller_id: profile!.id,
