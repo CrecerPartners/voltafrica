@@ -71,9 +71,10 @@ export function useUpdateCampaign() {
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, { id }) => {
       qc.invalidateQueries({ queryKey: ["admin-campaigns"] });
       qc.invalidateQueries({ queryKey: ["campaigns"] });
+      qc.invalidateQueries({ queryKey: ["campaign", id] });
     },
   });
 }
@@ -211,16 +212,6 @@ export function useApproveSubmission() {
           ? (saleAmount * commissionValue) / 100
           : commissionValue;
 
-      const { error: subError } = await supabase
-        .from("campaign_submissions" as any)
-        .update({
-          status: "approved",
-          reviewed_at: new Date().toISOString(),
-          reviewed_by: profile.id,
-        })
-        .eq("id", submissionId);
-      if (subError) throw subError;
-
       const { error: earnError } = await supabase
         .from("campaign_earnings" as any)
         .insert({
@@ -231,6 +222,16 @@ export function useApproveSubmission() {
           status: "pending",
         });
       if (earnError) throw earnError;
+
+      const { error: subError } = await supabase
+        .from("campaign_submissions" as any)
+        .update({
+          status: "approved",
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: profile.id,
+        })
+        .eq("id", submissionId);
+      if (subError) throw subError;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-pending-submissions"] });
@@ -306,6 +307,18 @@ export function useApproveEarning() {
       if (!profile?.id) throw new Error("Profile not loaded");
       const now = new Date().toISOString();
 
+      // Step 1: mark earning as paid (without transaction_id yet)
+      const { error: earnUpdateError } = await supabase
+        .from("campaign_earnings" as any)
+        .update({
+          status: "paid",
+          approved_at: now,
+          approved_by: profile.id,
+        })
+        .eq("id", earningId);
+      if (earnUpdateError) throw earnUpdateError;
+
+      // Step 2: insert transaction (if this fails, earning is paid but has no transaction_id — detectable/fixable)
       const { data: txn, error: txnError } = await supabase
         .from("transactions")
         .insert({
@@ -322,16 +335,11 @@ export function useApproveEarning() {
         .single();
       if (txnError) throw txnError;
 
-      const { error } = await supabase
+      // Step 3: link transaction_id back to earning (best-effort update)
+      await supabase
         .from("campaign_earnings" as any)
-        .update({
-          status: "paid",
-          approved_at: now,
-          approved_by: profile.id,
-          transaction_id: txn.id,
-        })
+        .update({ transaction_id: txn.id })
         .eq("id", earningId);
-      if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-pending-earnings"] });
@@ -350,7 +358,6 @@ export function useRejectEarning() {
         .from("campaign_earnings" as any)
         .update({
           status: "rejected",
-          approved_at: new Date().toISOString(),
           approved_by: profile.id,
         })
         .eq("id", earningId);
