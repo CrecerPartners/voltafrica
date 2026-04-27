@@ -25,12 +25,8 @@ alter table campaigns enable row level security;
 create policy "Sellers can read non-draft campaigns" on campaigns
   for select using (status in ('active','paused','ended'));
 
-create policy "Admins can do everything" on campaigns
-  for all using (
-    auth.uid() in (
-      select user_id from profiles where id = created_by
-    )
-  );
+create policy "Admins can do everything on campaigns" on campaigns
+  for all using (true);
 
 -- campaign_memberships table
 create table campaign_memberships (
