@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Lock, Megaphone } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,18 +29,25 @@ function getMembershipStatus(
 
 export default function Campaigns() {
   const { data: campaigns = [], isLoading } = useCampaigns();
-  const { data: memberships = [] } = useMyCampaignMemberships();
+  const { data: memberships = [], isLoading: membershipsLoading } = useMyCampaignMemberships();
   const join = useJoinCampaign();
+  const [joiningId, setJoiningId] = useState<string | null>(null);
 
   function handleJoin(campaignId: string) {
+    setJoiningId(campaignId);
     join.mutate(campaignId, {
-      onSuccess: () =>
-        toast.success("Joined! Check My Campaigns for your tracking link."),
-      onError: () => toast.error("Failed to join. Please try again."),
+      onSuccess: () => {
+        setJoiningId(null);
+        toast.success("Joined! Check My Campaigns for your tracking link.");
+      },
+      onError: () => {
+        setJoiningId(null);
+        toast.error("Failed to join. Please try again.");
+      },
     });
   }
 
-  if (isLoading) {
+  if (isLoading || membershipsLoading) {
     return (
       <div className="p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -135,7 +143,7 @@ export default function Campaigns() {
                         <Button
                           size="sm"
                           onClick={() => handleJoin(campaign.id)}
-                          disabled={join.isPending}
+                          disabled={joiningId === campaign.id}
                         >
                           Join
                         </Button>
