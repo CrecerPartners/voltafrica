@@ -25,11 +25,7 @@ import { PublicProductLayout } from "@/components/PublicProductLayout";
 import { MobileOnboarding } from "@/components/native/MobileOnboarding";
 import { NativeSplash } from "@/components/native/NativeSplash";
 import LandingPage from "@/pages/former/LandingPage";
-import DigiHireLanding from "@/pages/DigiHireLanding";
-import DigiHireBlog from "@/pages/DigiHireBlog";
-import DigiHireAbout from "@/pages/DigiHireAbout";
-import DigiHireContact from "@/pages/DigiHireContact";
-import DigiHireEvents from "@/pages/DigiHireEvents";
+import DigiHireSalesActivations from "@/pages/DigiHireSalesActivations";
 import AboutStudents from "@/pages/AboutStudents";
 import AboutBrands from "@/pages/AboutBrands";
 import Login from "@/pages/Login";
@@ -63,6 +59,12 @@ import AdminReviews from "@/pages/admin/AdminReviews";
 import AdminVerification from "@/pages/admin/AdminVerification";
 import AdminOrders from "@/pages/admin/AdminOrders";
 import AdminLogin from "@/pages/admin/AdminLogin";
+import Campaigns from "@/pages/Campaigns";
+import CampaignDetail from "@/pages/CampaignDetail";
+import MyCampaigns from "@/pages/MyCampaigns";
+import AdminCampaigns from "@/pages/admin/AdminCampaigns";
+import AdminCampaignMemberships from "@/pages/admin/AdminCampaignMemberships";
+import AdminCampaignEarnings from "@/pages/admin/AdminCampaignEarnings";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -166,19 +168,16 @@ const App = () => {
           <Routes>
             <Route path="/" element={isNative ? <MobileOnboarding /> : <StaticRedirect to="/" />} />
           <Route path="/former-landing" element={<LandingPage />} />
-          <Route path="/react-landing" element={<DigiHireLanding />} />
           <Route path="/blog" element={<StaticRedirect to="/blog" />} />
           <Route path="/about" element={<StaticRedirect to="/about" />} />
           <Route path="/contact" element={<StaticRedirect to="/contact" />} />
           <Route path="/events" element={<StaticRedirect to="/events" />} />
-          <Route path="/react-blog" element={<DigiHireBlog />} />
-          <Route path="/react-about" element={<DigiHireAbout />} />
-          <Route path="/react-contact" element={<DigiHireContact />} />
-          <Route path="/react-events" element={<DigiHireEvents />} />
+          <Route path="/voltsquad" element={<StaticRedirect to="/voltsquad" />} />
           <Route path="/digihire/blog" element={<StaticRedirect to="/blog" />} />
           <Route path="/digihire/about" element={<StaticRedirect to="/about" />} />
           <Route path="/digihire/contact" element={<StaticRedirect to="/contact" />} />
           <Route path="/digihire/events" element={<StaticRedirect to="/events" />} />
+          <Route path="/digihire/sales-activations" element={<DigiHireSalesActivations />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/about/sellers" element={<NativeBlockRoute><AboutStudents /></NativeBlockRoute>} />
           <Route path="/about/students" element={<Navigate to="/about/sellers" replace />} />
@@ -205,6 +204,9 @@ const App = () => {
             <Route path="/training/:courseId" element={<TrainingCourse />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/orders" element={<BuyerOrders />} />
+            <Route path="/dashboard/campaigns" element={<Campaigns />} />
+            <Route path="/dashboard/campaigns/mine" element={<MyCampaigns />} />
+            <Route path="/dashboard/campaigns/:id" element={<CampaignDetail />} />
           </Route>
           <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
             <Route path="/admin" element={<AdminDashboard />} />
@@ -218,6 +220,9 @@ const App = () => {
             <Route path="/admin/reviews" element={<AdminReviews />} />
             <Route path="/admin/verification" element={<AdminVerification />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/campaigns" element={<AdminCampaigns />} />
+            <Route path="/admin/campaigns/memberships" element={<AdminCampaignMemberships />} />
+            <Route path="/admin/campaigns/earnings" element={<AdminCampaignEarnings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

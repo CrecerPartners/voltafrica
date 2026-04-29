@@ -10,6 +10,7 @@ import {
   Calculator,
   GraduationCap,
   ShieldCheck,
+  Megaphone,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -35,6 +36,7 @@ const navItems = [
   { title: "Calculator", url: "/calculator", icon: Calculator },
   { title: "Wallet", url: "/wallet", icon: Wallet },
   { title: "Referrals", url: "/referrals", icon: Users },
+  { title: "Campaigns", url: "/dashboard/campaigns", icon: Megaphone },
   { title: "Sales", url: "/sales", icon: BarChart3 },
   { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
   { title: "Training", url: "/training", icon: GraduationCap },

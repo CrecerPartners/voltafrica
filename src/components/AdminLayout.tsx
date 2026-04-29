@@ -10,6 +10,9 @@ import {
   Star,
   ShieldCheck,
   ClipboardList,
+  Megaphone,
+  UserCheck,
+  BadgeDollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -27,6 +30,9 @@ const navItems = [
   { label: "Training", path: "/admin/training", icon: GraduationCap },
   { label: "Referrals", path: "/admin/referrals", icon: Users },
   { label: "Leaderboard", path: "/admin/leaderboard", icon: LayoutDashboard },
+  { label: "Campaigns", path: "/admin/campaigns", icon: Megaphone },
+  { label: "Memberships", path: "/admin/campaigns/memberships", icon: UserCheck },
+  { label: "Earnings", path: "/admin/campaigns/earnings", icon: BadgeDollarSign },
 ];
 
 export function AdminLayout() {
