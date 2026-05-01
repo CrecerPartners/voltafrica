@@ -1,8 +1,12 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "digihire",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,7 +14,18 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dev:landing": "npm run dev --workspace=apps/landing",
+    "dev:voltsquad": "npm run dev --workspace=apps/voltsquad",
+    "dev:talentpool": "npm run dev --workspace=apps/talentpool",
+    "dev:brands": "npm run dev --workspace=apps/brands",
+    "dev:admin": "npm run dev --workspace=apps/admin",
+    "build:landing": "npm run build --workspace=apps/landing",
+    "build:voltsquad": "npm run build --workspace=apps/voltsquad",
+    "build:talentpool": "npm run build --workspace=apps/talentpool",
+    "build:brands": "npm run build --workspace=apps/brands",
+    "build:admin": "npm run build --workspace=apps/admin",
+    "build:all": "npm run build --workspaces --if-present"
   },
   "dependencies": {
     "@capacitor/app": "^8.0.1",
