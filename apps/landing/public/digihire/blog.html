@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — Digihire</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <style>
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanRegular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanSemiBold.ttf') format('truetype'); font-weight: 600; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBold.ttf') format('truetype'); font-weight: 700; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanExtraBold.ttf') format('truetype'); font-weight: 800; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBlack.ttf') format('truetype'); font-weight: 900; }
+  </style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:#06111F; --navy-1:#0B1D33; --navy-2:#0F2544; --navy-3:#162E52;
+      --cyan:#00C2FF; --cyan-dim:#0096C7; --cyan-soft:#33CFFF;
+      --white:#FFFFFF; --gray-2:#7A9CC5; --gray-bg:#F4F8FF;
+      --radius-lg:18px; --radius-xl:28px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family:'CenturyGothic',sans-serif; background:var(--white); color:#111827; line-height:1.6; overflow-x:hidden; }
+
+    .lucide { display:inline-block; vertical-align:middle; flex-shrink:0; stroke:currentColor; }
+    .ic-sm { width:14px; height:14px; }
+    .ic-md { width:18px; height:18px; }
+    .ic-lg { width:22px; height:22px; }
+
+    .container { max-width:1140px; margin:0 auto; padding:0 28px; }
+
+    .btn {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:11px 24px; border-radius:8px; cursor:pointer;
+      font-family:'CenturyGothic',sans-serif; font-size:14px; font-weight:700;
+      border:none; text-decoration:none; transition:all 0.22s ease; white-space:nowrap;
+    }
+    .btn-cyan { background:var(--cyan); color:var(--navy); box-shadow:0 4px 20px rgba(0,194,255,0.35); }
+    .btn-cyan:hover { background:var(--cyan-soft); transform:translateY(-1px); box-shadow:0 6px 28px rgba(0,194,255,0.5); }
+    .btn-outline-navy { background:transparent; color:var(--navy); border:1.5px solid rgba(0,0,0,0.15); }
+    .btn-outline-navy:hover { border-color:var(--cyan); color:var(--cyan-dim); }
+    .btn-lg { padding:14px 32px; font-size:15px; border-radius:10px; }
+    .btn-sm { padding:8px 18px; font-size:13px; }
+
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity:1; transform:none; }
+    .stagger-grid > * { opacity:0; transform:translateY(22px); transition:opacity 0.55s ease, transform 0.55s ease; }
+    .stagger-grid.in > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+    .stagger-grid.in > *:nth-child(2){opacity:1;transform:none;transition-delay:.08s}
+    .stagger-grid.in > *:nth-child(3){opacity:1;transform:none;transition-delay:.16s}
+    .stagger-grid.in > *:nth-child(4){opacity:1;transform:none;transition-delay:.24s}
+    .stagger-grid.in > *:nth-child(5){opacity:1;transform:none;transition-delay:.32s}
+    .stagger-grid.in > *:nth-child(6){opacity:1;transform:none;transition-delay:.4s}
+    .stagger-grid.in > *:nth-child(7){opacity:1;transform:none;transition-delay:.48s}
+    .stagger-grid.in > *:nth-child(8){opacity:1;transform:none;transition-delay:.56s}
+    .stagger-grid.in > *:nth-child(9){opacity:1;transform:none;transition-delay:.64s}
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      background:transparent; border-bottom:1px solid transparent;
+      transition: top 0.45s cubic-bezier(0.34,1.56,0.64,1), left 0.45s cubic-bezier(0.34,1.56,0.64,1),
+                  right 0.45s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease,
+                  border-radius 0.45s ease, box-shadow 0.3s ease;
+    }
+    #navbar.scrolled {
+      top:14px; left:20%; right:20%;
+      background:rgba(255,255,255,0.78); backdrop-filter:blur(22px);
+      border-radius:999px; border-bottom:1px solid rgba(255,255,255,0.55);
+      box-shadow:0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .nav-inner { display:flex; align-items:center; justify-content:space-between; height:72px; max-width:1340px; width:100%; margin:0 auto; padding:0 28px; transition: height 0.3s, padding 0.3s; }
+    #navbar.scrolled .nav-inner { height:54px; padding:0 24px; }
+    .nav-left { display:flex; align-items:center; }
+    .nav-logo { display:flex; align-items:center; text-decoration:none; flex-shrink:0; margin-right:32px; }
+    .nav-logo-wrap-img { position:relative; display:flex; align-items:center; }
+    .nav-logo-img { height:36px; width:auto; display:block; transition:opacity 0.3s; }
+    .nav-logo-img.logo-white { opacity:1; }
+    .nav-logo-img.logo-color { opacity:0; position:absolute; }
+    #navbar.scrolled .nav-logo-img.logo-white { opacity:0; }
+    #navbar.scrolled .nav-logo-img.logo-color { opacity:1; }
+    .nav-links { display:flex; align-items:center; gap:2px; list-style:none; }
+    .nav-links a { font-size:14px; color:rgba(255,255,255,0.82); text-decoration:none; font-weight:500; padding:6px 14px; border-radius:6px; transition:color 0.2s, background 0.2s; }
+    .nav-links a:hover { color:var(--white); }
+    #navbar.scrolled .nav-links a { color:#1E3A5F; }
+    #navbar.scrolled .nav-links a:hover { color:var(--navy); background:rgba(0,0,0,0.04); }
+    .nav-links a.active-page { color:var(--cyan); font-weight:700; }
+    #navbar.scrolled .nav-links a.active-page { color:var(--cyan-dim); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .btn-get-started { font-size:14px; font-weight:700; color:rgba(255,255,255,0.88); border:1.5px solid rgba(255,255,255,0.3); border-radius:8px; padding:7px 18px; background:transparent; cursor:pointer; text-decoration:none; transition:all 0.2s; font-family:'CenturyGothic',sans-serif; }
+    .btn-get-started:hover { border-color:var(--white); color:var(--white); }
+    #navbar.scrolled .btn-get-started { color:var(--navy); border-color:rgba(0,0,0,0.18); }
+    #navbar.scrolled .btn-get-started:hover { border-color:var(--cyan); color:var(--cyan); }
+    .btn-launch-campaign { font-size:14px; font-weight:700; background:var(--cyan); color:var(--navy); border:none; border-radius:8px; padding:9px 20px; cursor:pointer; text-decoration:none; transition:all 0.22s; font-family:'CenturyGothic',sans-serif; box-shadow:0 3px 12px rgba(0,194,255,0.35); }
+    .btn-launch-campaign:hover { background:var(--cyan-soft); transform:translateY(-1px); }
+
+    /* ── HERO ── */
+    .blog-hero { background:var(--navy); padding:160px 0 100px; position:relative; overflow:hidden; text-align:center; }
+    .blog-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 55% at 50% 0%, rgba(0,194,255,0.12) 0%, transparent 70%); pointer-events:none; }
+    .blog-hero-label { font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:rgba(0,194,255,0.7); margin-bottom:18px; }
+    .blog-hero-title { font-family:'CenturyGothic',sans-serif; font-size:clamp(38px, 6vw, 72px); font-weight:900; color:var(--white); line-height:1.06; letter-spacing:-0.03em; margin-bottom:18px; }
+    .blog-hero-sub { font-size:clamp(14px, 1.6vw, 16px); color:rgba(255,255,255,0.55); max-width:560px; margin:0 auto 40px; line-height:1.7; }
+
+    /* ── CATEGORY FILTER ── */
+    .blog-filter { background:var(--white); padding:32px 0; border-bottom:1px solid #EEF3FA; position:sticky; top:0; z-index:100; }
+    .blog-filter-inner { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .filter-btn { padding:8px 20px; border-radius:999px; font-size:13px; font-weight:700; font-family:'CenturyGothic',sans-serif; cursor:pointer; transition:all 0.2s; border:1.5px solid #D8E6F2; background:var(--white); color:#4A6480; text-decoration:none; }
+    .filter-btn:hover { background:var(--navy); color:var(--white); border-color:var(--navy); }
+    .filter-btn.active { background:var(--cyan); color:var(--navy); border-color:var(--cyan); }
+
+    /* ── FEATURED ARTICLE ── */
+    .featured-section { padding:80px 0 60px; background:var(--white); }
+    .featured-label { font-size:11px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--cyan-dim); margin-bottom:24px; }
+    .featured-card { display:grid; grid-template-columns:1fr 1fr; border-radius:var(--radius-xl); overflow:hidden; border:1px solid #E2EBF5; box-shadow:0 12px 48px rgba(0,0,0,0.07); transition:box-shadow 0.3s, transform 0.3s; text-decoration:none; }
+    .featured-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.11); }
+    .featured-img { position:relative; min-height:380px; overflow:hidden; }
+    .featured-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s; }
+    .featured-card:hover .featured-img img { transform:scale(1.04); }
+    .featured-badge { position:absolute; top:20px; left:20px; background:var(--cyan); color:var(--navy); font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; padding:5px 14px; border-radius:999px; }
+    .featured-body { padding:52px 48px; display:flex; flex-direction:column; justify-content:center; background:var(--white); }
+    .featured-cat { display:inline-block; align-self:flex-start; font-size:10px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:4px 12px; border-radius:999px; background:rgba(0,194,255,0.15); color:var(--cyan-dim); margin-bottom:16px; }
+    .featured-title { font-family:'CenturyGothic',sans-serif; font-size:clamp(22px, 2.8vw, 34px); font-weight:800; color:var(--navy); line-height:1.15; letter-spacing:-0.02em; margin-bottom:14px; }
+    .featured-desc { font-size:15px; color:#5B7A9E; line-height:1.7; margin-bottom:24px; }
+    .featured-meta { display:flex; align-items:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+    .featured-meta-item { display:flex; align-items:center; gap:6px; font-size:13px; color:#6B849E; }
+    .featured-meta-item .lucide { color:var(--cyan-dim); }
+    .featured-read { display:inline-flex; align-items:center; gap:8px; color:var(--cyan-dim); font-weight:700; font-size:14px; }
+
+    /* ── ARTICLES GRID ── */
+    .articles-section { padding:60px 0 80px; background:var(--gray-bg); }
+    .articles-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:36px; flex-wrap:wrap; gap:12px; }
+    .articles-header h2 { font-family:'CenturyGothic',sans-serif; font-size:clamp(22px, 3vw, 32px); font-weight:800; color:var(--navy); letter-spacing:-0.02em; }
+    .articles-header a { font-size:14px; font-weight:600; color:var(--cyan-dim); text-decoration:none; }
+    .articles-header a:hover { text-decoration:underline; }
+    .articles-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+
+    .article-card { background:var(--white); border-radius:var(--radius-lg); overflow:hidden; border:1px solid #E8F0F8; transition:transform 0.3s, box-shadow 0.3s, border-color 0.3s; text-decoration:none; display:flex; flex-direction:column; }
+    .article-card:hover { transform:translateY(-5px); box-shadow:0 16px 44px rgba(0,0,0,0.09); border-color:rgba(0,194,255,0.2); }
+    .article-card-img { position:relative; height:200px; overflow:hidden; }
+    .article-card-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+    .article-card:hover .article-card-img img { transform:scale(1.05); }
+    .article-cat-badge { position:absolute; top:14px; left:14px; font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; padding:4px 12px; border-radius:999px; }
+    .cat-sales        { background:rgba(0,194,255,0.15); color:var(--cyan-dim); }
+    .cat-recruitment  { background:rgba(99,102,241,0.15); color:#4F46E5; }
+    .cat-campaigns    { background:rgba(16,185,129,0.15); color:#059669; }
+    .cat-activations  { background:rgba(245,158,11,0.15); color:#D97706; }
+    .cat-talent       { background:rgba(236,72,153,0.15); color:#BE185D; }
+    .cat-future       { background:rgba(139,92,246,0.15); color:#6D28D9; }
+    .cat-updates      { background:rgba(6,17,31,0.08); color:var(--navy); }
+
+    .article-card-body { padding:22px 20px; flex:1; display:flex; flex-direction:column; }
+    .article-card-title { font-family:'CenturyGothic',sans-serif; font-size:17px; font-weight:800; color:var(--navy); line-height:1.3; margin-bottom:10px; letter-spacing:-0.01em; }
+    .article-card-desc { font-size:13px; color:#6B849E; line-height:1.6; margin-bottom:18px; flex:1; }
+    .article-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:16px; border-top:1px solid #EEF3FA; }
+    .article-card-date { font-size:12px; color:#8AA5BF; display:flex; align-items:center; gap:6px; }
+    .article-card-date .lucide { color:var(--cyan-dim); }
+    .article-card-read { font-size:13px; color:var(--cyan-dim); font-weight:700; display:inline-flex; align-items:center; gap:4px; }
+
+    /* ── NEWSLETTER CTA ── */
+    .newsletter-cta { background:var(--navy); padding:100px 0; text-align:center; position:relative; overflow:hidden; }
+    .newsletter-cta::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,194,255,0.12) 0%, transparent 70%); pointer-events:none; }
+    .newsletter-cta-inner { position:relative; z-index:2; max-width:560px; margin:0 auto; }
+    .newsletter-label { font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:rgba(0,194,255,0.7); margin-bottom:18px; }
+    .newsletter-title { font-family:'CenturyGothic',sans-serif; font-size:clamp(26px, 4.5vw, 44px); font-weight:800; color:var(--white); letter-spacing:-0.025em; margin-bottom:16px; line-height:1.15; }
+    .newsletter-sub { font-size:15px; color:rgba(255,255,255,0.55); margin-bottom:32px; line-height:1.7; }
+    .newsletter-form { display:flex; gap:10px; max-width:460px; margin:0 auto; flex-wrap:wrap; justify-content:center; }
+    .newsletter-input { flex:1; min-width:220px; padding:13px 18px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:var(--white); font-family:'CenturyGothic',sans-serif; font-size:14px; transition:border-color 0.2s, background 0.2s; }
+    .newsletter-input::placeholder { color:rgba(255,255,255,0.4); }
+    .newsletter-input:focus { outline:none; border-color:var(--cyan); background:rgba(255,255,255,0.08); }
+
+    /* ── FOOTER ── */
+    footer { background:var(--navy); border-top:1px solid rgba(0,194,255,0.1); padding:56px 0 28px; }
+    .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px; }
+    .footer-tagline { font-size:13px; color:var(--gray-2); line-height:1.65; max-width:220px; margin-bottom:20px; }
+    .footer-socials { display:flex; gap:8px; }
+    .footer-social { width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--gray-2); display:flex; align-items:center; justify-content:center; font-size:13px; text-decoration:none; transition:all 0.2s; }
+    .footer-social:hover { border-color:rgba(0,194,255,0.4); color:var(--cyan); }
+    .footer-logo-wrap { margin-bottom:16px; }
+    .footer-col-title { font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:16px; }
+    .footer-col-links { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .footer-col-links a { font-size:14px; color:var(--gray-2); text-decoration:none; transition:color 0.2s; }
+    .footer-col-links a:hover { color:var(--white); }
+    .footer-bottom { padding-top:24px; border-top:1px solid rgba(255,255,255,0.06); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+    .footer-copy { font-size:12px; color:rgba(255,255,255,0.3); }
+    .footer-locations { display:flex; flex-wrap:wrap; gap:20px; }
+    .footer-location-item { display:flex; align-items:center; gap:6px; font-size:12px; color:rgba(255,255,255,0.3); }
+
+    @media (max-width: 900px) {
+      .featured-card { grid-template-columns:1fr; }
+      .featured-img { min-height:260px; }
+      .articles-grid { grid-template-columns:1fr 1fr; }
+      .footer-grid { grid-template-columns:1fr 1fr 1fr; }
+      .footer-grid > :first-child { grid-column:1 / -1; }
+    }
+    @media (max-width: 600px) {
+      .articles-grid { grid-template-columns:1fr; }
+      .footer-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAVBAR ════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-wrap-img">
+          <img src="assets/logo-white.png" alt="DigiHire" class="nav-logo-img logo-white" />
+          <img src="assets/logo-color.png" alt="DigiHire" class="nav-logo-img logo-color" />
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Why DigiHire?</a></li>
+        <li><a href="index.html">Brands</a></li>
+        <li><a href="index.html">For Talents</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="blog.html" class="active-page">Blog</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <a href="contact.html" class="btn-get-started">Contact Us</a>
+      <a href="index.html" class="btn-launch-campaign">Launch a Campaign →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════ HERO ══════════════════════════════════════ -->
+<section class="blog-hero">
+  <div class="container">
+    <div class="reveal">
+      <p class="blog-hero-label">Digihire Blog</p>
+      <h1 class="blog-hero-title">Insights, ideas, and playbooks<br/>from the sales frontline</h1>
+      <p class="blog-hero-sub">Stories, strategies, and thought leadership on sales, recruitment, campaigns, activations, and the future of work across Africa.</p>
+      <a href="#articles" class="btn btn-cyan btn-lg">
+        <i data-lucide="book-open" class="lucide ic-md"></i> Read Latest Articles
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FILTER BAR ════════════════════════════════ -->
+<div class="blog-filter">
+  <div class="container">
+    <div class="blog-filter-inner">
+      <button class="filter-btn active" onclick="filterArticles('all', this)">All</button>
+      <button class="filter-btn" onclick="filterArticles('sales', this)">Sales</button>
+      <button class="filter-btn" onclick="filterArticles('recruitment', this)">Recruitment</button>
+      <button class="filter-btn" onclick="filterArticles('campaigns', this)">Campaigns</button>
+      <button class="filter-btn" onclick="filterArticles('activations', this)">Activations</button>
+      <button class="filter-btn" onclick="filterArticles('talent', this)">Talent Growth</button>
+      <button class="filter-btn" onclick="filterArticles('future', this)">Future of Work</button>
+      <button class="filter-btn" onclick="filterArticles('updates', this)">Digihire Updates</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FEATURED ARTICLE ═════════════════════════ -->
+<section class="featured-section">
+  <div class="container">
+    <p class="featured-label reveal">Featured Article</p>
+    <a href="#" class="featured-card reveal">
+      <div class="featured-img">
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=900&h=600&fit=crop&crop=center&q=80" alt="Featured article" />
+        <span class="featured-badge">Featured</span>
+      </div>
+      <div class="featured-body">
+        <span class="featured-cat">Campaigns</span>
+        <h2 class="featured-title">How Brands Are Winning Africa with Human-Led Sales Campaigns</h2>
+        <p class="featured-desc">A deep dive into how the fastest-growing brands on the continent are combining local sales talent, structured campaigns, and VoltSquad to acquire users at scale — and what the next wave of operators can learn from them.</p>
+        <div class="featured-meta">
+          <span class="featured-meta-item"><i data-lucide="user" class="lucide ic-sm"></i> Digihire Team</span>
+          <span class="featured-meta-item"><i data-lucide="calendar" class="lucide ic-sm"></i> April 22, 2026</span>
+          <span class="featured-meta-item"><i data-lucide="clock" class="lucide ic-sm"></i> 8 min read</span>
+        </div>
+        <span class="featured-read">Read the full story <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ════ ARTICLES GRID ═════════════════════════════ -->
+<section class="articles-section" id="articles">
+  <div class="container">
+    <div class="articles-header reveal">
+      <h2>Latest Articles</h2>
+      <a href="#">View all →</a>
+    </div>
+    <div class="articles-grid stagger-grid">
+
+      <a href="#" class="article-card" data-category="sales">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=700&h=400&fit=crop&crop=center&q=80" alt="Sales" />
+          <span class="article-cat-badge cat-sales">Sales</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">Five Objection-Handling Frameworks That Actually Close Deals</h3>
+          <p class="article-card-desc">Battle-tested scripts and mental models our top sellers use to turn "not now" into signed contracts.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Apr 18, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="recruitment">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1573497491208-6b1acb260507?w=700&h=400&fit=crop&crop=center&q=80" alt="Recruitment" />
+          <span class="article-cat-badge cat-recruitment">Recruitment</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">How to Hire a Sales Team That Actually Sells — Not Just Interviews Well</h3>
+          <p class="article-card-desc">The hiring signals we look for, the red flags we avoid, and how Digihire vets sales talent before introductions.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Apr 14, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="campaigns">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1552581234-26160f608093?w=700&h=400&fit=crop&crop=center&q=80" alt="Campaigns" />
+          <span class="article-cat-badge cat-campaigns">Campaigns</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">Launching a VoltSquad Campaign: A Step-by-Step Playbook</h3>
+          <p class="article-card-desc">From brief to activation in under 14 days — how brands structure campaigns that hit their acquisition targets.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Apr 10, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="activations">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=400&fit=crop&crop=center&q=80" alt="Activations" />
+          <span class="article-cat-badge cat-activations">Activations</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">City-Wide Activations: What Works in Lagos vs. Accra vs. Nairobi</h3>
+          <p class="article-card-desc">Regional nuances, cultural cues, and on-the-ground tactics that separate a good activation from a viral one.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Apr 6, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="talent">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=700&h=400&fit=crop&crop=center&q=80" alt="Talent Growth" />
+          <span class="article-cat-badge cat-talent">Talent Growth</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">Breaking Into Tech Sales with Zero Experience — A Real Roadmap</h3>
+          <p class="article-card-desc">What to learn, what to skip, and the portfolio moves that get entry-level sales candidates taken seriously.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Apr 2, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="future">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=700&h=400&fit=crop&crop=center&q=80" alt="Future of Work" />
+          <span class="article-cat-badge cat-future">Future of Work</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">Why Africa's Next Billion-Dollar Companies Will Be Sales-Led</h3>
+          <p class="article-card-desc">A thesis on why distribution — not product — is the defining moat for the next decade of African scale-ups.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Mar 28, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="updates">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=700&h=400&fit=crop&crop=center&q=80" alt="Digihire Updates" />
+          <span class="article-cat-badge cat-updates">Digihire Updates</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">Digihire Q1 Recap: 12 Campaigns, 48 Hires, 3 New Markets</h3>
+          <p class="article-card-desc">A look back at the campaigns we ran, the talent we placed, and the markets we entered in the first quarter.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Mar 22, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="sales">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=700&h=400&fit=crop&crop=center&q=80" alt="Sales" />
+          <span class="article-cat-badge cat-sales">Sales</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">The Prospecting Habits of Africa's Top 1% Sellers</h3>
+          <p class="article-card-desc">Inside the daily routines, tools, and mental models of the sellers consistently crushing quota on our platform.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Mar 17, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="article-card" data-category="recruitment">
+        <div class="article-card-img">
+          <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=700&h=400&fit=crop&crop=center&q=80" alt="Recruitment" />
+          <span class="article-cat-badge cat-recruitment">Recruitment</span>
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">Compensation Benchmarks for African Sales Roles in 2026</h3>
+          <p class="article-card-desc">What fair, market-competitive pay looks like across SDR, AE, and sales leadership roles in Nigeria, Ghana, and Kenya.</p>
+          <div class="article-card-footer">
+            <span class="article-card-date"><i data-lucide="calendar" class="lucide ic-sm"></i> Mar 12, 2026</span>
+            <span class="article-card-read">Read <i data-lucide="arrow-right" class="lucide ic-sm"></i></span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ NEWSLETTER CTA ════════════════════════════ -->
+<section class="newsletter-cta">
+  <div class="container">
+    <div class="newsletter-cta-inner reveal">
+      <p class="newsletter-label">Stay in the loop</p>
+      <h2 class="newsletter-title">Get Digihire insights delivered to you</h2>
+      <p class="newsletter-sub">Fresh playbooks, campaign case studies, and hiring insights — straight to your inbox. No spam, ever.</p>
+      <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thanks! We will be in touch soon.'); this.reset();">
+        <input type="email" class="newsletter-input" placeholder="Your email address" required />
+        <button type="submit" class="btn btn-cyan btn-lg">
+          <i data-lucide="mail" class="lucide ic-md"></i> Subscribe
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ═════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-wrap">
+          <a href="index.html">
+            <img src="assets/logo-white.png" alt="DigiHire" style="height:32px;width:auto;" />
+          </a>
+        </div>
+        <p class="footer-tagline">Africa's premier sales ecosystem connecting brands, talent, and opportunity.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social">𝕏</a>
+          <a href="#" class="footer-social">in</a>
+          <a href="#" class="footer-social">f</a>
+          <a href="#" class="footer-social">ig</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <ul class="footer-col-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Solutions</p>
+        <ul class="footer-col-links">
+          <li><a href="#">VoltSquad</a></li>
+          <li><a href="#">Sales Recruitment</a></li>
+          <li><a href="#">Activations &amp; Field Marketing</a></li>
+          <li><a href="#">Sales Academy</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Talent</p>
+        <ul class="footer-col-links">
+          <li><a href="#">Join the Talent Pool</a></li>
+          <li><a href="#">Sales Academy</a></li>
+          <li><a href="#">VoltSquad</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Brands</p>
+        <ul class="footer-col-links">
+          <li><a href="#">VoltSquad</a></li>
+          <li><a href="#">Sales Recruitment</a></li>
+          <li><a href="#">Activations &amp; Field Marketing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 DigiHire Africa Ltd. All rights reserved.</p>
+      <div class="footer-locations">
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Lagos, Nigeria</span></div>
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Bury St. Edmunds, UK</span></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 60));
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal, .stagger-grid').forEach(el => obs.observe(el));
+
+  function filterArticles(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.article-card').forEach(card => {
+      const show = cat === 'all' || card.dataset.category === cat;
+      card.style.display = show ? '' : 'none';
+    });
+  }
+
+  lucide.createIcons();
+</script>
+</body>
+</html>
