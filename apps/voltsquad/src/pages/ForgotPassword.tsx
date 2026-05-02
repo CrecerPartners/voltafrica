@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
@@ -111,4 +111,5 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
+
 

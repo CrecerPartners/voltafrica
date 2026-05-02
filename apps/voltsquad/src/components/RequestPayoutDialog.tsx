@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +9,8 @@ import {
 } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
-import { useProfile } from "@/hooks/useProfile";
-import { useSales } from "@/hooks/useSales";
+import { useProfile } from "@digihire/shared";
+import { useSales } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
 import { supabase } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
@@ -122,7 +122,7 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
               <div>
                 <p className="text-sm font-medium text-warning">Make your first sale to unlock payouts</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Your â‚¦500 signup bonus will be available for withdrawal after you complete your first sale. Head to the marketplace to get started!
+                  Your ₦500 signup bonus will be available for withdrawal after you complete your first sale. Head to the marketplace to get started!
                 </p>
                 <Button variant="outline" size="sm" className="mt-3" asChild>
                   <Link to="/marketplace" onClick={() => onOpenChange(false)}>Browse Products</Link>
@@ -149,7 +149,7 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
 
           {/* Amount input */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">Amount (â‚¦)</label>
+            <label className="text-xs font-medium text-muted-foreground">Amount (₦)</label>
             <Input
               type="number"
               min={MIN_PAYOUT}
@@ -252,4 +252,5 @@ export function RequestPayoutDialog({ open, onOpenChange, availableBalance }: Re
     </Dialog>
   );
 }
+
 

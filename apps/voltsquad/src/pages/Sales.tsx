@@ -1,8 +1,8 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
-import { useSales, useDeleteSale, Sale } from "@/hooks/useSales";
+import { useSales, useDeleteSale, Sale } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { ShoppingCart, TrendingUp, Star, Loader2, PlusCircle, AlertCircle, Pencil, Trash2 } from "lucide-react";
@@ -97,7 +97,7 @@ const Sales = () => {
         <Card className="border-border/50 shadow-sm">
           <CardContent className="p-4 text-center">
             <Star className="h-5 w-5 mx-auto text-warning mb-1.5" />
-            <p className="text-sm font-bold font-display truncate max-w-[200px] mx-auto">{topProduct?.product_name || "â€”"}</p>
+            <p className="text-sm font-bold font-display truncate max-w-[200px] mx-auto">{topProduct?.product_name || "—"}</p>
             <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Top Product</p>
           </CardContent>
         </Card>
@@ -150,8 +150,8 @@ const Sales = () => {
                       {sale.product_type}
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden sm:table-cell text-muted-foreground text-xs">{sale.customer || "â€”"}</TableCell>
-                  <TableCell className="text-right text-sm font-medium">{sale.amount > 0 ? formatNaira(sale.amount) : "â€”"}</TableCell>
+                  <TableCell className="hidden sm:table-cell text-muted-foreground text-xs">{sale.customer || "—"}</TableCell>
+                  <TableCell className="text-right text-sm font-medium">{sale.amount > 0 ? formatNaira(sale.amount) : "—"}</TableCell>
                   <TableCell className="text-right text-sm font-bold text-success">{formatNaira(sale.commission)}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={`${statusColors[sale.status]} text-[10px] font-bold uppercase px-2 py-0.5`}>
@@ -202,4 +202,5 @@ const Sales = () => {
 };
 
 export default Sales;
+
 

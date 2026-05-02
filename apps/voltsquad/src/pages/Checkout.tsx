@@ -1,8 +1,8 @@
-﻿import { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts } from "@digihire/shared";
 import { supabase } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { Button } from "@digihire/shared";
@@ -267,7 +267,7 @@ const Checkout = () => {
               {items.map((item) => (
                 <div key={item.productId} className="flex justify-between text-sm">
                   <span className="truncate flex-1 mr-2">
-                    {item.name} Ã— {item.quantity}
+                    {item.name} × {item.quantity}
                   </span>
                   <span className="font-medium shrink-0">{formatNaira(item.price * item.quantity)}</span>
                 </div>
@@ -296,4 +296,5 @@ const Checkout = () => {
 };
 
 export default Checkout;
+
 

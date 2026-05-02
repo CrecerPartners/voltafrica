@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
@@ -73,7 +73,7 @@ const Login = () => {
           return;
         }
         const fullName = `${firstName.trim()} ${lastName.trim()}`;
-        const university = `${sellerType} â€” ${city}`;
+        const university = `${sellerType} — ${city}`;
         const { error } = await signUp(email, password, fullName, university, sellerType);
         if (error) {
           toast.error(error.message);
@@ -103,7 +103,7 @@ const Login = () => {
           }
 
           // No TOTP? Fallback to the custom Email OTP flow
-          // Password valid â€” sign out and send OTP for second-factor verification
+          // Password valid — sign out and send OTP for second-factor verification
           await signOut({ skipRedirect: true });
           isProcessingLogin.current = false;
           const { error: otpError } = await sendLoginOtp(email);
@@ -128,7 +128,7 @@ const Login = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success(isSignup ? "Email verified! Welcome to DigiHire âš¡" : "Verified! Welcome back âš¡");
+        toast.success(isSignup ? "Email verified! Welcome to DigiHire ⚡" : "Verified! Welcome back ⚡");
         navigate("/dashboard", { replace: true });
       }
     } finally {
@@ -194,7 +194,7 @@ const Login = () => {
               </div>
               <div>
                 <CardTitle className="text-2xl font-display">
-                  {isSignup ? "Join the DigiHireSquad âš¡" : "Welcome Back"}
+                  {isSignup ? "Join the DigiHireSquad ⚡" : "Welcome Back"}
                 </CardTitle>
                 <CardDescription className="mt-2">
                   {isSignup ? "Start earning as a DigiHire seller" : "Sign in to your dashboard"}
@@ -203,7 +203,7 @@ const Login = () => {
               {isSignup && (
                 <div className="flex items-center justify-center gap-2 rounded-lg bg-primary/10 p-3 text-sm">
                   <Gift className="h-4 w-4 text-primary" />
-                  <span className="text-primary font-medium">Get â‚¦500 signup bonus!</span>
+                  <span className="text-primary font-medium">Get ₦500 signup bonus!</span>
                 </div>
               )}
             </CardHeader>
@@ -227,7 +227,7 @@ const Login = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">Password <span className="text-destructive">*</span></label>
-                  <Input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary border-border" required minLength={6} />
+                  <Input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary border-border" required minLength={6} />
                 </div>
                 {isSignup && (
                   <>
@@ -271,4 +271,5 @@ const Login = () => {
 };
 
 export default Login;
+
 

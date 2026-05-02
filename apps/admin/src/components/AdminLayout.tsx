@@ -1,4 +1,4 @@
-﻿import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -15,7 +15,7 @@ import {
   BadgeDollarSign,
 } from "lucide-react";
 import { cn } from "@digihire/shared";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@digihire/shared";
 import { AdminMobileBottomNav } from "@/components/admin/AdminMobileBottomNav";
 
 const navItems = [
@@ -87,4 +87,5 @@ export function AdminLayout() {
     </div>
   );
 }
+
 

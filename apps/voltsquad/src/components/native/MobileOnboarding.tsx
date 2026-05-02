@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { ArrowRight } from "lucide-react";
@@ -100,4 +100,5 @@ export function MobileOnboarding() {
     </div>
   );
 }
+
 

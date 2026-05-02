@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
@@ -8,9 +8,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@digihire/shared";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
-import { useProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfile";
+import { useProfile, useUpdateProfile, useUploadAvatar } from "@digihire/shared";
 import { useMyShopItems, useRemoveFromShop } from "@/hooks/useSellerShop";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
 import { supabase } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
@@ -76,7 +76,7 @@ const Profile = () => {
   }, []);
 
   const deriveAccountType = (university: string): string => {
-    const raw = university?.split(" â€” ")[0]?.trim() || "";
+    const raw = university?.split(" — ")[0]?.trim() || "";
     const map: Record<string, string> = {
       "Student": "student", "NYSC member": "nysc", "Fresh grad": "graduate",
       "Corporate": "corporate", "Micro-influencer": "creator",
@@ -298,11 +298,11 @@ const Profile = () => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-semibold text-lg">{profile?.name || "â€”"}</p>
+              <p className="font-semibold text-lg">{profile?.name || "—"}</p>
               {isVerified && <ShieldCheck className="h-4 w-4 text-primary" />}
               {isUnverified && <Badge variant="outline" className="text-warning border-warning/30 text-[10px] px-1.5 py-0">Unverified</Badge>}
             </div>
-            <p className="text-sm text-muted-foreground">{profile?.university || "â€”"}</p>
+            <p className="text-sm text-muted-foreground">{profile?.university || "—"}</p>
             <p className="text-xs text-primary font-medium mt-1">Tier: {profile?.tier || "Bronze"}</p>
           </div>
         </CardContent>
@@ -315,7 +315,7 @@ const Profile = () => {
           <TabsTrigger value="security" className="flex-1 hidden sm:flex"><Lock className="h-3.5 w-3.5 mr-1.5" /> Security</TabsTrigger>
         </TabsList>
 
-        {/* â”€â”€â”€ PROFILE TAB â”€â”€â”€ */}
+        {/* ─── PROFILE TAB ─── */}
         <TabsContent value="profile" className="space-y-4">
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-4">
@@ -483,7 +483,7 @@ const Profile = () => {
           </Button>
         </TabsContent>
 
-        {/* â”€â”€â”€ SECURITY TAB â”€â”€â”€ */}
+        {/* ─── SECURITY TAB ─── */}
         <TabsContent value="security" className="space-y-4">
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-4">
@@ -537,7 +537,7 @@ const Profile = () => {
            </Card>
         </TabsContent>
 
-        {/* â”€â”€â”€ MY SHOP TAB â”€â”€â”€ */}
+        {/* ─── MY SHOP TAB ─── */}
         <TabsContent value="shop" className="space-y-4">
           <Card className="border-border/50">
             <CardContent className="p-6 space-y-5">
@@ -622,8 +622,8 @@ const Profile = () => {
                           <p className="text-sm font-medium truncate">{p.name}</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-xs text-muted-foreground">{p.brand}</span>
-                            {p.price > 0 && <><span className="text-xs text-muted-foreground">â€¢</span><span className="text-xs font-medium">{formatNaira(p.price)}</span></>}
-                            <span className="text-xs text-muted-foreground">â€¢</span>
+                            {p.price > 0 && <><span className="text-xs text-muted-foreground">•</span><span className="text-xs font-medium">{formatNaira(p.price)}</span></>}
+                            <span className="text-xs text-muted-foreground">•</span>
                             <span className="text-xs font-semibold text-primary">{p.commissionRate}%</span>
                           </div>
                         </div>
@@ -650,4 +650,5 @@ const Profile = () => {
 };
 
 export default Profile;
+
 

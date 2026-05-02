@@ -1,4 +1,4 @@
-﻿import { useAdminRole } from "@/hooks/useAdminRole";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import { useAuth } from "@digihire/shared";
 import { Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -29,4 +29,5 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
   if (!isAdmin) return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
 }
+
 

@@ -1,4 +1,4 @@
-﻿import { Button } from "@digihire/shared";
+import { Button } from "@digihire/shared";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
@@ -17,7 +17,7 @@ export function AdminTablePagination({ page, totalPages, onPageChange, totalItem
   return (
     <div className="flex items-center justify-between px-4 py-3 border-t">
       <p className="text-xs text-muted-foreground">
-        {start}â€“{end} of {totalItems}
+        {start}–{end} of {totalItems}
       </p>
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon" className="h-8 w-8" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
@@ -54,4 +54,5 @@ export function paginateItems<T>(items: T[] | undefined, page: number, pageSize 
   const start = (page - 1) * pageSize;
   return items.slice(start, start + pageSize);
 }
+
 

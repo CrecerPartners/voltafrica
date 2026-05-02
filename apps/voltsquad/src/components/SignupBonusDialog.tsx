@@ -1,4 +1,4 @@
-﻿import {
+import {
   Dialog,
   DialogContent,
 } from "@digihire/shared";
@@ -27,7 +27,7 @@ export function SignupBonusDialog({ open, onOpenChange, name }: SignupBonusDialo
           
           <div className="space-y-2">
             <h2 className="text-2xl font-bold font-display">
-              Welcome, {name}! ðŸŽ‰
+              Welcome, {name}! 🎉
             </h2>
             <p className="text-muted-foreground text-sm">
               You just earned your signup bonus!
@@ -36,11 +36,11 @@ export function SignupBonusDialog({ open, onOpenChange, name }: SignupBonusDialo
 
           <div className="rounded-xl bg-primary/10 border border-primary/20 px-6 py-4 w-full">
             <p className="text-xs text-muted-foreground mb-1">Bonus Credited</p>
-            <p className="text-3xl font-bold font-display text-primary">â‚¦500</p>
+            <p className="text-3xl font-bold font-display text-primary">₦500</p>
           </div>
 
           <p className="text-xs text-muted-foreground px-4">
-            Make your first sale to unlock payouts and start cashing out your earnings! âš¡
+            Make your first sale to unlock payouts and start cashing out your earnings! ⚡
           </p>
 
           <Button className="w-full volt-gradient font-semibold" onClick={() => onOpenChange(false)}>
@@ -51,4 +51,5 @@ export function SignupBonusDialog({ open, onOpenChange, name }: SignupBonusDialo
     </Dialog>
   );
 }
+
 

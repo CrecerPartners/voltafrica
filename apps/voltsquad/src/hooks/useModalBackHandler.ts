@@ -1,4 +1,4 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 
 /**
  * Pushes a history entry when a modal opens, and pops it on close.
@@ -28,4 +28,5 @@ export function useModalBackHandler(open: boolean, onClose: () => void) {
     };
   }, [open, onClose]);
 }
+
 

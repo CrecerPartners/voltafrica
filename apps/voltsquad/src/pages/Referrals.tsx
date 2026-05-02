@@ -1,8 +1,8 @@
-﻿import { Card, CardContent } from "@digihire/shared";
+import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
-import { useProfile } from "@/hooks/useProfile";
-import { useReferrals } from "@/hooks/useReferrals";
+import { useProfile } from "@digihire/shared";
+import { useReferrals } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { Copy, Share2, Users, Gift, TrendingUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -120,4 +120,5 @@ const Referrals = () => {
 };
 
 export default Referrals;
+
 

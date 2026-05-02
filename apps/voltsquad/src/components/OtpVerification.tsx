@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@digihire/shared";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@digihire/shared";
 import { ArrowLeft, Mail } from "lucide-react";
@@ -100,4 +100,5 @@ const OtpVerification = ({ email, onVerify, onResend, onBack, loading }: OtpVeri
 };
 
 export default OtpVerification;
+
 

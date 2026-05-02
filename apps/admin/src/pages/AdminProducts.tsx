@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAdminProducts, useUpsertProduct, useDeleteProduct, useInsertLicenseKeys } from "@/hooks/useAdminData";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
@@ -6,7 +6,7 @@ import { Badge } from "@digihire/shared";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon, Search } from "lucide-react";
 import { Textarea } from "@digihire/shared";
 import { supabase } from "@digihire/shared";
@@ -524,7 +524,7 @@ export default function AdminProducts() {
                     {p.category}
                     {p.subcategory && <span className="text-muted-foreground block text-[10px]">{p.subcategory}</span>}
                   </TableCell>
-                  <TableCell>â‚¦{Number(p.price).toLocaleString()}</TableCell>
+                  <TableCell>₦{Number(p.price).toLocaleString()}</TableCell>
                   <TableCell>{p.commission_rate}% <span className="text-xs text-muted-foreground">({p.commission_model || "percentage"})</span></TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
@@ -630,14 +630,14 @@ export default function AdminProducts() {
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="percentage">Percentage (%)</SelectItem>
-                    <SelectItem value="fixed">Fixed Amount (â‚¦)</SelectItem>
-                    <SelectItem value="per_signup">Per Sign-Up (â‚¦)</SelectItem>
-                    <SelectItem value="per_install">Per Install (â‚¦)</SelectItem>
+                    <SelectItem value="fixed">Fixed Amount (₦)</SelectItem>
+                    <SelectItem value="per_signup">Per Sign-Up (₦)</SelectItem>
+                    <SelectItem value="per_install">Per Install (₦)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium">Price (â‚¦)</label>
+                <label className="text-sm font-medium">Price (₦)</label>
                 <Input
                   type="number"
                   placeholder="0"
@@ -932,4 +932,5 @@ export default function AdminProducts() {
     </div>
   );
 }
+
 

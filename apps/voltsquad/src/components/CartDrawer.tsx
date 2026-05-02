@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { useCart } from "@digihire/shared";
@@ -86,4 +86,5 @@ export function CartDrawer() {
     </Sheet>
   );
 }
+
 

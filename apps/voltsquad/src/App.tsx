@@ -1,4 +1,4 @@
-﻿import { Toaster } from "@digihire/shared";
+import { Toaster } from "@digihire/shared";
 import { Toaster as Sonner } from "@digihire/shared";
 import { TooltipProvider } from "@digihire/shared";
 import { QueryClient } from "@tanstack/react-query";
@@ -244,4 +244,5 @@ const useNativeAuthCallback = () => {
 };
 
 export default App;
+
 

@@ -1,8 +1,8 @@
-﻿import { Card, CardContent } from "@digihire/shared";
+import { Card, CardContent } from "@digihire/shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@digihire/shared";
 import { Progress } from "@digihire/shared";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
-import { useTransactions } from "@/hooks/useTransactions";
+import { useTransactions } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { Trophy, Medal, Crown, Loader2 } from "lucide-react";
 import { useMemo } from "react";
@@ -117,4 +117,5 @@ const Leaderboard = () => {
 };
 
 export default Leaderboard;
+
 

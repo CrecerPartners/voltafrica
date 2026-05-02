@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useAdminReferrals, useUpdateReferral } from "@/hooks/useAdminData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { Input } from "@digihire/shared";
@@ -6,7 +6,7 @@ import { Button } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { Search, Pencil, UserCheck, UserX } from "lucide-react";
 import { Card, CardContent } from "@digihire/shared";
 import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
@@ -72,7 +72,7 @@ export default function AdminReferrals() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold">Referrals</h2>
-          <p className="text-sm text-muted-foreground">â‚¦{totalEarnings.toLocaleString()} total earned</p>
+          <p className="text-sm text-muted-foreground">₦{totalEarnings.toLocaleString()} total earned</p>
         </div>
         <Select value={filter} onValueChange={(v) => { setFilter(v); setPage(1); }}>
           <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
@@ -112,7 +112,7 @@ export default function AdminReferrals() {
                   <TableCell className="font-medium">{r.referrer_name}</TableCell>
                   <TableCell>{r.referred_name}</TableCell>
                   <TableCell><Badge variant="secondary" className={statusColors[r.status] || ""}>{r.status}</Badge></TableCell>
-                  <TableCell>â‚¦{Number(r.earnings).toLocaleString()}</TableCell>
+                  <TableCell>₦{Number(r.earnings).toLocaleString()}</TableCell>
                   <TableCell>
                     <div className="flex gap-0.5">
                       {r.status === "signed_up" && (
@@ -155,7 +155,7 @@ export default function AdminReferrals() {
                 </Select>
               </div>
               <div>
-                <label className="text-xs text-muted-foreground">Earnings (â‚¦)</label>
+                <label className="text-xs text-muted-foreground">Earnings (₦)</label>
                 <Input type="number" value={editEarnings} onChange={(e) => setEditEarnings(+e.target.value)} />
               </div>
             </div>
@@ -169,4 +169,5 @@ export default function AdminReferrals() {
     </div>
   );
 }
+
 

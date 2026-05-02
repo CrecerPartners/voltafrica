@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useAdminSales, useUpdateSaleStatus, useUpdateSaleDetails, useUpdateTransactionStatus, useAdminTransactions, useAdminUsers } from "@/hooks/useAdminData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { Button } from "@digihire/shared";
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@digihire/shared";
 import { Checkbox } from "@digihire/shared";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { supabase } from "@digihire/shared";
 import { Check, X, Download, Eye, Search } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
@@ -261,7 +261,7 @@ export default function AdminSales() {
                     <TableCell className="text-xs">{new Date(s.date).toLocaleDateString()}</TableCell>
                     <TableCell className="text-sm">{getSellerName(s)}</TableCell>
                     <TableCell>{s.customer}</TableCell>
-                    <TableCell>{s.products?.name ?? "â€”"}</TableCell>
+                    <TableCell>{s.products?.name ?? "—"}</TableCell>
                     <TableCell>
                       {isLead ? (
                         <div className="space-y-1">
@@ -289,8 +289,8 @@ export default function AdminSales() {
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell>â‚¦{Number(s.amount).toLocaleString()}</TableCell>
-                    <TableCell>â‚¦{Number(s.commission).toLocaleString()}</TableCell>
+                    <TableCell>₦{Number(s.amount).toLocaleString()}</TableCell>
+                    <TableCell>₦{Number(s.commission).toLocaleString()}</TableCell>
                     <TableCell><Badge variant="secondary" className={statusColors[s.status] || ""}>{s.status}</Badge></TableCell>
                     <TableCell>
                       {s.proof_file_url ? (
@@ -298,7 +298,7 @@ export default function AdminSales() {
                           <Button variant="ghost" size="icon" onClick={() => viewProof(s.proof_file_url)}><Eye className="h-3.5 w-3.5" /></Button>
                           <Button variant="ghost" size="icon" onClick={() => downloadProof(s.proof_file_url)}><Download className="h-3.5 w-3.5" /></Button>
                         </div>
-                      ) : "â€”"}
+                      ) : "—"}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-0.5">
@@ -329,7 +329,7 @@ export default function AdminSales() {
               <div className="grid grid-cols-2 gap-2">
                 <div><span className="text-muted-foreground">Seller:</span> <strong>{getSellerName(detailSale)}</strong></div>
                 <div><span className="text-muted-foreground">Customer:</span> <strong>{detailSale.customer}</strong></div>
-                <div><span className="text-muted-foreground">Product:</span> <strong>{detailSale.products?.name ?? "â€”"}</strong></div>
+                <div><span className="text-muted-foreground">Product:</span> <strong>{detailSale.products?.name ?? "—"}</strong></div>
                 <div><span className="text-muted-foreground">Quantity:</span> <strong>{detailSale.quantity}</strong></div>
                 <div><span className="text-muted-foreground">Date:</span> <strong>{new Date(detailSale.date).toLocaleDateString()}</strong></div>
                 <div><span className="text-muted-foreground">Status:</span> <Badge variant="secondary" className={statusColors[detailSale.status] || ""}>{detailSale.status}</Badge></div>
@@ -378,4 +378,5 @@ export default function AdminSales() {
     </div>
   );
 }
+
 

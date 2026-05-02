@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, X } from "lucide-react";
 import { cn } from "@digihire/shared";
@@ -41,4 +41,5 @@ function DatePicker({ label, value, onChange }: { label: string; value: Date | u
     </Popover>
   );
 }
+
 

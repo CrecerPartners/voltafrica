@@ -1,10 +1,10 @@
-﻿import { Card, CardContent } from "@digihire/shared";
+import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
-import { useProfile } from "@/hooks/useProfile";
-import { useTransactions } from "@/hooks/useTransactions";
-import { useSales } from "@/hooks/useSales";
-import { useReferrals } from "@/hooks/useReferrals";
+import { useProfile } from "@digihire/shared";
+import { useTransactions } from "@digihire/shared";
+import { useSales } from "@digihire/shared";
+import { useReferrals } from "@digihire/shared";
 import {
   TrendingUp,
   Clock,
@@ -35,7 +35,7 @@ import { toast } from "sonner";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@digihire/shared";
 import { Loader2 } from "lucide-react";
 import { SignupBonusDialog } from "@/components/SignupBonusDialog";
 import { OnboardingWalkthrough } from "@/components/OnboardingWalkthrough";
@@ -169,7 +169,7 @@ const Dashboard = () => {
       )}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold font-display">
-          Welcome back, {firstName} ðŸ‘‹
+          Welcome back, {firstName} 👋
         </h1>
         <p className="text-muted-foreground mt-1">Here's how you're doing this week</p>
       </div>
@@ -211,7 +211,7 @@ const Dashboard = () => {
               <Progress value={Math.min((dashboardStats.totalEarnings / profile.income_target_amount) * 100, 100)} className="h-2.5 bg-secondary/50" />
               <p className="text-[11px] text-muted-foreground italic pt-1">
                 {dashboardStats.totalEarnings >= profile.income_target_amount 
-                  ? "ðŸŽ‰ Incredible! You've crushed your target! Set a new one in the calculator." 
+                  ? "🎉 Incredible! You've crushed your target! Set a new one in the calculator." 
                   : `You need ${formatNaira(profile.income_target_amount - dashboardStats.totalEarnings)} more to reach your goal.`}
               </p>
             </div>
@@ -261,7 +261,7 @@ const Dashboard = () => {
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="week" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={(v) => `â‚¦${(v/1000).toFixed(0)}k`} />
+                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={(v) => `₦${(v/1000).toFixed(0)}k`} />
                   <Tooltip
                     contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }}
                     labelStyle={{ color: "hsl(var(--muted-foreground))" }}
@@ -321,7 +321,7 @@ const Dashboard = () => {
               <p className="text-xl font-bold font-display">
                 {dashboardStats.totalSales > 0
                   ? `${((dashboardStats.totalEarnings / (sales?.reduce((s, sl) => s + sl.amount, 0) || 1)) * 100).toFixed(1)}%`
-                  : "â€”"}
+                  : "—"}
               </p>
               <p className="text-xs text-muted-foreground">Avg Commission Rate</p>
             </div>
@@ -336,4 +336,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
 

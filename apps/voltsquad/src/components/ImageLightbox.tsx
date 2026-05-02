@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { ChevronLeft, ChevronRight, X, Share2 } from "lucide-react";
@@ -124,4 +124,5 @@ export function ImageLightbox({ images, initialIndex, open, onOpenChange, produc
     </Dialog>
   );
 }
+
 

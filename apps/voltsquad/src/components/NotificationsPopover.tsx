@@ -1,8 +1,8 @@
-﻿import { Bell, ShoppingCart, Users, Banknote, Zap, Check } from "lucide-react";
+import { Bell, ShoppingCart, Users, Banknote, Zap, Check } from "lucide-react";
 import { Button } from "@digihire/shared";
 import { Popover, PopoverContent, PopoverTrigger } from "@digihire/shared";
 import { ScrollArea } from "@digihire/shared";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications } from "@digihire/shared";
 import { formatDistanceToNow } from "date-fns";
 
 const typeIcons: Record<string, typeof Bell> = {
@@ -80,4 +80,5 @@ export function NotificationsPopover() {
     </Popover>
   );
 }
+
 

@@ -1,7 +1,7 @@
-﻿import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@digihire/shared";
 
-// â”€â”€ Queries â”€â”€
+// ── Queries ──
 
 export function useAdminUsers() {
   return useQuery({
@@ -137,7 +137,7 @@ export function useAdminLeaderboard() {
   });
 }
 
-// â”€â”€ Mutations â”€â”€
+// ── Mutations ──
 
 export function useUpdateSaleStatus() {
   const qc = useQueryClient();
@@ -313,4 +313,5 @@ export function useUpdateReferral() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-referrals"] }),
   });
 }
+
 

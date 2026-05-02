@@ -1,4 +1,4 @@
-﻿import { Button } from "@digihire/shared";
+import { Button } from "@digihire/shared";
 import { Popover, PopoverContent, PopoverTrigger } from "@digihire/shared";
 import { Share2, Copy, MessageCircle } from "lucide-react";
 import { shareToWhatsApp, shareToTwitter, shareToTelegram, shareToTikTok, shareToSnapchat, copyToClipboard } from "@digihire/shared";
@@ -12,10 +12,10 @@ interface SharePopoverProps {
 export function SharePopover({ text, url, triggerClassName }: SharePopoverProps) {
   const socials = [
     { icon: MessageCircle, label: "WhatsApp", action: () => shareToWhatsApp(text), color: "text-green-500" },
-    { icon: () => <span className="text-sm font-bold">ð•</span>, label: "Twitter/X", action: () => shareToTwitter(text, url), color: "text-foreground" },
+    { icon: () => <span className="text-sm font-bold">𝕏</span>, label: "Twitter/X", action: () => shareToTwitter(text, url), color: "text-foreground" },
     { icon: () => <span className="text-sm font-bold">T</span>, label: "Telegram", action: () => shareToTelegram(text, url), color: "text-blue-400" },
     { icon: () => <span className="text-sm font-bold">tk</span>, label: "TikTok", action: () => shareToTikTok(text), color: "text-foreground" },
-    { icon: () => <span className="text-sm font-bold">ðŸ‘»</span>, label: "Snapchat", action: () => shareToSnapchat(url), color: "text-yellow-400" },
+    { icon: () => <span className="text-sm font-bold">👻</span>, label: "Snapchat", action: () => shareToSnapchat(url), color: "text-yellow-400" },
     { icon: Copy, label: "Copy", action: () => copyToClipboard(text, "Content"), color: "text-muted-foreground" },
   ];
 
@@ -42,4 +42,5 @@ export function SharePopover({ text, url, triggerClassName }: SharePopoverProps)
     </Popover>
   );
 }
+
 

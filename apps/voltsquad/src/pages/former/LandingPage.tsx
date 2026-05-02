@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { BrandsContent } from "@/components/landing/BrandsContent";
@@ -64,7 +64,7 @@ const howItWorks = [
 ];
 
 const whyJoin = [
-  { icon: ShoppingBag, title: "Work with Real Brands", desc: "Promote products people already use â€” fintech apps, fashion, gadgets, subscriptions, events." },
+  { icon: ShoppingBag, title: "Work with Real Brands", desc: "Promote products people already use — fintech apps, fashion, gadgets, subscriptions, events." },
   { icon: TrendingUp, title: "Multiple Ways to Earn", desc: "Earn from product sales, app signups, referrals, and bonuses." },
   { icon: BarChart3, title: "Everything in One Place", desc: "Track your sales, commissions, referrals, and payouts inside your wallet." },
   { icon: Star, title: "Use Ready-Made Content", desc: "Get captions, images, and media kits you can use to promote instantly." },
@@ -75,14 +75,14 @@ const whyJoin = [
 const stats = [
   { value: 20, suffix: "+", label: "Locations Covered" },
   { value: 5, suffix: "K+", label: "Gen Z Sellers" },
-  { value: 500, prefix: "â‚¦", suffix: "K+", label: "Paid Out" },
+  { value: 500, prefix: "₦", suffix: "K+", label: "Paid Out" },
   { value: 100, suffix: "+", label: "Brands & Products" },
 ];
 
 const earnings = [
-  { title: "Signup Bonus", desc: "Receive â‚¦500 when you activate your seller account." },
+  { title: "Signup Bonus", desc: "Receive ₦500 when you activate your seller account." },
   { title: "Direct Sales Commission", desc: "Earn up to 30% on every product you sell." },
-  { title: "Referral Commission", desc: "Earn â‚¦1,000 for every seller you bring who activates and completes 5 sales." },
+  { title: "Referral Commission", desc: "Earn ₦1,000 for every seller you bring who activates and completes 5 sales." },
   { title: "Performance Bonus", desc: "Unlock extra cash rewards when you hit weekly sales targets." },
   { title: "Leadership Earnings", desc: "Top-performing sellers can qualify for monthly leadership payouts." },
 ];
@@ -185,15 +185,15 @@ export default function LandingPage() {
             {tab === "brands" && (
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm font-medium text-muted-foreground">
                 <span>Fintech</span>
-                <span className="text-primary">Â·</span>
+                <span className="text-primary">·</span>
                 <span>Fashion</span>
-                <span className="text-primary">Â·</span>
+                <span className="text-primary">·</span>
                 <span>Apps</span>
-                <span className="text-primary">Â·</span>
+                <span className="text-primary">·</span>
                 <span>Subscriptions</span>
-                <span className="text-primary">Â·</span>
+                <span className="text-primary">·</span>
                 <span>Events</span>
-                <span className="text-primary">Â·</span>
+                <span className="text-primary">·</span>
                 <span>Lifestyle</span>
               </div>
             )}
@@ -282,7 +282,7 @@ export default function LandingPage() {
             <div className="mx-auto max-w-4xl px-4 py-16 md:py-24">
               <div className="mb-12 text-center">
                 <h2 className="font-display text-3xl font-bold md:text-4xl">Multiple Ways to Earn on Volt</h2>
-                <p className="mt-3 text-muted-foreground">Start earning from day one â€” here's how.</p>
+                <p className="mt-3 text-muted-foreground">Start earning from day one — here's how.</p>
               </div>
               <div className="flex flex-col gap-4">
                 {earnings.map((item, i) => (
@@ -407,10 +407,11 @@ export default function LandingPage() {
           <nav className="flex gap-6 text-sm text-muted-foreground">
             <Link to="/login" className="hover:text-foreground transition-colors">Sign In</Link>
           </nav>
-          <p className="text-xs text-muted-foreground">Â© {new Date().getFullYear()} Volt Africa. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Volt Africa. All rights reserved.</p>
         </div>
       </footer>
     </div>
   );
 }
+
 

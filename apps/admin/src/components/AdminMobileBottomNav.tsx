@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -13,7 +13,7 @@ import {
   Trophy,
   ClipboardList,
 } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@digihire/shared";
 import {
   Drawer,
   DrawerContent,
@@ -119,4 +119,5 @@ export function AdminMobileBottomNav() {
     </>
   );
 }
+
 

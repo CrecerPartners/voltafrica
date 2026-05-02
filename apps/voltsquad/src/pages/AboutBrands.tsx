@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { Button } from "@digihire/shared";
 import { Card, CardContent } from "@digihire/shared";
@@ -22,7 +22,7 @@ const steps = [
 
 const benefits = [
   { icon: Target, title: "Hyper-Local Reach", desc: "Get your products in front of Gen Z buyers across 20+ cities and campuses in Nigeria." },
-  { icon: Megaphone, title: "Word-of-Mouth at Scale", desc: "Sellers promote through trust and community â€” no ad fatigue, no bots." },
+  { icon: Megaphone, title: "Word-of-Mouth at Scale", desc: "Sellers promote through trust and community — no ad fatigue, no bots." },
   { icon: ShieldCheck, title: "Pay for Performance", desc: "Commission-based model means you only pay when a sale is made." },
 ];
 
@@ -44,19 +44,19 @@ export default function AboutBrands() {
             Built for Brands Targeting Young Digital Consumers
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Reach millions of socially connected young buyers through Voltâ€™s trusted seller network across campuses, communities, and creator audiences.
+            Reach millions of socially connected young buyers through Volt’s trusted seller network across campuses, communities, and creator audiences.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm font-medium text-muted-foreground">
             <span>Fintech</span>
-            <span className="text-primary">Â·</span>
+            <span className="text-primary">·</span>
             <span>Fashion</span>
-            <span className="text-primary">Â·</span>
+            <span className="text-primary">·</span>
             <span>Apps</span>
-            <span className="text-primary">Â·</span>
+            <span className="text-primary">·</span>
             <span>Subscriptions</span>
-            <span className="text-primary">Â·</span>
+            <span className="text-primary">·</span>
             <span>Events</span>
-            <span className="text-primary">Â·</span>
+            <span className="text-primary">·</span>
             <span>Lifestyle</span>
           </div>
           <div className="mt-10">
@@ -147,10 +147,11 @@ export default function AboutBrands() {
             </div>
             Volt
           </Link>
-          <p className="text-xs text-muted-foreground">Â© {new Date().getFullYear()} Volt Africa</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Volt Africa</p>
         </div>
       </footer>
     </div>
   );
 }
+
 

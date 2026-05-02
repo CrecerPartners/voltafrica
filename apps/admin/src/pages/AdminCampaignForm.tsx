@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
@@ -197,7 +197,7 @@ export default function AdminCampaignForm({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="flat">Flat (â‚¦)</SelectItem>
+                  <SelectItem value="flat">Flat (₦)</SelectItem>
                   <SelectItem value="percentage">Percentage (%)</SelectItem>
                 </SelectContent>
               </Select>
@@ -271,4 +271,5 @@ export default function AdminCampaignForm({
     </Sheet>
   );
 }
+
 

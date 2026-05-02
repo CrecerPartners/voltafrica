@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { ShieldCheck, Loader2, ArrowLeft } from "lucide-react";
@@ -32,7 +32,7 @@ export function MfaVerification({ factorId, onVerify, onBack }: MfaVerificationP
 
       if (verifyError) throw verifyError;
 
-      toast.success("Security check passed! âš¡");
+      toast.success("Security check passed! ⚡");
       onVerify();
     } catch (err: any) {
       toast.error(err.message || "Invalid authenticator code");
@@ -78,4 +78,5 @@ export function MfaVerification({ factorId, onVerify, onBack }: MfaVerificationP
     </div>
   );
 }
+
 

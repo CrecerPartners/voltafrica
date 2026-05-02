@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { Button } from "@digihire/shared";
 import { Card, CardContent } from "@digihire/shared";
@@ -140,10 +140,11 @@ export default function AboutStudents() {
             </div>
             Volt
           </Link>
-          <p className="text-xs text-muted-foreground">Â© {new Date().getFullYear()} Volt Africa</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Volt Africa</p>
         </div>
       </footer>
     </div>
   );
 }
+
 

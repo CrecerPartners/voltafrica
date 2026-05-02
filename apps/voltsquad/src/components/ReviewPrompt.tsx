@@ -1,9 +1,9 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { Textarea } from "@digihire/shared";
-import { useSubmitReview } from "@/hooks/useReviews";
+import { useSubmitReview } from "@digihire/shared";
 import { Star, Send, Loader2, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -70,4 +70,5 @@ export function ReviewPrompt({ productIds }: { productIds: string[] }) {
     </Card>
   );
 }
+
 

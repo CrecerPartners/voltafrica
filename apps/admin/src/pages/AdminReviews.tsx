@@ -1,11 +1,11 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useAdminReviews, useDeleteReview } from "@/hooks/useAdminReviews";
 import { Input } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { Trash2, Star } from "lucide-react";
 import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 
@@ -88,7 +88,7 @@ export default function AdminReviews() {
                   <TableCell className="font-medium text-sm">{r.products?.name ?? "Unknown"}</TableCell>
                   <TableCell className="text-sm">{r.reviewer_name}</TableCell>
                   <TableCell>{renderStars(r.rating)}</TableCell>
-                  <TableCell className="text-sm max-w-xs truncate">{r.comment || "â€”"}</TableCell>
+                  <TableCell className="text-sm max-w-xs truncate">{r.comment || "—"}</TableCell>
                   <TableCell className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <Button variant="ghost" size="icon" onClick={() => setDeleteId(r.id)}>
@@ -119,4 +119,5 @@ export default function AdminReviews() {
     </div>
   );
 }
+
 

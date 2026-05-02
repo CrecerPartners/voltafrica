@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
@@ -23,7 +23,7 @@ import {
   useCourseLessons,
   useUserProgress,
   useMarkLessonComplete,
-} from "@/hooks/useTraining";
+} from "@digihire/shared";
 
 function extractYouTubeId(url: string): string | null {
   const match = url.match(
@@ -201,4 +201,5 @@ const TrainingCourse = () => {
 };
 
 export default TrainingCourse;
+
 

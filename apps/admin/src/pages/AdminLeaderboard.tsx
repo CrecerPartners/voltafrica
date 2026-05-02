@@ -1,4 +1,4 @@
-﻿import { useAdminLeaderboard } from "@/hooks/useAdminData";
+import { useAdminLeaderboard } from "@/hooks/useAdminData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Trophy } from "lucide-react";
@@ -45,7 +45,7 @@ export default function AdminLeaderboard() {
                   <TableCell>
                     <Badge variant="secondary">{entry.total_sales}</Badge>
                   </TableCell>
-                  <TableCell className="font-medium">â‚¦{Number(entry.total_earnings || 0).toLocaleString()}</TableCell>
+                  <TableCell className="font-medium">₦{Number(entry.total_earnings || 0).toLocaleString()}</TableCell>
                 </TableRow>
               ))}
               {(!leaderboard || leaderboard.length === 0) && (
@@ -58,4 +58,5 @@ export default function AdminLeaderboard() {
     </div>
   );
 }
+
 

@@ -1,11 +1,11 @@
-﻿import { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Progress } from "@digihire/shared";
 import { Search, BookOpen, GraduationCap, ArrowRight } from "lucide-react";
-import { useCourses, useAllProgress } from "@/hooks/useTraining";
+import { useCourses, useAllProgress } from "@digihire/shared";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@digihire/shared";
 import { useQuery } from "@tanstack/react-query";
@@ -167,4 +167,5 @@ const Training = () => {
 };
 
 export default Training;
+
 

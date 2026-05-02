@@ -1,6 +1,6 @@
-﻿import { useState, useCallback } from "react";
-import { Product } from "@/hooks/useProducts";
-import { useProfile } from "@/hooks/useProfile";
+import { useState, useCallback } from "react";
+import { Product } from "@digihire/shared";
+import { useProfile } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { useModalBackHandler } from "@/hooks/useModalBackHandler";
 import { Badge } from "@digihire/shared";
@@ -188,7 +188,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
               <ul className="space-y-1.5">
                 {product.assets.sellingTips.map((tip, i) => (
                   <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
-                    <span className="text-primary font-bold mt-0.5">â€¢</span>
+                    <span className="text-primary font-bold mt-0.5">•</span>
                     {tip}
                   </li>
                 ))}
@@ -202,7 +202,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
               </Button>
               <UniversalShareButton
                 title={product.name}
-                text={`${product.name} â€” ${product.description}\n\n${referralLink}`}
+                text={`${product.name} — ${product.description}\n\n${referralLink}`}
                 url={referralLink}
                 label="Share Product"
                 fullWidth
@@ -285,4 +285,5 @@ function UniversalShareButton({ title, text, url, label, fullWidth, className }:
     />
   );
 }
+
 

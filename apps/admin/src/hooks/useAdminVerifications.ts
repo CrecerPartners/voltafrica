@@ -1,4 +1,4 @@
-﻿import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@digihire/shared";
 
 export function useAdminVerifications() {
@@ -18,4 +18,5 @@ export function useAdminVerifications() {
     },
   });
 }
+
 

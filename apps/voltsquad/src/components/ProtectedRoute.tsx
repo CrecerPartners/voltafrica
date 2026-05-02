@@ -1,4 +1,4 @@
-﻿import { useAuth } from "@digihire/shared";
+import { useAuth } from "@digihire/shared";
 import { Navigate } from "react-router-dom";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -15,4 +15,5 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (!user) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
+
 

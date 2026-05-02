@@ -1,9 +1,9 @@
-﻿import { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
-import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { useProfile, useUpdateProfile } from "@digihire/shared";
 import { supabase } from "@digihire/shared";
 import { Loader2, Upload, FileText, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -132,4 +132,5 @@ export function KYCModal({ open, onOpenChange, onSuccess }: KYCModalProps) {
     </Dialog>
   );
 }
+
 

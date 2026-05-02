@@ -1,4 +1,4 @@
-﻿import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { LandingNavbar } from "@/components/LandingNavbar";
 import { Zap } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -17,9 +17,10 @@ export function PublicProductLayout() {
           </div>
           DigiHire
         </Link>
-        <p className="mt-1">Â© {new Date().getFullYear()} DigiHire. All rights reserved.</p>
+        <p className="mt-1">© {new Date().getFullYear()} DigiHire. All rights reserved.</p>
       </footer>
     </div>
   );
 }
+
 

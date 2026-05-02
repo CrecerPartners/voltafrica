@@ -1,9 +1,9 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { Textarea } from "@digihire/shared";
-import { useReviews, useSubmitReview } from "@/hooks/useReviews";
+import { useReviews, useSubmitReview } from "@digihire/shared";
 import { Star, Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -50,7 +50,7 @@ export function ReviewSection({ productId }: { productId: string }) {
         {reviews.length > 0 && (
           <div className="flex items-center gap-1.5">
             <StarRating value={Math.round(avg)} readonly size={14} />
-            <span className="text-sm text-muted-foreground">({avg.toFixed(1)} Â· {reviews.length})</span>
+            <span className="text-sm text-muted-foreground">({avg.toFixed(1)} · {reviews.length})</span>
           </div>
         )}
       </div>
@@ -93,4 +93,5 @@ export function ReviewSection({ productId }: { productId: string }) {
     </div>
   );
 }
+
 

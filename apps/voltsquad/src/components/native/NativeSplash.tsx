@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function NativeSplash({ onComplete }: { onComplete: () => void }) {
   const [fadeOut, setFadeOut] = useState(false);
@@ -31,4 +31,5 @@ export function NativeSplash({ onComplete }: { onComplete: () => void }) {
     </div>
   );
 }
+
 

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useAdminOrders, useUpdateOrderStatus } from "@/hooks/useAdminOrders";
 import { Input } from "@digihire/shared";
 import { Button } from "@digihire/shared";
@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { ChevronDown } from "lucide-react";
 import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 
@@ -105,7 +105,7 @@ export default function AdminOrders() {
                       </TableCell>
                       <TableCell className="font-medium text-sm">{o.name}</TableCell>
                       <TableCell className="text-sm">{o.email}</TableCell>
-                      <TableCell className="text-sm font-medium">â‚¦{Number(o.total).toLocaleString()}</TableCell>
+                      <TableCell className="text-sm font-medium">₦{Number(o.total).toLocaleString()}</TableCell>
                       <TableCell>
                         <Badge variant="secondary" className={statusColors[o.status] || ""}>{o.status}</Badge>
                       </TableCell>
@@ -127,9 +127,9 @@ export default function AdminOrders() {
                             <div className="space-y-1.5">
                               {o.order_items?.map((item: any) => (
                                 <div key={item.id} className="flex justify-between text-xs">
-                                  <span>{item.products?.name ?? "Unknown"} Ã— {item.quantity}</span>
+                                  <span>{item.products?.name ?? "Unknown"} × {item.quantity}</span>
                                   <div className="flex gap-4">
-                                    <span>â‚¦{Number(item.price).toLocaleString()}</span>
+                                    <span>₦{Number(item.price).toLocaleString()}</span>
                                     {item.ref_code && <span className="text-muted-foreground">Ref: {item.ref_code}</span>}
                                   </div>
                                 </div>
@@ -139,8 +139,8 @@ export default function AdminOrders() {
                               )}
                             </div>
                             <div className="border-t mt-2 pt-2 text-xs text-muted-foreground">
-                              <span>ðŸ“ {o.address}, {o.city}, {o.state}</span>
-                              {o.phone && <span className="ml-4">ðŸ“ž {o.phone}</span>}
+                              <span>📍 {o.address}, {o.city}, {o.state}</span>
+                              {o.phone && <span className="ml-4">📞 {o.phone}</span>}
                             </div>
                           </div>
                         </TableCell>
@@ -160,4 +160,5 @@ export default function AdminOrders() {
     </div>
   );
 }
+
 

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@digihire/shared";
@@ -103,4 +103,5 @@ export function LandingNavbar() {
     </header>
   );
 }
+
 

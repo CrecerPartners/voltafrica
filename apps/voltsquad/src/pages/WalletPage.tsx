@@ -1,9 +1,9 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@digihire/shared";
-import { useWallet } from "@/hooks/useWallet";
+import { useWallet } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, Clock, DollarSign, PlusCircle, Loader2, AlertCircle } from "lucide-react";
@@ -115,9 +115,9 @@ const WalletPage = () => {
                         <div>
                           <p className="text-sm font-medium">{t.description}</p>
                           <div className="flex items-center gap-1.5">
-                            <p className="text-xs text-muted-foreground">{typeLabels[t.type]} Â· {t.date}</p>
+                            <p className="text-xs text-muted-foreground">{typeLabels[t.type]} · {t.date}</p>
                             {t.proof_file_name && (
-                              <Badge variant="outline" className="text-[10px] text-primary border-primary/20">ðŸ“Ž {t.proof_file_name}</Badge>
+                              <Badge variant="outline" className="text-[10px] text-primary border-primary/20">📎 {t.proof_file_name}</Badge>
                             )}
                           </div>
                         </div>
@@ -148,4 +148,5 @@ const WalletPage = () => {
 };
 
 export default WalletPage;
+
 

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { UserCog, ShoppingBag, Wallet, Copy, Banknote, Trophy } from "lucide-react";
@@ -29,14 +29,14 @@ const steps = [
   {
     icon: Wallet,
     title: "Check Your Wallet",
-    subtitle: "Your â‚¦500 signup bonus is already there! See your balance.",
+    subtitle: "Your ₦500 signup bonus is already there! See your balance.",
     action: "View Wallet",
     route: "/wallet",
   },
   {
     icon: Copy,
     title: "Copy Your Referral Code",
-    subtitle: "Share your code with friends and earn â‚¦500 per signup!",
+    subtitle: "Share your code with friends and earn ₦500 per signup!",
     action: "Copy Code",
     route: null,
   },
@@ -120,7 +120,7 @@ export function OnboardingWalkthrough({ open, onOpenChange, referralCode }: Onbo
             {currentStep < steps.length - 1 ? (
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" className="flex-1 font-medium" onClick={handleNext}>
-                  Next â†’
+                  Next →
                 </Button>
                 <button
                   onClick={handleSkip}
@@ -140,4 +140,5 @@ export function OnboardingWalkthrough({ open, onOpenChange, referralCode }: Onbo
     </Dialog>
   );
 }
+
 

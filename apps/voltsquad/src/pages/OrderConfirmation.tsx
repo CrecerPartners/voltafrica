@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { Card, CardContent } from "@digihire/shared";
@@ -145,4 +145,5 @@ const OrderConfirmation = () => {
 };
 
 export default OrderConfirmation;
+
 

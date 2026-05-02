@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import {
   useAdminCourses,
   useUpsertCourse,
@@ -11,7 +11,7 @@ import { Input } from "@digihire/shared";
 import { Textarea } from "@digihire/shared";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { Plus, Pencil, Trash2, ChevronDown, GraduationCap, Play } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@digihire/shared";
 
@@ -98,7 +98,7 @@ export default function AdminTraining() {
                         )}
                         <div>
                           <CardTitle className="text-base">{course.title}</CardTitle>
-                          <p className="text-xs text-muted-foreground">{course.category} Â· {course.level} Â· {course.training_lessons?.length ?? 0} lessons</p>
+                          <p className="text-xs text-muted-foreground">{course.category} · {course.level} · {course.training_lessons?.length ?? 0} lessons</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
@@ -231,4 +231,5 @@ export default function AdminTraining() {
     </div>
   );
 }
+
 

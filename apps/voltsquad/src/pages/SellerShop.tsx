@@ -1,4 +1,4 @@
-﻿import { useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { usePublicSellerShop } from "@/hooks/useSellerShop";
 import { useCart } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
@@ -133,4 +133,5 @@ const SellerShop = () => {
 };
 
 export default SellerShop;
+
 

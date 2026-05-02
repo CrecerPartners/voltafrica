@@ -1,10 +1,10 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
-import { useProducts, Product } from "@/hooks/useProducts";
-import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { useProducts, Product } from "@digihire/shared";
+import { useProfile, useUpdateProfile } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { 
   Calculator, Plus, Trash2, Sparkles, Share2, 
@@ -22,13 +22,13 @@ interface PlanItem {
 }
 
 const motivationalMessages = [
-  { threshold: 0, message: "Add products to see your earning potential! ðŸ’¡" },
-  { threshold: 5000, message: "Great start! That covers a month of data ðŸ“±" },
-  { threshold: 15000, message: "Nice! You could buy a new pair of sneakers ðŸ‘Ÿ" },
-  { threshold: 30000, message: "Amazing! That's a new phone territory ðŸ“²" },
-  { threshold: 50000, message: "You'd be on track for Gold tier! ðŸ¥‡" },
-  { threshold: 100000, message: "Incredible! That's a whole semester's pocket money ðŸŽ“" },
-  { threshold: 200000, message: "Legend status! You're basically running a business ðŸš€" },
+  { threshold: 0, message: "Add products to see your earning potential! 💡" },
+  { threshold: 5000, message: "Great start! That covers a month of data 📱" },
+  { threshold: 15000, message: "Nice! You could buy a new pair of sneakers 👟" },
+  { threshold: 30000, message: "Amazing! That's a new phone territory 📲" },
+  { threshold: 50000, message: "You'd be on track for Gold tier! 🥇" },
+  { threshold: 100000, message: "Incredible! That's a whole semester's pocket money 🎓" },
+  { threshold: 200000, message: "Legend status! You're basically running a business 🚀" },
 ];
 
 const getMotivation = (total: number) => {
@@ -109,7 +109,7 @@ const Calculator_Page = () => {
       income_target_timeframe: timeframe,
       income_target_items: items,
     }, {
-      onSuccess: () => toast.success("Income target saved to your profile! âš¡"),
+      onSuccess: () => toast.success("Income target saved to your profile! ⚡"),
       onError: (err: any) => toast.error(err.message || "Failed to save target")
     });
   };
@@ -118,14 +118,14 @@ const Calculator_Page = () => {
     const lines = items.map((item) => {
       const p = getProduct(item.productId);
       if (!p) return "";
-      return `â€¢ ${p.name} x${item.quantity} = ${formatNaira(calculateCommission(item))}`;
+      return `• ${p.name} x${item.quantity} = ${formatNaira(calculateCommission(item))}`;
     });
     
     let text = "";
     if (mode === "target") {
-      text = `ðŸŽ¯ Goal: ${formatNaira(targetNum)} in 1 ${timeframe.replace('ly', '')}\nðŸ”¥ My Progress: ${progressPercent}%\n\n${lines.join("\n")}\n\nðŸ’° Total: ${formatNaira(totalEarnings)}\n\nJoin Volt and start earning too! âš¡`;
+      text = `🎯 Goal: ${formatNaira(targetNum)} in 1 ${timeframe.replace('ly', '')}\n🔥 My Progress: ${progressPercent}%\n\n${lines.join("\n")}\n\n💰 Total: ${formatNaira(totalEarnings)}\n\nJoin Volt and start earning too! ⚡`;
     } else {
-      text = `ðŸ”¥ My Volt Earnings Plan\n\n${lines.join("\n")}\n\nðŸ’° Total: ${formatNaira(totalEarnings)} from ${totalSales} sales!\n\nJoin Volt and start earning too! âš¡`;
+      text = `🔥 My Volt Earnings Plan\n\n${lines.join("\n")}\n\n💰 Total: ${formatNaira(totalEarnings)} from ${totalSales} sales!\n\nJoin Volt and start earning too! ⚡`;
     }
     
     navigator.clipboard.writeText(text);
@@ -173,7 +173,7 @@ const Calculator_Page = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-muted-foreground">Target Amount (â‚¦)</label>
+                    <label className="text-xs font-medium text-muted-foreground">Target Amount (₦)</label>
                     <Input 
                       type="number" 
                       value={targetAmount}
@@ -213,7 +213,7 @@ const Calculator_Page = () => {
                   <SelectContent>
                     {products.map((p) => (
                       <SelectItem key={p.id} value={p.id}>
-                        {p.image} {p.name} â€” {formatNaira(p.price * (p.commissionRate/100))} comm.
+                        {p.image} {p.name} — {formatNaira(p.price * (p.commissionRate/100))} comm.
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -248,7 +248,7 @@ const Calculator_Page = () => {
                         <div className="min-w-0">
                           <p className="text-sm font-medium truncate">{p.name}</p>
                           <p className="text-xs text-muted-foreground">
-                            Qty: {item.quantity} â€¢ {formatNaira(p.price * (p.commissionRate/100))} per sale
+                            Qty: {item.quantity} • {formatNaira(p.price * (p.commissionRate/100))} per sale
                           </p>
                         </div>
                       </div>
@@ -389,5 +389,6 @@ const Calculator_Page = () => {
 };
 
 export default Calculator_Page;
+
 
 

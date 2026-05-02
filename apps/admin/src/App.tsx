@@ -1,4 +1,4 @@
-﻿import { Toaster } from "@digihire/shared";
+import { Toaster } from "@digihire/shared";
 import { Toaster as Sonner } from "@digihire/shared";
 import { TooltipProvider } from "@digihire/shared";
 import { ThemeProvider } from "@digihire/shared";
@@ -76,4 +76,5 @@ export default function App() {
     </PersistQueryClientProvider>
   );
 }
+
 

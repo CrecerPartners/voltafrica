@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowLeft, Lock, Download, Calculator } from "lucide-react";
@@ -24,7 +24,7 @@ import {
   useCampaignSubmissions,
   useSubmitEntry,
   useMyCampaignEarnings,
-} from "@/hooks/useCampaigns";
+} from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 
 export default function CampaignDetail() {
@@ -330,7 +330,7 @@ export default function CampaignDetail() {
                     </Button>
                   </div>
                   <div className="space-y-2">
-                    <Label>Sale Amount (â‚¦)</Label>
+                    <Label>Sale Amount (₦)</Label>
                     <Input
                       type="number"
                       min="0"
@@ -405,4 +405,5 @@ export default function CampaignDetail() {
     </div>
   );
 }
+
 

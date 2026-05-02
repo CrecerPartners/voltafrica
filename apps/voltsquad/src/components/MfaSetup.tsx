@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { Card, CardContent } from "@digihire/shared";
@@ -174,4 +174,5 @@ export function MfaSetup() {
     </div>
   );
 }
+
 

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
@@ -109,7 +109,7 @@ export default function AdminLogin() {
               <label className="text-sm font-medium text-foreground">Password</label>
               <Input
                 type="password"
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-secondary border-border"
@@ -126,4 +126,5 @@ export default function AdminLogin() {
     </div>
   );
 }
+
 

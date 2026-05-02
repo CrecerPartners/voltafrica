@@ -1,4 +1,4 @@
-﻿import { toast } from "sonner";
+import { toast } from "sonner";
 import { Button } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import {
@@ -124,7 +124,7 @@ export default function AdminCampaignEarnings() {
                         View
                       </a>
                     ) : (
-                      <span className="text-muted-foreground text-sm">â€”</span>
+                      <span className="text-muted-foreground text-sm">—</span>
                     )}
                     {s.notes && (
                       <p className="text-xs text-muted-foreground mt-1">
@@ -214,7 +214,7 @@ export default function AdminCampaignEarnings() {
                         View
                       </a>
                     ) : (
-                      <span className="text-muted-foreground text-sm">â€”</span>
+                      <span className="text-muted-foreground text-sm">—</span>
                     )}
                     {e.submission?.notes && (
                       <p className="text-xs text-muted-foreground mt-1">
@@ -256,4 +256,5 @@ export default function AdminCampaignEarnings() {
     </div>
   );
 }
+
 

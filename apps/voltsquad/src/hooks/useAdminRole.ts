@@ -1,4 +1,4 @@
-﻿import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
 
@@ -27,4 +27,5 @@ export function useAdminRole() {
 
   return { isAdmin, isLoading };
 }
+
 

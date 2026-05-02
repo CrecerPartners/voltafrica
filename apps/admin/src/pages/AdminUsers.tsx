@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useAdminUsers, useUpdateUserTier, useUpdateProfile, useDeleteProfile } from "@/hooks/useAdminData";
 import { Input } from "@digihire/shared";
 import { Button } from "@digihire/shared";
@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@digihire/shared";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { Eye, Trash2, Save } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportToCsv } from "@digihire/shared";
@@ -154,14 +154,14 @@ export default function AdminUsers() {
 
               <div className="grid gap-3 text-sm">
                 <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Tier</span><span className="font-medium">{selected.tier}</span></div>
-                <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Account Type</span><span className="font-medium capitalize">{selected.account_type || "â€”"}</span></div>
+                <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Account Type</span><span className="font-medium capitalize">{selected.account_type || "—"}</span></div>
                 <div className="flex justify-between py-1 border-b">
                   <span className="text-muted-foreground">Verification</span>
                   <span className={`font-medium capitalize ${selected.verification_status === "verified" ? "text-green-600" : selected.verification_status === "pending" ? "text-yellow-600" : "text-red-600"}`}>
                     {selected.verification_status || "unverified"}
                   </span>
                 </div>
-                <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Referral Code</span><span className="font-mono">{selected.referral_code || "â€”"}</span></div>
+                <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Referral Code</span><span className="font-mono">{selected.referral_code || "—"}</span></div>
                 <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Joined</span><span>{new Date(selected.created_at).toLocaleDateString()}</span></div>
                 {selected.bio && (
                   <div className="py-1 border-b"><span className="text-muted-foreground block mb-1">Bio</span><span className="text-sm">{selected.bio}</span></div>
@@ -226,4 +226,5 @@ export default function AdminUsers() {
     </div>
   );
 }
+
 

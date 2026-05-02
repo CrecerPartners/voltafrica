@@ -1,4 +1,4 @@
-﻿import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@digihire/shared";
 import { ArrowLeft, Home } from "lucide-react";
@@ -30,4 +30,5 @@ const NotFound = () => {
 };
 
 export default NotFound;
+
 

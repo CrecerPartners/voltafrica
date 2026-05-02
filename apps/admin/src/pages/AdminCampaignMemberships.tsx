@@ -1,4 +1,4 @@
-﻿import { toast } from "sonner";
+import { toast } from "sonner";
 import { Button } from "@digihire/shared";
 import {
   Table,
@@ -108,4 +108,5 @@ export default function AdminCampaignMemberships() {
     </div>
   );
 }
+
 

@@ -1,4 +1,4 @@
-﻿import { Card, CardContent, CardHeader, CardTitle } from "@digihire/shared";
+import { Card, CardContent, CardHeader, CardTitle } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { useAdminUsers, useAdminSales, useAdminPayouts, useAdminTransactions, useAdminProducts } from "@/hooks/useAdminData";
 import { useAdminReviews } from "@/hooks/useAdminReviews";
@@ -74,8 +74,8 @@ export default function AdminDashboard() {
     { label: "Total Sales", value: totalSales, icon: ShoppingCart, color: "text-green-500" },
     { label: "Pending Sales", value: pendingSales, icon: Clock, color: "text-yellow-500" },
     { label: "Pending Payouts", value: pendingPayouts, icon: Wallet, color: "text-orange-500" },
-    { label: "Total Revenue", value: `â‚¦${totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "text-emerald-500" },
-    { label: "Commissions Paid", value: `â‚¦${totalCommissions.toLocaleString()}`, icon: TrendingUp, color: "text-purple-500" },
+    { label: "Total Revenue", value: `₦${totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "text-emerald-500" },
+    { label: "Commissions Paid", value: `₦${totalCommissions.toLocaleString()}`, icon: TrendingUp, color: "text-purple-500" },
     { label: "Pending Verifications", value: pendingVerifications, icon: ShieldCheck, color: "text-cyan-500" },
     { label: "Total Reviews", value: totalReviews, icon: Star, color: "text-pink-500" },
     { label: "Total Orders", value: totalOrders, icon: ClipboardList, color: "text-indigo-500" },
@@ -171,8 +171,8 @@ export default function AdminDashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} interval={4} />
-                  <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `â‚¦${(v / 1000).toFixed(0)}k`} />
-                  <Tooltip formatter={(v: number) => [`â‚¦${v.toLocaleString()}`, "Revenue"]} />
+                  <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `₦${(v / 1000).toFixed(0)}k`} />
+                  <Tooltip formatter={(v: number) => [`₦${v.toLocaleString()}`, "Revenue"]} />
                   <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -228,7 +228,7 @@ export default function AdminDashboard() {
                     <p className="text-xs text-muted-foreground">{s.products?.name ?? "Unknown product"}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium">â‚¦{Number(s.amount).toLocaleString()}</p>
+                    <p className="text-sm font-medium">₦{Number(s.amount).toLocaleString()}</p>
                     <p className={`text-xs ${s.status === "pending" ? "text-yellow-600" : s.status === "confirmed" ? "text-green-600" : "text-red-600"}`}>{s.status}</p>
                   </div>
                 </div>
@@ -269,4 +269,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
 

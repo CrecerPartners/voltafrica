@@ -1,11 +1,11 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import {
   useMyCampaignMemberships,
   useMyCampaignEarnings,
-} from "@/hooks/useCampaigns";
+} from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 
 export default function MyCampaigns() {
@@ -112,4 +112,5 @@ export default function MyCampaigns() {
     </div>
   );
 }
+
 

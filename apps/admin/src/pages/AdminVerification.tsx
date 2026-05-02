@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useAdminVerifications } from "@/hooks/useAdminVerifications";
 import { useUpdateProfile } from "@/hooks/useAdminData";
 import { Input } from "@digihire/shared";
@@ -6,7 +6,7 @@ import { Button } from "@digihire/shared";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { CheckCircle, XCircle, ExternalLink } from "lucide-react";
 import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
 import { supabase } from "@digihire/shared";
@@ -95,7 +95,7 @@ export default function AdminVerification() {
                       <p className="text-xs text-muted-foreground">{p.email}</p>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm capitalize">{p.account_type || "â€”"}</TableCell>
+                  <TableCell className="text-sm capitalize">{p.account_type || "—"}</TableCell>
                   <TableCell>
                     <Badge variant="secondary" className={statusColors[p.verification_status || "unverified"]}>
                       {p.verification_status || "unverified"}
@@ -134,4 +134,5 @@ export default function AdminVerification() {
     </div>
   );
 }
+
 

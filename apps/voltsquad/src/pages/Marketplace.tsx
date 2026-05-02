@@ -1,12 +1,12 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { Badge } from "@digihire/shared";
 import { Input } from "@digihire/shared";
-import { useProducts, Product } from "@/hooks/useProducts";
+import { useProducts, Product } from "@digihire/shared";
 import { useCart } from "@digihire/shared";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
 import { useMyShopItems, useAddToShop, useRemoveFromShop } from "@/hooks/useSellerShop";
 import { formatNaira } from "@digihire/shared";
@@ -286,4 +286,5 @@ const Marketplace = () => {
 };
 
 export default Marketplace;
+
 

@@ -1,4 +1,4 @@
-﻿import {
+import {
   LayoutDashboard,
   ShoppingBag,
   Wallet,
@@ -109,4 +109,5 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
+
 

@@ -1,4 +1,4 @@
-﻿import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@digihire/shared";
 
 export function useAdminReviews() {
@@ -25,4 +25,5 @@ export function useDeleteReview() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-reviews"] }),
   });
 }
+
 

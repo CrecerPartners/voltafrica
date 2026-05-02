@@ -1,12 +1,12 @@
-﻿import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@digihire/shared";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@digihire/shared";
 import type {
   Campaign,
   CampaignMembership,
   CampaignSubmission,
   CampaignEarning,
-} from "@/hooks/useCampaigns";
+} from "@digihire/shared";
 
 export type { Campaign };
 
@@ -318,7 +318,7 @@ export function useApproveEarning() {
         .eq("id", earningId);
       if (earnUpdateError) throw earnUpdateError;
 
-      // Step 2: insert transaction (if this fails, earning is paid but has no transaction_id â€” detectable/fixable)
+      // Step 2: insert transaction (if this fails, earning is paid but has no transaction_id — detectable/fixable)
       const { data: txn, error: txnError } = await supabase
         .from("transactions")
         .insert({
@@ -367,4 +367,5 @@ export function useRejectEarning() {
       qc.invalidateQueries({ queryKey: ["admin-pending-earnings"] }),
   });
 }
+
 

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useAdminPayouts, useUpdatePayoutStatus, useAdminTransactions, useUpdateTransactionStatus } from "@/hooks/useAdminData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@digihire/shared";
 import { Button } from "@digihire/shared";
@@ -8,7 +8,7 @@ import { Badge } from "@digihire/shared";
 import { Checkbox } from "@digihire/shared";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@digihire/shared";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@digihire/shared";
 import { Check, X, Eye, Search } from "lucide-react";
 import { exportToCsv } from "@digihire/shared";
 import { DateRangeFilter } from "@/components/admin/DateRangeFilter";
@@ -171,11 +171,11 @@ export default function AdminPayouts() {
                   <TableCell>{p.status === "pending" && <Checkbox checked={selected.has(p.id)} onCheckedChange={() => toggleSelect(p.id)} />}</TableCell>
                   <TableCell className="text-xs">{new Date(p.requested_at).toLocaleDateString()}</TableCell>
                   <TableCell className="text-sm font-medium">{p.profile?.name || "Unknown"}</TableCell>
-                  <TableCell className="font-medium">â‚¦{Number(p.amount).toLocaleString()}</TableCell>
+                  <TableCell className="font-medium">₦{Number(p.amount).toLocaleString()}</TableCell>
                   <TableCell>{p.bank_name}</TableCell>
                   <TableCell className="font-mono text-xs">{p.account_number}</TableCell>
                   <TableCell><Badge variant="secondary" className={statusColors[p.status] || ""}>{p.status}</Badge></TableCell>
-                  <TableCell className="text-xs text-muted-foreground max-w-[120px] truncate">{p.notes || "â€”"}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground max-w-[120px] truncate">{p.notes || "—"}</TableCell>
                   <TableCell>
                     <div className="flex gap-0.5">
                       <Button variant="ghost" size="icon" onClick={() => setDetailPayout(p)}><Eye className="h-3.5 w-3.5" /></Button>
@@ -200,7 +200,7 @@ export default function AdminPayouts() {
           <DialogHeader><DialogTitle>{actionType === "process" ? "Process Payout" : "Reject Payout"}</DialogTitle></DialogHeader>
           {actionPayout && (
             <div className="space-y-3">
-              <p className="text-sm">{actionType === "process" ? "Confirm processing" : "Reject"} payout of <strong>â‚¦{Number(actionPayout.amount).toLocaleString()}</strong> to <strong>{actionPayout.profile?.name || "user"}</strong>?</p>
+              <p className="text-sm">{actionType === "process" ? "Confirm processing" : "Reject"} payout of <strong>₦{Number(actionPayout.amount).toLocaleString()}</strong> to <strong>{actionPayout.profile?.name || "user"}</strong>?</p>
               <div><label className="text-xs text-muted-foreground">Notes (optional)</label><Textarea value={actionNotes} onChange={(e) => setActionNotes(e.target.value)} placeholder="Add notes..." /></div>
             </div>
           )}
@@ -217,8 +217,8 @@ export default function AdminPayouts() {
           {detailPayout && (
             <div className="grid gap-2 text-sm">
               <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Requester</span><span className="font-medium">{detailPayout.profile?.name || "Unknown"}</span></div>
-              <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Email</span><span>{detailPayout.profile?.email || "â€”"}</span></div>
-              <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Amount</span><span className="font-medium">â‚¦{Number(detailPayout.amount).toLocaleString()}</span></div>
+              <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Email</span><span>{detailPayout.profile?.email || "—"}</span></div>
+              <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Amount</span><span className="font-medium">₦{Number(detailPayout.amount).toLocaleString()}</span></div>
               <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Bank</span><span>{detailPayout.bank_name}</span></div>
               <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Account</span><span className="font-mono">{detailPayout.account_number}</span></div>
               <div className="flex justify-between py-1 border-b"><span className="text-muted-foreground">Status</span><Badge variant="secondary" className={statusColors[detailPayout.status] || ""}>{detailPayout.status}</Badge></div>
@@ -232,4 +232,5 @@ export default function AdminPayouts() {
     </div>
   );
 }
+
 

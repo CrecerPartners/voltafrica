@@ -1,9 +1,9 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
-import { useProduct } from "@/hooks/useProduct";
+import { useProduct } from "@digihire/shared";
 import { useCart } from "@digihire/shared";
-import { useProducts } from "@/hooks/useProducts";
-import { useProfile } from "@/hooks/useProfile";
+import { useProducts } from "@digihire/shared";
+import { useProfile } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
 import { useMyShopItems, useAddToShop, useRemoveFromShop } from "@/hooks/useSellerShop";
 import { formatNaira } from "@digihire/shared";
@@ -21,7 +21,7 @@ import {
   Truck, RotateCcw, ShieldCheck, Star
 } from "lucide-react";
 import { ReviewSection } from "@/components/ReviewSection";
-import { useProductRatingStats } from "@/hooks/useReviews";
+import { useProductRatingStats } from "@digihire/shared";
 import { toast } from "sonner";
 
 const categoryColors: Record<string, string> = {
@@ -189,7 +189,7 @@ const ProductPage = () => {
     : product.image
     ? [product.image]
     : [];
-  const shareText = `${product.name} â€” ${product.description}\n\n${referralLink}`;
+  const shareText = `${product.name} — ${product.description}\n\n${referralLink}`;
   const isLead = product.productType === "lead" || product.delivery_type === "lead_url";
   const isDigital = product.productType === "digital" || product.delivery_type !== "manual_provision";
   const typeBadge = productTypeBadge[product.delivery_type] || productTypeBadge[product.productType] || productTypeBadge.physical;
@@ -214,7 +214,7 @@ const ProductPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
-      {/* Breadcrumb â€” context-aware */}
+      {/* Breadcrumb — context-aware */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         {isSeller ? (
           <>
@@ -295,7 +295,7 @@ const ProductPage = () => {
             {product.price > 0 && (
               <span className="text-2xl font-bold text-foreground">{formatNaira(product.price)}</span>
             )}
-            {/* Commission badge â€” sellers only */}
+            {/* Commission badge — sellers only */}
             {isSeller && (
               <Badge className="volt-gradient text-primary-foreground text-sm px-3 py-1">
                 {getCommissionLabel(product)}
@@ -305,7 +305,7 @@ const ProductPage = () => {
 
           <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
 
-          {/* CTA â€” varies by context */}
+          {/* CTA — varies by context */}
           <div className="space-y-3 pt-2">
             {isDirectVisitor ? (
               /* Direct visitor without ref: can't purchase (no seller attribution) */
@@ -315,7 +315,7 @@ const ProductPage = () => {
                 <p className="text-xs text-muted-foreground">Find a Volt seller to get a purchase link, or visit a seller's shop to browse and buy.</p>
               </div>
             ) : isLead ? (
-              /* Lead product: Sign Up Now button â†’ external redirect */
+              /* Lead product: Sign Up Now button → external redirect */
               <Button
                 className="w-full volt-gradient h-12 text-base"
                 onClick={handleLeadClick}
@@ -341,7 +341,7 @@ const ProductPage = () => {
                   toast.success(`${product.name} added to cart!`);
                 }}
               >
-                <ShoppingCart className="h-5 w-5 mr-2" /> Add to Cart â€” {formatNaira(product.price)}
+                <ShoppingCart className="h-5 w-5 mr-2" /> Add to Cart — {formatNaira(product.price)}
               </Button>
             )}
 
@@ -381,7 +381,7 @@ const ProductPage = () => {
             )}
           </div>
 
-          {/* Video â€” visible to everyone */}
+          {/* Video — visible to everyone */}
           {product.assets.videoUrl && (
             <Button variant="outline" className="w-full" onClick={() => window.open(product.assets.videoUrl, "_blank")}>
               <ExternalLink className="h-4 w-4 mr-2" /> Watch Promo Video
@@ -406,7 +406,7 @@ const ProductPage = () => {
                   <ul className="space-y-2">
                     {product.assets.sellingTips.map((tip, i) => (
                       <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <span className="text-primary font-bold mt-0.5">â€¢</span> {tip}
+                        <span className="text-primary font-bold mt-0.5">•</span> {tip}
                       </li>
                     ))}
                   </ul>
@@ -498,10 +498,10 @@ const ProductPage = () => {
         </Card>
       </div>
 
-      {/* Reviews Section â€” visible to everyone */}
+      {/* Reviews Section — visible to everyone */}
       <ReviewSection productId={product.id} />
 
-      {/* Media Kit â€” seller-only */}
+      {/* Media Kit — seller-only */}
       {isSeller && images.length > 0 && (
         <Card className="border-border/50">
           <CardContent className="p-4 space-y-3">
@@ -518,7 +518,7 @@ const ProductPage = () => {
                 </a>
               ))}
               <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => {
-                const kit = `${product.name}\n${product.description}\n\nPrice: â‚¦${product.price}\n\n${referralLink}`;
+                const kit = `${product.name}\n${product.description}\n\nPrice: ₦${product.price}\n\n${referralLink}`;
                 navigator.clipboard.writeText(kit);
                 toast.success("Media kit text copied!");
               }}>
@@ -617,4 +617,5 @@ function ProgressBar({ label, value }: { label: string; value: number }) {
 }
 
 export default ProductPage;
+
 

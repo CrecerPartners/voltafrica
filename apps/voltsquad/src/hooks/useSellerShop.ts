@@ -1,4 +1,4 @@
-﻿import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@digihire/shared";
 import { useAuth } from "@digihire/shared";
 
@@ -96,4 +96,5 @@ export function usePublicSellerShop(shopSlug: string | undefined) {
     error: profileQuery.error || productsQuery.error,
   };
 }
+
 

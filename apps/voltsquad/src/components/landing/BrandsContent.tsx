@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { Card, CardContent } from "@digihire/shared";
 import {
@@ -26,7 +26,7 @@ const brandStats = [
   { value: "20+", label: "cities & campuses covered" },
   { value: "5K+", label: "Gen Z sellers across Nigeria" },
   { value: "1000+", label: "peer-driven interactions per campaign" },
-  { value: "â‰¤10", label: "days to launch sales" },
+  { value: "≤10", label: "days to launch sales" },
 ];
 
 const benefits = [
@@ -38,7 +38,7 @@ const benefits = [
   {
     icon: Target,
     title: "Sales Density, Not Surface Reach",
-    desc: "DigiHire deploys Gen Z sellers across campuses, cities, and communities, ensuring saturation through peer networks â€” not one-off visibility from a few creators.",
+    desc: "DigiHire deploys Gen Z sellers across campuses, cities, and communities, ensuring saturation through peer networks — not one-off visibility from a few creators.",
   },
   {
     icon: Share2,
@@ -58,7 +58,7 @@ const benefits = [
   {
     icon: ShieldCheck,
     title: "Vetted Seller Network",
-    desc: "DigiHire recruits and manages trusted sellers â€” students, NYSC members, micro-influencers, and content creators who already influence real buying decisions.",
+    desc: "DigiHire recruits and manages trusted sellers — students, NYSC members, micro-influencers, and content creators who already influence real buying decisions.",
   },
   {
     icon: Handshake,
@@ -225,7 +225,7 @@ export function BrandsContent() {
             Partner with DigiHire
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/80">
-            Gen Z doesn't buy from ads â€” they buy from people they trust. DigiHire turns communities into structured sales environments powered by peer influence and real incentives.
+            Gen Z doesn't buy from ads — they buy from people they trust. DigiHire turns communities into structured sales environments powered by peer influence and real incentives.
           </p>
           <div className="mt-8">
             <Button
@@ -246,4 +246,5 @@ export function BrandsContent() {
     </>
   );
 }
+
 

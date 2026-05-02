@@ -1,9 +1,9 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@digihire/shared";
 import { Button } from "@digihire/shared";
 import { ShoppingBag, Search, ExternalLink, Copy, Info } from "lucide-react";
 import { supabase } from "@digihire/shared";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 import { toast } from "sonner";
@@ -120,7 +120,7 @@ export default function BuyerOrders() {
                           <div className="flex justify-between items-start">
                             <div>
                               <span className="font-medium block">{item.products?.name}</span>
-                              <span className="text-sm text-muted-foreground">Qty: {item.quantity} Ã— {formatNaira(item.price)}</span>
+                              <span className="text-sm text-muted-foreground">Qty: {item.quantity} × {formatNaira(item.price)}</span>
                             </div>
                           </div>
 
@@ -183,4 +183,5 @@ export default function BuyerOrders() {
     </div>
   );
 }
+
 

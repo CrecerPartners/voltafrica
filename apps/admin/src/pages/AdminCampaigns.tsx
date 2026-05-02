@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Plus, MoreHorizontal } from "lucide-react";
 import { Button } from "@digihire/shared";
@@ -95,7 +95,7 @@ export default function AdminCampaigns() {
                 <TableCell>
                   {c.commission_type === "percentage"
                     ? `${c.commission_value}%`
-                    : `â‚¦${c.commission_value}`}{" "}
+                    : `₦${c.commission_value}`}{" "}
                   / {c.commission_per}
                 </TableCell>
                 <TableCell className="capitalize">{c.join_type}</TableCell>
@@ -160,4 +160,5 @@ export default function AdminCampaigns() {
     </div>
   );
 }
+
 

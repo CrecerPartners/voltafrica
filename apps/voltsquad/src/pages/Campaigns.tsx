@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Lock, Megaphone } from "lucide-react";
@@ -9,8 +9,8 @@ import {
   useCampaigns,
   useMyCampaignMemberships,
   useJoinCampaign,
-} from "@/hooks/useCampaigns";
-import type { Campaign, CampaignMembership } from "@/hooks/useCampaigns";
+} from "@digihire/shared";
+import type { Campaign, CampaignMembership } from "@digihire/shared";
 import { formatNaira } from "@digihire/shared";
 
 function commissionLabel(c: Campaign) {
@@ -164,4 +164,5 @@ export default function Campaigns() {
     </div>
   );
 }
+
 
