@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*":                ["./src/*"],
+      "@digihire/shared":   ["../../packages/shared/src/index.ts"],
+      "@digihire/shared/*": ["../../packages/shared/src/*"]
+    }
+  },
+  "include": ["src", "../../packages/shared/src"]
+}
