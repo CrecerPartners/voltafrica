@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/admin/:path*", "destination": "ADMIN_VERCEL_URL/admin/:path*" }
+  ]
+}
