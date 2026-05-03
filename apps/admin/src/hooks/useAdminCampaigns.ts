@@ -36,7 +36,7 @@ export function useAdminCampaigns() {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Campaign[];
+      return data as unknown as Campaign[];
     },
   });
 }
@@ -91,7 +91,7 @@ export function useAdminPendingMemberships() {
         .eq("status", "pending")
         .order("joined_at", { ascending: true });
       if (error) throw error;
-      return data as Array<
+      return data as unknown as Array<
         CampaignMembership & {
           campaign: { title: string; tracking_link_base: string | null };
           seller: { id: string; name: string; email: string };
@@ -173,7 +173,7 @@ export function useAdminPendingSubmissions() {
         .eq("status", "pending_review")
         .order("submitted_at", { ascending: true });
       if (error) throw error;
-      return data as Array<
+      return data as unknown as Array<
         CampaignSubmission & {
           campaign: {
             title: string;
@@ -273,7 +273,7 @@ export function useAdminPendingEarnings() {
         .eq("status", "pending")
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return data as Array<
+      return data as unknown as Array<
         CampaignEarning & {
           campaign: { title: string };
           seller: { name: string; email: string; user_id: string };

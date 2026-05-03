@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@digihire/shared";
 import { useIsMobile } from "@digihire/shared";
-import { AdminMobileBottomNav } from "@/components/admin/AdminMobileBottomNav";
+import { AdminMobileBottomNav } from "@/components/AdminMobileBottomNav";
 
 const navItems = [
   { label: "Overview", path: "/admin", icon: LayoutDashboard },

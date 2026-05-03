@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@digihire/shared";
 import { toast } from "@digihire/shared";
 import { Trash2, Star } from "lucide-react";
-import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
+import { AdminTablePagination, paginateItems } from "@/components/AdminTablePagination";
 
 const PAGE_SIZE = 20;
 

@@ -8,7 +8,7 @@ import { Badge } from "@digihire/shared";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@digihire/shared";
 import { toast } from "@digihire/shared";
 import { ChevronDown } from "lucide-react";
-import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
+import { AdminTablePagination, paginateItems } from "@/components/AdminTablePagination";
 
 const PAGE_SIZE = 20;
 const ORDER_STATUSES = ["pending", "confirmed", "delivered"];

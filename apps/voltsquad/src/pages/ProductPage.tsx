@@ -190,8 +190,8 @@ const ProductPage = () => {
     ? [product.image]
     : [];
   const shareText = `${product.name} — ${product.description}\n\n${referralLink}`;
-  const isLead = product.productType === "lead" || product.delivery_type === "lead_url";
-  const isDigital = product.productType === "digital" || product.delivery_type !== "manual_provision";
+  const isLead = product.delivery_type === "lead_url";
+  const isDigital = product.productType === "Digital" || product.delivery_type !== "manual_provision";
   const typeBadge = productTypeBadge[product.delivery_type] || productTypeBadge[product.productType] || productTypeBadge.physical;
   const productAssets = (product.assets || {}) as Record<string, unknown>;
 

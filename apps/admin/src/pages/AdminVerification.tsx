@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@digihire/shared";
 import { toast } from "@digihire/shared";
 import { CheckCircle, XCircle, ExternalLink } from "lucide-react";
-import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
+import { AdminTablePagination, paginateItems } from "@/components/AdminTablePagination";
 import { supabase } from "@digihire/shared";
 
 const PAGE_SIZE = 20;

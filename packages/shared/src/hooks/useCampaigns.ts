@@ -73,7 +73,7 @@ export function useCampaigns() {
         .in("status", ["active", "paused", "ended"])
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Campaign[];
+      return data as unknown as Campaign[];
     },
   });
 }
@@ -88,7 +88,7 @@ export function useCampaign(id: string) {
         .eq("id", id)
         .single();
       if (error) throw error;
-      return data as Campaign;
+      return data as unknown as Campaign;
     },
     enabled: !!id,
   });
@@ -105,7 +105,7 @@ export function useMyCampaignMemberships() {
         .eq("seller_id", profile!.id)
         .order("joined_at", { ascending: false });
       if (error) throw error;
-      return data as Array<CampaignMembership & { campaign: Campaign }>;
+      return data as unknown as Array<CampaignMembership & { campaign: Campaign }>;
     },
     enabled: !!profile?.id,
   });
@@ -123,7 +123,7 @@ export function useCampaignMembership(campaignId: string) {
         .eq("seller_id", profile!.id)
         .maybeSingle();
       if (error) throw error;
-      return data as CampaignMembership | null;
+      return data as unknown as CampaignMembership | null;
     },
     enabled: !!profile?.id && !!campaignId,
   });
@@ -142,10 +142,11 @@ export function useJoinCampaign() {
         .single();
       if (cErr) throw cErr;
 
-      const isInstant = campaign.join_type === "instant";
+      const c = campaign as unknown as { join_type: string; tracking_link_base: string | null };
+      const isInstant = c.join_type === "instant";
       const trackingLink =
-        isInstant && campaign.tracking_link_base
-          ? `${campaign.tracking_link_base}?ref=${profile!.id}`
+        isInstant && c.tracking_link_base
+          ? `${c.tracking_link_base}?ref=${profile!.id}`
           : null;
 
       const { error } = await supabase.from("campaign_memberships" as any).insert({
@@ -175,7 +176,7 @@ export function useCampaignSubmissions(campaignId: string) {
         .eq("seller_id", profile!.id)
         .order("submitted_at", { ascending: false });
       if (error) throw error;
-      return data as CampaignSubmission[];
+      return data as unknown as CampaignSubmission[];
     },
     enabled: !!profile?.id && !!campaignId,
   });
@@ -223,7 +224,7 @@ export function useMyCampaignEarnings(campaignId?: string) {
       if (campaignId) query = query.eq("campaign_id", campaignId);
       const { data, error } = await query.order("created_at", { ascending: false });
       if (error) throw error;
-      return data as CampaignEarning[];
+      return data as unknown as CampaignEarning[];
     },
     enabled: !!profile?.id,
   });

@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { toast } from "@digihire/shared";
 import { Search, Pencil, UserCheck, UserX } from "lucide-react";
 import { Card, CardContent } from "@digihire/shared";
-import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
+import { AdminTablePagination, paginateItems } from "@/components/AdminTablePagination";
 
 const statusColors: Record<string, string> = {
   signed_up: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",

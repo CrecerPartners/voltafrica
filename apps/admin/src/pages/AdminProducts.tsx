@@ -10,7 +10,7 @@ import { toast } from "@digihire/shared";
 import { Plus, Pencil, Trash2, Upload, X, Image as ImageIcon, Search } from "lucide-react";
 import { Textarea } from "@digihire/shared";
 import { supabase } from "@digihire/shared";
-import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
+import { AdminTablePagination, paginateItems } from "@/components/AdminTablePagination";
 import { Label } from "@digihire/shared";
 import { PRODUCT_TAXONOMY, PRODUCT_TYPES, getCategoriesByType, getProductTypeForCategory, getSubcategoriesByCategory } from "@digihire/shared";
 
@@ -224,7 +224,7 @@ export default function AdminProducts() {
         return { ...d, slug };
       });
 
-      const { error } = await supabase.from("products").insert(toInsert);
+      const { error } = await supabase.from("products").insert(toInsert as any);
       if (error) throw error;
       
       toast({ title: "Success", description: "10 demo products added!" });
@@ -852,7 +852,7 @@ export default function AdminProducts() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium">Product Images</p>
-                <Button type="button" variant="outline" size="xs" onClick={() => fileRef.current?.click()} disabled={uploading}>
+                <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={uploading}>
                   <Upload className="h-3 w-3 mr-1" /> {uploading ? "Uploading..." : "Add Image"}
                 </Button>
               </div>

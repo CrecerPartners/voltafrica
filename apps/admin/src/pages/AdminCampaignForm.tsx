@@ -25,8 +25,8 @@ import {
 } from "@/hooks/useAdminCampaigns";
 
 interface AdminCampaignFormProps {
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
+  open?: boolean;
+  onOpenChange?: (v: boolean) => void;
   campaign?: Campaign;
 }
 
@@ -90,7 +90,7 @@ export default function AdminCampaignForm({
         {
           onSuccess: () => {
             toast.success("Campaign updated.");
-            onOpenChange(false);
+            onOpenChange?.(false);
           },
           onError: () => toast.error("Update failed."),
         }
@@ -99,7 +99,7 @@ export default function AdminCampaignForm({
       create.mutate(form, {
         onSuccess: () => {
           toast.success("Campaign created as draft.");
-          onOpenChange(false);
+          onOpenChange?.(false);
         },
         onError: () => toast.error("Create failed."),
       });

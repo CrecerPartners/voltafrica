@@ -11,8 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { toast } from "@digihire/shared";
 import { Check, X, Eye, Search } from "lucide-react";
 import { exportToCsv } from "@digihire/shared";
-import { DateRangeFilter } from "@/components/admin/DateRangeFilter";
-import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
+import { AdminTablePagination, paginateItems } from "@/components/AdminTablePagination";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",

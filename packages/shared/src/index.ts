@@ -22,8 +22,15 @@ export {
   useSubmitEntry,
   useMyCampaignEarnings,
 } from "./hooks/useCampaigns";
+export type {
+  Campaign,
+  CampaignMembership,
+  CampaignSubmission,
+  CampaignEarning,
+} from "./hooks/useCampaigns";
 export { useReferrals } from "./hooks/useReferrals";
 export { useSales, useDeleteSale, useUpdateSale } from "./hooks/useSales";
+export type { Sale } from "./hooks/useSales";
 export {
   useCourses,
   useCourseLessons,
@@ -32,6 +39,7 @@ export {
   useMarkLessonComplete,
 } from "./hooks/useTraining";
 export { useProducts } from "./hooks/useProducts";
+export type { Product, ProductType, CommissionModel } from "./hooks/useProducts";
 export { useProduct } from "./hooks/useProduct";
 export { useReviews, useSubmitReview, useProductRatingStats } from "./hooks/useReviews";
 export { useIsMobile } from "./hooks/use-mobile";
@@ -90,7 +98,7 @@ export * from "./components/ui/table";
 export * from "./components/ui/tabs";
 export * from "./components/ui/textarea";
 export * from "./components/ui/toast";
-export * from "./components/ui/toaster";
+export { Toaster as ToastNotifier } from "./components/ui/toaster";
 export * from "./components/ui/toggle";
 export * from "./components/ui/toggle-group";
 export * from "./components/ui/tooltip";

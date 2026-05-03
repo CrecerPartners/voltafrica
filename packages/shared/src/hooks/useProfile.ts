@@ -23,6 +23,7 @@ export interface Profile {
   verification_status: string;
   transaction_pin?: string;
   bank_code?: string;
+  bank_account_verified?: boolean;
   security_locked_until?: string;
   nin?: string;
   bvn?: string;

@@ -24,7 +24,7 @@ const Checkout = () => {
   const allDigital = useMemo(() => {
     return items.length > 0 && items.every((item) => {
       const product = products.find((p) => p.id === item.productId);
-      return product?.productType === "digital" || product?.delivery_type !== "manual_provision";
+      return product?.productType === "Digital" || product?.delivery_type !== "manual_provision";
     });
   }, [items, products]);
 
@@ -32,7 +32,7 @@ const Checkout = () => {
   const needsManualNotes = useMemo(() => {
     return items.some((item) => {
       const product = products.find((p) => p.id === item.productId);
-      return product?.delivery_type === "manual_provision" && product?.productType === "digital";
+      return product?.delivery_type === "manual_provision" && product?.productType === "Digital";
     });
   }, [items, products]);
 

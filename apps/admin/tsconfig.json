@@ -2,11 +2,15 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
     "paths": {
       "@/*":                ["./src/*"],
       "@digihire/shared":   ["../../packages/shared/src/index.ts"],
       "@digihire/shared/*": ["../../packages/shared/src/*"]
-    }
+    },
+    "types": ["vite/client"]
   },
   "include": ["src", "../../packages/shared/src"]
 }

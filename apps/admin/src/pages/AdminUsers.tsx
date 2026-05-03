@@ -10,7 +10,7 @@ import { toast } from "@digihire/shared";
 import { Eye, Trash2, Save } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportToCsv } from "@digihire/shared";
-import { AdminTablePagination, paginateItems } from "@/components/admin/AdminTablePagination";
+import { AdminTablePagination, paginateItems } from "@/components/AdminTablePagination";
 
 const tiers = ["Bronze", "Silver", "Gold", "Platinum"];
 const PAGE_SIZE = 20;
