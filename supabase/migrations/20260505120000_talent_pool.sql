@@ -4,7 +4,7 @@ create table if not exists talent_profiles (
   full_name             text,
   phone                 text,
   gender                text,
-  date_of_birth         text,
+  date_of_birth         date,
   city                  text,
   state                 text,
   country               text,
@@ -98,6 +98,19 @@ create table if not exists talent_admin_notes (
   created_at timestamptz default now()
 );
 
+-- updated_at auto-update triggers
+create trigger update_talent_profiles_updated_at
+  before update on talent_profiles
+  for each row execute function public.update_updated_at_column();
+
+create trigger update_brand_profiles_updated_at
+  before update on brand_profiles
+  for each row execute function public.update_updated_at_column();
+
+-- Partial indexes for is_published queries
+create index on talent_courses (is_published) where is_published = true;
+create index on talent_webinars (is_published) where is_published = true;
+
 -- RLS
 alter table talent_profiles enable row level security;
 alter table brand_profiles enable row level security;
@@ -109,20 +122,24 @@ alter table talent_admin_notes enable row level security;
 -- talent_profiles policies
 create policy "talent can manage own profile"
   on talent_profiles for all
-  using (auth.uid() = id);
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
 
 create policy "admin can manage all talent profiles"
   on talent_profiles for all
-  using ((auth.jwt() -> 'user_metadata' ->> 'account_type') = 'admin');
+  using ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin');
 
 -- brand_profiles policies
 create policy "brand can manage own profile"
   on brand_profiles for all
-  using (auth.uid() = id);
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
 
 create policy "admin can manage all brand profiles"
   on brand_profiles for all
-  using ((auth.jwt() -> 'user_metadata' ->> 'account_type') = 'admin');
+  using ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin');
 
 -- talent_courses policies
 create policy "published courses readable by all authenticated"
@@ -131,16 +148,19 @@ create policy "published courses readable by all authenticated"
 
 create policy "admin can manage courses"
   on talent_courses for all
-  using ((auth.jwt() -> 'user_metadata' ->> 'account_type') = 'admin');
+  using ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin');
 
 -- talent_enrollments policies
 create policy "user can manage own enrollments"
   on talent_enrollments for all
-  using (auth.uid() = user_id);
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 create policy "admin can manage all enrollments"
   on talent_enrollments for all
-  using ((auth.jwt() -> 'user_metadata' ->> 'account_type') = 'admin');
+  using ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin');
 
 -- talent_webinars policies
 create policy "published webinars readable by authenticated"
@@ -149,9 +169,11 @@ create policy "published webinars readable by authenticated"
 
 create policy "admin can manage webinars"
   on talent_webinars for all
-  using ((auth.jwt() -> 'user_metadata' ->> 'account_type') = 'admin');
+  using ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin');
 
 -- talent_admin_notes policies
 create policy "admin can manage notes"
   on talent_admin_notes for all
-  using ((auth.jwt() -> 'user_metadata' ->> 'account_type') = 'admin');
+  using ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'account_type') = 'admin');
