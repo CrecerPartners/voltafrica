@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth, supabase } from '@digihire/shared';
+import { useAuth, supabase as _supabase } from '@digihire/shared';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const supabase = _supabase as any;
 import { motion } from 'motion/react';
 import { UserPlus, Mail, Lock, User, Phone, ArrowRight } from 'lucide-react';
 

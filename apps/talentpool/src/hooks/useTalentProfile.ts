@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase, useAuth } from '@digihire/shared';
+import { supabase as _supabase, useAuth } from '@digihire/shared';
 import type { TalentProfile } from '../types';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const supabase = _supabase as any;
 
 export function useTalentProfile() {
   const { user } = useAuth();
@@ -17,7 +20,7 @@ export function useTalentProfile() {
       .select('*')
       .eq('id', user.id)
       .maybeSingle()
-      .then(({ data, error: err }) => {
+      .then(({ data, error: err }: { data: TalentProfile | null; error: { message: string } | null }) => {
         if (mounted) {
           setProfile(err ? null : data);
           setError(err?.message ?? null);

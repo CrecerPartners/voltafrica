@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase, useAuth } from '@digihire/shared';
+import { supabase as _supabase, useAuth } from '@digihire/shared';
 import type { TalentEnrollment } from '../types';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const supabase = _supabase as any;
 
 export function useTalentEnrollments() {
   const { user } = useAuth();
@@ -17,7 +20,7 @@ export function useTalentEnrollments() {
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .then(({ data, error: err }) => {
+      .then(({ data, error: err }: { data: TalentEnrollment[] | null; error: { message: string } | null }) => {
         if (mounted) {
           setEnrollments(err ? [] : (data ?? []));
           setError(err?.message ?? null);

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@digihire/shared';
+import { supabase as _supabase } from '@digihire/shared';
 import type { TalentCourse } from '../types';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const supabase = _supabase as any;
 
 export function useTalentCourses() {
   const [courses, setCourses] = useState<TalentCourse[]>([]);
@@ -13,7 +16,7 @@ export function useTalentCourses() {
       .from('talent_courses')
       .select('*')
       .eq('is_published', true)
-      .then(({ data, error: err }) => {
+      .then(({ data, error: err }: { data: TalentCourse[] | null; error: { message: string } | null }) => {
         if (mounted) {
           setCourses(err ? [] : (data ?? []));
           setError(err?.message ?? null);
@@ -40,7 +43,7 @@ export function useTalentCourse(id: string | undefined) {
       .select('*')
       .eq('id', id)
       .maybeSingle()
-      .then(({ data, error: err }) => {
+      .then(({ data, error: err }: { data: TalentCourse | null; error: { message: string } | null }) => {
         if (mounted) {
           setCourse(err ? null : data);
           setError(err?.message ?? null);
