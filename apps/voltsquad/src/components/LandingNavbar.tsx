@@ -25,15 +25,13 @@ export function LandingNavbar() {
           <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Contact</Link>
           
           <div className="flex items-center gap-3 ml-2">
-            <a
-              href="https://crecerpartners.com/sales/"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/hire"
               className="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
             >
               <Briefcase className="h-4 w-4 animate-bounce" />
               Hire Sales Executive
-            </a>
+            </Link>
             <CartDrawer />
             {isLoggedIn ? (
               <Button asChild className="volt-gradient border-0 font-semibold shadow-lg hover:opacity-90">
@@ -71,16 +69,14 @@ export function LandingNavbar() {
               
               <div className="h-px bg-border w-full my-2" />
 
-              <a
-                href="https://crecerpartners.com/sales/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/hire"
                 className="inline-flex items-center justify-center gap-2 rounded-md border border-primary/40 bg-primary/5 px-3 py-2 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
                 onClick={() => setOpen(false)}
               >
                 <Briefcase className="h-4 w-4 animate-bounce" />
                 Hire Sales Executive
-              </a>
+              </Link>
               {isLoggedIn ? (
                 <Button asChild className="w-full volt-gradient border-0 font-semibold" onClick={() => setOpen(false)}>
                   <Link to="/dashboard"><LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard</Link>
