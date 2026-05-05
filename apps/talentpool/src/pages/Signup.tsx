@@ -21,17 +21,18 @@ export default function Signup() {
       if (signUpErr) throw signUpErr;
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from('talent_profiles').upsert({
+        const { error: upsertErr } = await supabase.from('talent_profiles').upsert({
           id: user.id,
           full_name: formData.fullName,
           phone: formData.phoneNumber,
           status: 'incomplete',
           profile_completion: 0,
         });
+        if (upsertErr) throw upsertErr;
       }
       navigate('/verify-email');
-    } catch (err: any) {
-      setError(err.message || 'Failed to create account');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to create account');
       setLoading(false);
     }
   };
