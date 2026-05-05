@@ -17,12 +17,12 @@ export default function Signup() {
     setLoading(true);
     setError('');
     try {
-      const { error: signUpErr } = await signUp(formData.email, formData.password, formData.fullName, undefined, 'talent');
+      const { data: signUpData, error: signUpErr } = await signUp(formData.email, formData.password, formData.fullName, undefined, 'talent');
       if (signUpErr) throw signUpErr;
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
+      const newUser = signUpData?.user;
+      if (newUser) {
         const { error: upsertErr } = await supabase.from('talent_profiles').upsert({
-          id: user.id,
+          id: newUser.id,
           full_name: formData.fullName,
           phone: formData.phoneNumber,
           status: 'incomplete',
@@ -33,6 +33,7 @@ export default function Signup() {
       navigate('/verify-email');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to create account');
+    } finally {
       setLoading(false);
     }
   };

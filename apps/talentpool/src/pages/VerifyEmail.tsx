@@ -16,6 +16,7 @@ export default function VerifyEmail() {
     if (!user?.email) return;
     setSending(true);
     setError('');
+    setSuccess('');
     const { error: err } = await supabase.auth.resend({ type: 'signup', email: user.email });
     if (err) setError(err.message);
     else setSuccess('Verification email sent! Check your inbox.');
@@ -25,6 +26,7 @@ export default function VerifyEmail() {
   const handleCheckStatus = async () => {
     setChecking(true);
     setError('');
+    setSuccess('');
     const { data: { user: freshUser } } = await supabase.auth.getUser();
     if (freshUser?.email_confirmed_at) {
       setSuccess('Email verified! Redirecting...');

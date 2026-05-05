@@ -16,12 +16,12 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const { error: err } = await signIn(email, password);
-    if (err) {
-      setError(err.message || 'Failed to login');
-      setLoading(false);
-    } else {
+    try {
+      const { error: err } = await signIn(email, password);
+      if (err) { setError(err.message || 'Failed to login'); return; }
       navigate('/talent');
+    } finally {
+      setLoading(false);
     }
   };
 
