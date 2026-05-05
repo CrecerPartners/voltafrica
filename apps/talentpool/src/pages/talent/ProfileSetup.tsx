@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { TalentProfile } from '../../types';
 import { useNavigate } from 'react-router-dom';
-import { supabase, useAuth } from '@digihire/shared';
+import { supabase } from '@digihire/shared';
 import { motion } from 'motion/react';
 import { Save, User, MapPin, Briefcase, GraduationCap, Link as LinkIcon, Camera, Upload, CheckCircle, AlertCircle, FileText, Settings, Heart } from 'lucide-react';
 
@@ -109,7 +109,7 @@ export default function ProfileSetup({ profile, onUpdate }: Props) {
         alert('Profile completed successfully!');
         navigate('/talent');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Update failed');
       console.error('Save error details:', err);
     } finally {
