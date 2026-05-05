@@ -24,10 +24,11 @@ create table if not exists talent_profiles (
   portfolio_url         text,
   cv_url                text,
   profile_photo_url     text,
-  expected_salary       text,
+  salary_min            int,
+  salary_max            int,
   availability          text,
-  status                text not null default 'incomplete',
-  profile_completion    int not null default 0,
+  status                text default 'incomplete',
+  profile_completion    int default 0,
   created_at            timestamptz default now(),
   updated_at            timestamptz default now()
 );
@@ -70,7 +71,7 @@ create table if not exists talent_enrollments (
   user_id           uuid not null references auth.users on delete cascade,
   course_id         uuid not null references talent_courses on delete cascade,
   progress          int default 0,
-  completed_modules text[] default '{}',
+  completed_modules int[] default '{}',
   completed_at      timestamptz,
   created_at        timestamptz default now(),
   unique (user_id, course_id)
