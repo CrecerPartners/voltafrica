@@ -25,6 +25,8 @@ import AdminCampaigns from "@/pages/AdminCampaigns";
 import AdminCampaignMemberships from "@/pages/AdminCampaignMemberships";
 import AdminCampaignEarnings from "@/pages/AdminCampaignEarnings";
 import AdminCampaignForm from "@/pages/AdminCampaignForm";
+import AdminTalentPool from "@/pages/AdminTalentPool";
+import AdminBrands from "@/pages/AdminBrands";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +69,8 @@ export default function App() {
                   <Route path="/campaigns/:id/edit" element={<AdminCampaignForm />} />
                   <Route path="/campaigns/memberships" element={<AdminCampaignMemberships />} />
                   <Route path="/campaigns/earnings" element={<AdminCampaignEarnings />} />
+                  <Route path="/talent-pool" element={<AdminTalentPool />} />
+                  <Route path="/brands" element={<AdminBrands />} />
                 </Route>
               </Routes>
             </BrowserRouter>

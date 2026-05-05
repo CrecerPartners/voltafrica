@@ -13,6 +13,8 @@ import {
   Megaphone,
   UserCheck,
   BadgeDollarSign,
+  UserSearch,
+  Building2,
 } from "lucide-react";
 import { cn } from "@digihire/shared";
 import { useIsMobile } from "@digihire/shared";
@@ -33,6 +35,8 @@ const navItems = [
   { label: "Campaigns", path: "/admin/campaigns", icon: Megaphone },
   { label: "Memberships", path: "/admin/campaigns/memberships", icon: UserCheck },
   { label: "Earnings", path: "/admin/campaigns/earnings", icon: BadgeDollarSign },
+  { label: "Talent Pool", path: "/admin/talent-pool", icon: UserSearch },
+  { label: "Brands", path: "/admin/brands", icon: Building2 },
 ];
 
 export function AdminLayout() {
