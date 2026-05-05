@@ -5,6 +5,7 @@ import type { TalentCourse } from '../types';
 export function useTalentCourses() {
   const [courses, setCourses] = useState<TalentCourse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -12,32 +13,42 @@ export function useTalentCourses() {
       .from('talent_courses')
       .select('*')
       .eq('is_published', true)
-      .then(({ data }) => {
-        if (mounted) { setCourses(data ?? []); setLoading(false); }
+      .then(({ data, error: err }) => {
+        if (mounted) {
+          setCourses(err ? [] : (data ?? []));
+          setError(err?.message ?? null);
+          setLoading(false);
+        }
       });
     return () => { mounted = false; };
   }, []);
 
-  return { courses, loading };
+  return { courses, loading, error };
 }
 
-export function useTalentCourse(id: string) {
+export function useTalentCourse(id: string | undefined) {
   const [course, setCourse] = useState<TalentCourse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) { setLoading(false); return; }
     let mounted = true;
+    setLoading(true);
     supabase
       .from('talent_courses')
       .select('*')
       .eq('id', id)
-      .single()
-      .then(({ data }) => {
-        if (mounted) { setCourse(data); setLoading(false); }
+      .maybeSingle()
+      .then(({ data, error: err }) => {
+        if (mounted) {
+          setCourse(err ? null : data);
+          setError(err?.message ?? null);
+          setLoading(false);
+        }
       });
     return () => { mounted = false; };
   }, [id]);
 
-  return { course, loading };
+  return { course, loading, error };
 }

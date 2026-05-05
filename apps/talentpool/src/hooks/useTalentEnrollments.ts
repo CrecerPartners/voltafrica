@@ -6,30 +6,37 @@ export function useTalentEnrollments() {
   const { user } = useAuth();
   const [enrollments, setEnrollments] = useState<TalentEnrollment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) { setLoading(false); return; }
     let mounted = true;
+    setLoading(true);
     supabase
       .from('talent_enrollments')
       .select('*')
       .eq('user_id', user.id)
-      .then(({ data }) => {
-        if (mounted) { setEnrollments(data ?? []); setLoading(false); }
+      .order('created_at', { ascending: false })
+      .then(({ data, error: err }) => {
+        if (mounted) {
+          setEnrollments(err ? [] : (data ?? []));
+          setError(err?.message ?? null);
+          setLoading(false);
+        }
       });
     return () => { mounted = false; };
-  }, [user]);
+  }, [user?.id]);
 
   const enroll = async (courseId: string) => {
-    if (!user) return;
-    const { data, error } = await supabase
+    if (!user) return { error: new Error('Not authenticated') };
+    const { data, error: err } = await supabase
       .from('talent_enrollments')
       .insert({ user_id: user.id, course_id: courseId, progress: 0, completed_modules: [] })
       .select()
       .single();
-    if (!error && data) setEnrollments(prev => [...prev, data]);
-    return { error };
+    if (!err && data) setEnrollments(prev => [...prev, data]);
+    return { error: err };
   };
 
-  return { enrollments, loading, enroll };
+  return { enrollments, loading, error, enroll };
 }

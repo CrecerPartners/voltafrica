@@ -6,32 +6,38 @@ export function useTalentProfile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<TalentProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) { setLoading(false); return; }
     let mounted = true;
+    setLoading(true);
     supabase
       .from('talent_profiles')
       .select('*')
       .eq('id', user.id)
-      .single()
-      .then(({ data }) => {
-        if (mounted) { setProfile(data); setLoading(false); }
+      .maybeSingle()
+      .then(({ data, error: err }) => {
+        if (mounted) {
+          setProfile(err ? null : data);
+          setError(err?.message ?? null);
+          setLoading(false);
+        }
       });
     return () => { mounted = false; };
-  }, [user]);
+  }, [user?.id]);
 
   const updateProfile = async (updates: Partial<TalentProfile>) => {
-    if (!user) return;
-    const { data, error } = await supabase
+    if (!user) return { error: new Error('Not authenticated') };
+    const { data, error: err } = await supabase
       .from('talent_profiles')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', user.id)
       .select()
-      .single();
-    if (!error && data) setProfile(data);
-    return { error };
+      .maybeSingle();
+    if (!err && data) setProfile(data);
+    return { error: err };
   };
 
-  return { profile, loading, setProfile, updateProfile };
+  return { profile, loading, error, setProfile, updateProfile };
 }
