@@ -1,13 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@digihire/shared';
 import { Settings } from 'lucide-react';
 
 export default function Navbar() {
   const { user, signOut } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await signOut();
+    try {
+      await signOut();
+    } catch (err) {
+      console.error('Sign-out failed:', err);
+    }
   };
 
   const displayName = user?.user_metadata?.name ?? user?.email ?? '';
@@ -33,14 +36,15 @@ export default function Navbar() {
                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">talent</span>
               </div>
               <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
-                {displayName.charAt(0)}
+                {displayName.charAt(0) || '?'}
               </div>
-              <button
-                onClick={() => navigate('/talent')}
+              <Link
+                to="/talent"
+                aria-label="Profile settings"
                 className="p-2 text-slate-400 hover:text-sky-600 transition-all border border-transparent hover:border-sky-100 hover:bg-sky-50 rounded-lg"
               >
                 <Settings size={18} />
-              </button>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 ml-2"
