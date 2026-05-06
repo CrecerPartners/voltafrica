@@ -43,6 +43,7 @@ const STATUS_COLOR: Record<string, string> = {
 export default function AdminRecruitment() {
   const [requests, setRequests] = useState<RecruitmentRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
   const [edits, setEdits] = useState<Record<string, { status: string; assigned_support: string; applicant_count: number; shortlist_count: number }>>({});
@@ -52,7 +53,8 @@ export default function AdminRecruitment() {
       .from('recruitment_requests')
       .select('*, brand_profiles(company_name)')
       .order('created_at', { ascending: false })
-      .then(({ data }: { data: RecruitmentRequest[] | null }) => {
+      .then(({ data, error: err }: { data: RecruitmentRequest[] | null; error: { message: string } | null }) => {
+        if (err) { setFetchError(err.message); setLoading(false); return; }
         const rows = data ?? [];
         setRequests(rows);
         const initialEdits: typeof edits = {};
@@ -105,6 +107,8 @@ export default function AdminRecruitment() {
 
       {loading ? (
         <div className="text-center py-16 text-muted-foreground">Loading...</div>
+      ) : fetchError ? (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center text-red-600 text-sm">{fetchError}</div>
       ) : requests.length === 0 ? (
         <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">No recruitment requests yet.</div>
       ) : (

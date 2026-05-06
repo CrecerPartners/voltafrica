@@ -26,7 +26,7 @@ export default function CampaignDetail() {
     }
   };
 
-  if (loading) return <div className="text-center py-16 text-gray-400">Loading...</div>;
+  if (loading || (!campaign && campaigns.length === 0)) return <div className="text-center py-16 text-gray-400">Loading...</div>;
   if (!campaign) return (
     <div className="rounded-2xl bg-white border border-gray-100 p-12 text-center shadow-sm">
       <p className="text-gray-400">Campaign not found.</p>

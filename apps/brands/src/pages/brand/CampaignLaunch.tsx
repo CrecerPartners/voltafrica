@@ -32,8 +32,8 @@ export default function CampaignLaunch() {
   });
 
   React.useEffect(() => {
-    if (profile?.company_name && !form.brand_name) {
-      setForm(p => ({ ...p, brand_name: profile.company_name ?? '' }));
+    if (profile?.company_name) {
+      setForm(p => ({ ...p, brand_name: p.brand_name || profile.company_name || '' }));
     }
   }, [profile?.company_name]);
 
