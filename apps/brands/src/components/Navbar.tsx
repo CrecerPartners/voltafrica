@@ -21,7 +21,9 @@ export default function Navbar() {
           {user && (
             <div className="hidden md:flex items-center gap-6">
               <Link to="/brand" className="text-[13px] font-semibold text-slate-500 hover:text-sky-600 transition-colors">Dashboard</Link>
-              <Link to="/brand/setup" className="text-[13px] font-semibold text-slate-500 hover:text-sky-600 transition-colors">Company Profile</Link>
+              <Link to="/brand/campaigns" className="text-[13px] font-semibold text-slate-500 hover:text-sky-600 transition-colors">Campaigns</Link>
+              <Link to="/brand/recruitment" className="text-[13px] font-semibold text-slate-500 hover:text-sky-600 transition-colors">Recruitment</Link>
+              <Link to="/brand/setup" className="text-[13px] font-semibold text-slate-500 hover:text-sky-600 transition-colors">Profile</Link>
             </div>
           )}
         </div>
