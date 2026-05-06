@@ -15,6 +15,7 @@ import {
   BadgeDollarSign,
   UserSearch,
   Building2,
+  ClipboardCheck,
 } from "lucide-react";
 import { cn } from "@digihire/shared";
 import { useIsMobile } from "@digihire/shared";
@@ -37,6 +38,7 @@ const navItems = [
   { label: "Earnings", path: "/admin/campaigns/earnings", icon: BadgeDollarSign },
   { label: "Talent Pool", path: "/admin/talent-pool", icon: UserSearch },
   { label: "Brands", path: "/admin/brands", icon: Building2 },
+  { label: "Recruitment", path: "/admin/recruitment", icon: ClipboardCheck },
 ];
 
 export function AdminLayout() {
