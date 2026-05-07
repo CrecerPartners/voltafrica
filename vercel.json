@@ -1,4 +1,7 @@
 {
+  "installCommand": "npm install",
+  "buildCommand": "npm run build:landing",
+  "outputDirectory": "apps/landing/dist",
   "rewrites": [
     { "source": "/about", "destination": "/about.html" },
     { "source": "/blog", "destination": "/blog.html" },
