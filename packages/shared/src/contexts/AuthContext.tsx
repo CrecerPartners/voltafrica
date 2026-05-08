@@ -18,11 +18,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children, signOutRedirect }: { children: ReactNode; signOutRedirect?: string }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const intentionalSignOut = useRef(false);
+
+  // signOutRedirect prop overrides the default landing-page redirect for apps that
+  // should stay within their own domain on sign-out (e.g. brands, talentpool).
+  const resolvedSignOutUrl = signOutRedirect ?? (import.meta.env.VITE_LANDING_URL ?? "https://digihire.io");
 
   useEffect(() => {
     // Initialise session on mount
@@ -44,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (Capacitor.isNativePlatform()) {
           window.location.replace("/login");
         } else {
-          window.location.replace(import.meta.env.VITE_LANDING_URL ?? "https://digihire.io");
+          window.location.replace(resolvedSignOutUrl);
         }
       }
     });
@@ -79,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (Capacitor.isNativePlatform()) {
         window.location.href = "/";
       } else {
-        window.location.href = import.meta.env.VITE_LANDING_URL ?? "https://digihire.io";
+        window.location.href = resolvedSignOutUrl;
       }
     }
   };
