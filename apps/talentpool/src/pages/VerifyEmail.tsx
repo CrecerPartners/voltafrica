@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, supabase } from '@digihire/shared';
 import { motion } from 'motion/react';
-import { Mail, CheckCircle, RefreshCw, LogOut, ArrowRight } from 'lucide-react';
+import { Mail, CheckCircle, RefreshCw, LogOut } from 'lucide-react';
+import { Button, Card, CardContent } from '@digihire/shared';
 
 export default function VerifyEmail() {
   const { user, signOut } = useAuth();
@@ -38,34 +39,51 @@ export default function VerifyEmail() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-[#fafafa] px-4 py-12">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md rounded-2xl bg-white p-10 shadow-sm border border-gray-100 text-center">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-sky-50 text-sky-500">
-          <Mail size={40} />
-        </div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Verify your email</h1>
-        <p className="text-slate-500 mb-8 text-sm leading-relaxed">
-          We've sent a verification link to <span className="font-bold text-slate-900">{user?.email}</span>.
-          <span className="text-xs italic block mt-2 text-slate-400">Check your Spam folder if you don't see it.</span>
-        </p>
-        {error && <div className="mb-6 rounded-lg bg-red-50 p-4 text-[10px] font-bold text-red-500 uppercase tracking-widest border border-red-100">{error}</div>}
-        {success && <div className="mb-6 rounded-lg bg-green-50 p-4 text-[10px] font-bold text-green-500 uppercase tracking-widest border border-green-100">{success}</div>}
-        <div className="space-y-4">
-          <button onClick={handleCheckStatus} disabled={checking} className="flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 py-4 text-xs font-bold text-white hover:bg-sky-700 transition-all shadow-lg shadow-sky-100 uppercase tracking-widest disabled:opacity-50">
-            {checking ? <RefreshCw className="animate-spin" size={14} /> : <CheckCircle size={14} />} I've Verified My Email
-          </button>
-          <button onClick={handleResend} disabled={sending} className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 py-4 text-xs font-bold text-slate-600 hover:bg-gray-50 transition-all uppercase tracking-widest disabled:opacity-50">
-            {sending ? <RefreshCw className="animate-spin" size={14} /> : <RefreshCw size={14} />} Resend Email
-          </button>
-        </div>
-        <div className="mt-10 border-t border-gray-50 pt-8 flex justify-between items-center">
-          <button onClick={() => signOut()} className="flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors">
-            <LogOut size={12} /> Sign Out
-          </button>
-          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-            Step 1.5 of 2 <ArrowRight size={12} />
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
+      </div>
+
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative z-10">
+        <Card className="border-border/50 text-center">
+          <CardContent className="pt-8 pb-6 space-y-6">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <Mail className="h-8 w-8 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Verify your email</h1>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                We've sent a verification link to{' '}
+                <span className="font-semibold text-foreground">{user?.email}</span>.
+                <span className="block mt-1 text-xs italic">Check your Spam folder if you don't see it.</span>
+              </p>
+            </div>
+
+            {error && <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">{error}</div>}
+            {success && <div className="rounded-lg bg-success/10 p-3 text-sm text-success border border-success/20">{success}</div>}
+
+            <div className="space-y-3">
+              <Button onClick={handleCheckStatus} disabled={checking} className="w-full gap-2">
+                {checking ? <RefreshCw className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                I've Verified My Email
+              </Button>
+              <Button variant="outline" onClick={handleResend} disabled={sending} className="w-full gap-2">
+                {sending ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                Resend Email
+              </Button>
+            </div>
+
+            <div className="pt-2 border-t border-border/50">
+              <button
+                type="button"
+                onClick={() => signOut()}
+                className="flex items-center gap-2 mx-auto text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <LogOut className="h-3 w-3" /> Sign Out
+              </button>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
     </div>
   );

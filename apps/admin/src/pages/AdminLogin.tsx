@@ -4,6 +4,7 @@ import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@digihire/shared";
 import { Shield } from "lucide-react";
+
 import { useAuth } from "@digihire/shared";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { supabase } from "@digihire/shared";
@@ -75,15 +76,13 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-destructive/5 blur-3xl" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
       </div>
 
       <Card className="w-full max-w-md relative z-10 border-border/50">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-foreground">
-              <Shield className="h-7 w-7 text-background" />
-            </div>
+            <img src="/assets/logo-color.png" alt="DigiHire" className="h-12 w-auto object-contain" />
           </div>
           <div>
             <CardTitle className="text-2xl font-display">Admin Portal</CardTitle>

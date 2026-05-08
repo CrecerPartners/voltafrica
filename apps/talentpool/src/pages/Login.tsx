@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@digihire/shared';
 import { motion } from 'motion/react';
-import { LogIn, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Button, Input, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@digihire/shared';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -26,47 +26,45 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-[#fafafa] px-4 py-12 sm:px-6 lg:px-8">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md space-y-8 rounded-xl bg-white p-10 shadow-sm border border-gray-200"
-      >
-        <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-sky-50 text-sky-600 shadow-sm">
-            <LogIn size={24} />
-          </div>
-          <h2 className="mt-6 text-2xl font-bold tracking-tight text-slate-800">Welcome back</h2>
-          <p className="mt-2 text-xs font-medium text-slate-400 uppercase tracking-widest">Sign in to your talent account</p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          {error && (
-            <div className="rounded-lg bg-red-50 p-4 text-[10px] font-bold text-red-500 uppercase tracking-widest border border-red-100">{error}</div>
-          )}
-          <div className="space-y-5">
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 ml-1">Email Address</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-300"><Mail size={16} /></div>
-                <input type="email" required className="block w-full rounded-lg border border-gray-200 bg-gray-50 py-3.5 pl-11 pr-4 text-sm font-medium focus:border-sky-500 focus:bg-white focus:outline-none transition-all placeholder-slate-300" placeholder="name@company.com" value={email} onChange={e => setEmail(e.target.value)} />
-              </div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
+      </div>
+
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative z-10">
+        <Card className="border-border/50">
+          <CardHeader className="text-center space-y-4">
+            <div className="flex justify-center">
+              <img src="/assets/logo-color.png" alt="DigiHire" className="h-12 w-auto object-contain" />
             </div>
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5 ml-1">Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-300"><Lock size={16} /></div>
-                <input type="password" required className="block w-full rounded-lg border border-gray-200 bg-gray-50 py-3.5 pl-11 pr-4 text-sm font-medium focus:border-sky-500 focus:bg-white focus:outline-none transition-all placeholder-slate-300" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
-              </div>
+              <CardTitle className="text-2xl">Welcome Back</CardTitle>
+              <CardDescription className="mt-1">Sign in to your talent account</CardDescription>
             </div>
-          </div>
-          <button type="submit" disabled={loading} className="group relative flex w-full justify-center rounded-lg bg-sky-600 py-4 text-xs font-bold text-white hover:bg-sky-700 focus:outline-none disabled:opacity-50 transition-all shadow-lg shadow-sky-100 uppercase tracking-widest">
-            {loading ? 'Authenticating...' : 'Sign in'}
-            {!loading && <ArrowRight className="ml-2 transition-transform group-hover:translate-x-1" size={14} />}
-          </button>
-        </form>
-        <div className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-4 border-t border-gray-50">
-          Need an account? <Link to="/signup" className="text-sky-600 hover:text-sky-700 ml-1">Join the Talent Pool</Link>
-        </div>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-4" onSubmit={handleLogin}>
+              {error && (
+                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">{error}</div>
+              )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Email Address</label>
+                <Input type="email" required placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} className="bg-secondary border-border" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Password</label>
+                <Input type="password" required placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} className="bg-secondary border-border" />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </form>
+            <p className="mt-6 text-center text-sm text-muted-foreground border-t border-border/50 pt-4">
+              Need an account?{' '}
+              <Link to="/signup" className="text-primary hover:underline font-medium">Join the Talent Pool</Link>
+            </p>
+          </CardContent>
+        </Card>
       </motion.div>
     </div>
   );
