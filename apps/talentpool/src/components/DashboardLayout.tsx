@@ -1,10 +1,14 @@
-import { Outlet, Link } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger, Avatar, AvatarFallback } from "@digihire/shared";
-import { useIsMobile, useAuth, cn } from "@digihire/shared";
-import { AdminSidebar } from "@/components/AdminSidebar";
-import { AdminMobileBottomNav } from "@/components/AdminMobileBottomNav";
+import { useIsMobile, useAuth } from "@digihire/shared";
+import { TalentSidebar } from "@/components/TalentSidebar";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { Link } from "react-router-dom";
 
-export function AdminLayout() {
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+export function DashboardLayout({ children }: DashboardLayoutProps) {
   const isMobile = useIsMobile();
   const { user } = useAuth();
   const initials = (user?.user_metadata?.name || user?.email || "?").charAt(0).toUpperCase();
@@ -13,14 +17,14 @@ export function AdminLayout() {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <div className="hidden md:block">
-          <AdminSidebar />
+          <TalentSidebar />
         </div>
 
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center justify-between border-b border-border px-4 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
             <div className="flex items-center gap-2">
               {isMobile ? (
-                <Link to="/" className="flex items-center">
+                <Link to="/talent" className="flex items-center">
                   <img
                     src="/assets/logo-color.png"
                     alt="DigiHire"
@@ -32,6 +36,12 @@ export function AdminLayout() {
               )}
             </div>
             <div className="flex items-center gap-3">
+              <div className="hidden sm:flex flex-col items-end">
+                <span className="text-xs font-semibold text-foreground">
+                  {user?.user_metadata?.name || user?.email}
+                </span>
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">talent</span>
+              </div>
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary/20 text-sm font-semibold text-primary">
                   {initials}
@@ -40,12 +50,12 @@ export function AdminLayout() {
             </div>
           </header>
 
-          <main className={cn("flex-1 p-4 md:p-6 overflow-auto", isMobile && "pb-20")}>
-            <Outlet />
+          <main className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
+            {children}
           </main>
         </div>
 
-        <AdminMobileBottomNav />
+        <MobileBottomNav />
       </div>
     </SidebarProvider>
   );
