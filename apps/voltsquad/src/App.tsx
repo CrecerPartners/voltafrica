@@ -68,9 +68,11 @@ const NativeBlockRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const LANDING_URL = (import.meta.env.VITE_LANDING_URL ?? 'https://digihire.io').replace(/\/$/, '');
+
 const StaticRedirect = ({ to }: { to: string }) => {
   useEffect(() => {
-    window.location.replace(to);
+    window.location.replace(`${LANDING_URL}${to}`);
   }, [to]);
   return null;
 };
@@ -149,7 +151,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={isNative ? <MobileOnboarding /> : <StaticRedirect to="/" />} />
+            <Route path="/" element={isNative ? <MobileOnboarding /> : <Navigate to="/login" replace />} />
           <Route path="/former-landing" element={<LandingPage />} />
           <Route path="/blog" element={<StaticRedirect to="/blog" />} />
           <Route path="/about" element={<StaticRedirect to="/about" />} />
