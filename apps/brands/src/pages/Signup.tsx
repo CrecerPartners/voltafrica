@@ -22,18 +22,20 @@ export default function Signup() {
     setLoading(true);
     setError('');
     try {
-      const { data: signUpData, error: signUpErr } = await signUp(formData.email, formData.password, formData.contactName, undefined, 'brand');
+      const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            account_type: 'brand',
+            full_name: formData.contactName,
+            company_name: formData.companyName,
+            phone: formData.phoneNumber
+          }
+        }
+      });
       if (signUpErr) throw signUpErr;
-      const newUser = signUpData?.user;
-      if (newUser) {
-        const { error: upsertErr } = await supabase.from('brand_profiles').upsert({
-          id: newUser.id,
-          company_name: formData.companyName,
-          contact_name: formData.contactName,
-          phone: formData.phoneNumber,
-        });
-        if (upsertErr) throw upsertErr;
-      }
+
       navigate('/verify-email');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to create account');
