@@ -14,6 +14,7 @@ export function useAdminRole() {
       // Bypasses for specific super admins
       if (user?.email && SUPER_ADMINS.includes(user.email)) return true;
       if (user?.id === "8a2e2dbe-cecb-4868-8641-f48e073e5d43") return true;
+      if (user?.id === "1c5183ec-d53a-4a4e-8531-fc19e8343354") return true;
       
       const { data, error } = await supabase.rpc("has_role", {
         _user_id: user!.id,
