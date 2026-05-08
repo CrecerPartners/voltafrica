@@ -24,7 +24,7 @@ export default function AdminLogin() {
   const { isAdmin, isLoading: roleLoading } = useAdminRole();
 
   if (!authLoading && !roleLoading && user && isAdmin) {
-    navigate("/admin", { replace: true });
+    navigate("/", { replace: true });
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,7 +67,7 @@ export default function AdminLogin() {
       }
 
       toast.success("Welcome, Admin!");
-      navigate("/admin");
+      navigate("/");
     } finally {
       setLoading(false);
     }

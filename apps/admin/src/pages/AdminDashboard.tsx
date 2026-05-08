@@ -92,7 +92,7 @@ export default function AdminDashboard() {
       {hasPendingAlerts && (
         <div className="flex flex-wrap gap-3">
           {pendingSales > 0 && (
-            <Link to="/admin/sales">
+            <Link to="/sales">
               <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300 text-sm">
                 <AlertTriangle className="h-4 w-4" />
                 {pendingSales} sale{pendingSales > 1 ? "s" : ""} pending review
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             </Link>
           )}
           {pendingPayouts > 0 && (
-            <Link to="/admin/payouts">
+            <Link to="/payouts">
               <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-300 text-sm">
                 <AlertTriangle className="h-4 w-4" />
                 {pendingPayouts} payout{pendingPayouts > 1 ? "s" : ""} pending
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
             </Link>
           )}
           {pendingVerifications > 0 && (
-            <Link to="/admin/verification">
+            <Link to="/verification">
               <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 text-cyan-800 dark:text-cyan-300 text-sm">
                 <ShieldCheck className="h-4 w-4" />
                 {pendingVerifications} verification{pendingVerifications > 1 ? "s" : ""} pending
@@ -150,14 +150,14 @@ export default function AdminDashboard() {
 
       {/* Quick actions */}
       <div className="flex flex-wrap gap-2">
-        <Link to="/admin/sales"><Button variant="outline" size="sm">Review Sales</Button></Link>
-        <Link to="/admin/payouts"><Button variant="outline" size="sm">Process Payouts</Button></Link>
-        <Link to="/admin/orders"><Button variant="outline" size="sm">Manage Orders</Button></Link>
-        <Link to="/admin/verification"><Button variant="outline" size="sm">Verifications</Button></Link>
-        <Link to="/admin/reviews"><Button variant="outline" size="sm">Moderate Reviews</Button></Link>
-        <Link to="/admin/products"><Button variant="outline" size="sm">Manage Products</Button></Link>
-        <Link to="/admin/users"><Button variant="outline" size="sm">Manage Users</Button></Link>
-        <Link to="/admin/training"><Button variant="outline" size="sm">Training Content</Button></Link>
+        <Link to="/sales"><Button variant="outline" size="sm">Review Sales</Button></Link>
+        <Link to="/payouts"><Button variant="outline" size="sm">Process Payouts</Button></Link>
+        <Link to="/orders"><Button variant="outline" size="sm">Manage Orders</Button></Link>
+        <Link to="/verification"><Button variant="outline" size="sm">Verifications</Button></Link>
+        <Link to="/reviews"><Button variant="outline" size="sm">Moderate Reviews</Button></Link>
+        <Link to="/products"><Button variant="outline" size="sm">Manage Products</Button></Link>
+        <Link to="/users"><Button variant="outline" size="sm">Manage Users</Button></Link>
+        <Link to="/training"><Button variant="outline" size="sm">Training Content</Button></Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium">Recent Sales</CardTitle>
-            <Link to="/admin/sales" className="text-xs text-primary hover:underline">View all</Link>
+            <Link to="/sales" className="text-xs text-primary hover:underline">View all</Link>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium">Recent Signups</CardTitle>
-            <Link to="/admin/users" className="text-xs text-primary hover:underline">View all</Link>
+            <Link to="/users" className="text-xs text-primary hover:underline">View all</Link>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">

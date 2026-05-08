@@ -25,8 +25,11 @@ export function AdminProtectedRoute({ children }: { children: React.ReactNode })
     );
   }
 
-  if (!user) return <Navigate to="/admin/login" state={{ from: location }} replace />;
-  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  if (!user) return <Navigate to="/login" state={{ from: location }} replace />;
+  if (!isAdmin) {
+    window.location.href = "/";
+    return null;
+  }
   return <>{children}</>;
 }
 
