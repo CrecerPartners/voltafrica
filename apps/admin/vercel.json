@@ -1,4 +1,18 @@
 {
+  "headers": [
+    {
+      "source": "/admin/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/admin/((?!assets/).*)",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+    },
+    {
+      "source": "/",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+    }
+  ],
   "rewrites": [
     { "source": "/admin/assets/:path*", "destination": "/assets/:path*" },
     { "source": "/admin/fonts/:path*", "destination": "/fonts/:path*" },
