@@ -81,14 +81,19 @@ const Dashboard = () => {
     }));
   }, [transactions]);
 
-  // Simple weekly data from transactions
+  // Week bucketing using ISO week number
+  const getWeekKey = (d: Date) => {
+    const start = new Date(d.getFullYear(), 0, 1);
+    const weekNo = Math.ceil(((d.getTime() - start.getTime()) / 86400000 + start.getDay() + 1) / 7);
+    return `W${weekNo}`;
+  };
+
   const earningsData = useMemo(() => {
     if (!transactions) return [];
     const weeks: Record<string, number> = {};
     transactions.filter(t => t.amount > 0).forEach(t => {
       const d = new Date(t.date);
-      const weekNum = Math.ceil(d.getDate() / 7);
-      const key = `W${weekNum}`;
+      const key = getWeekKey(d);
       weeks[key] = (weeks[key] || 0) + t.amount;
     });
     return Object.entries(weeks).map(([week, earnings]) => ({ week, earnings })).slice(0, 8);

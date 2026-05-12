@@ -354,6 +354,7 @@ export default function DigiHireSalesActivations() {
         </div>
       </section>
 
+      {false && (
       {/* VISUAL GALLERY */}
       <section className="bg-slate-50 py-20">
         <div className="max-w-6xl mx-auto px-7">
@@ -382,8 +383,9 @@ export default function DigiHireSalesActivations() {
           </p>
         </div>
       </section>
+      )}
 
-      {/* FINAL CTA */}
+            {/* FINAL CTA */}
       <section className="bg-white py-20" id="contact">
         <div className="max-w-4xl mx-auto px-7 text-center">
           <h2
