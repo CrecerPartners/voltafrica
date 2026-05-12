@@ -16,8 +16,11 @@ export default function BuyerOrders() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    if (!profile?.user_id) {
+      setLoading(false);
+      return;
+    }
     const fetchOrders = async () => {
-      if (!profile?.user_id) return;
       try {
         const { data, error } = await supabase
           .from("orders")
