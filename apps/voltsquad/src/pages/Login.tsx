@@ -92,6 +92,11 @@ const Login = () => {
         } else {
           // Check for MFA
           const { data: mfaData, error: mfaError } = await supabase.auth.mfa.listFactors();
+          if (mfaError) {
+            isProcessingLogin.current = false;
+            toast.error("Could not check MFA status. Please try again.");
+            return;
+          }
           const totpFactor = mfaData?.all.find(f => f.factor_type === 'totp' && f.status === 'verified');
 
           if (totpFactor) {
