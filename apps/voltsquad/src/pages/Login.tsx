@@ -136,13 +136,10 @@ const Login = () => {
   };
 
   const handleResendOtp = async () => {
-    if (isSignup) {
-      const { error } = await resendSignupOtp(email);
-      if (error) throw error;
-    } else {
-      const { error } = await resendLoginOtp(email);
-      if (error) throw error;
-    }
+    const { error } = isSignup
+      ? await resendSignupOtp(email)
+      : await resendLoginOtp(email);
+    if (error) toast.error(error.message);
   };
 
   return (
