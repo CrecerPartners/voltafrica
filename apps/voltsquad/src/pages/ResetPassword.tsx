@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@digihire/shared";
 import { Input } from "@digihire/shared";
@@ -15,6 +15,7 @@ const ResetPassword = () => {
   const [success, setSuccess] = useState(false);
   const [isRecovery, setIsRecovery] = useState(false);
   const navigate = useNavigate();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -30,6 +31,12 @@ const ResetPassword = () => {
     }
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,9 +59,12 @@ const ResetPassword = () => {
       if (error) {
         toast.error(error.message);
       } else {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
         setSuccess(true);
         toast.success("Password updated successfully!");
-        setTimeout(() => navigate("/dashboard"), 2000);
+        timerRef.current = setTimeout(() => {
+          navigate(currentSession ? "/dashboard" : "/login");
+        }, 2000);
       }
     } finally {
       setLoading(false);
