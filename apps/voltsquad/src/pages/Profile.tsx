@@ -29,6 +29,41 @@ import { Lock } from "lucide-react";
 const toSlug = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
 
+const BANK_NAMES: Record<string, string> = {
+  "044": "Access Bank",
+  "063": "Access Bank (Diamond)",
+  "035A": "ALAT by Wema",
+  "023": "Citibank",
+  "050": "EcoBank",
+  "011": "First Bank",
+  "214": "First City Monument Bank",
+  "058": "Guaranty Trust Bank",
+  "030": "Heritage Bank",
+  "301": "Jaiz Bank",
+  "082": "Keystone Bank",
+  "526": "Moniepoint",
+  "076": "Polaris Bank",
+  "101": "Providus Bank",
+  "221": "Stanbic IBTC",
+  "068": "Standard Chartered",
+  "232": "Sterling Bank",
+  "100": "Suntrust Bank",
+  "032": "Union Bank",
+  "033": "United Bank for Africa",
+  "215": "Unity Bank",
+  "035": "Wema Bank",
+  "057": "Zenith Bank",
+  "000014": "OPay",
+  "000013": "GTBank (737)",
+  "000016": "Kuda",
+  "000024": "PalmPay",
+  "100004": "Opay",
+  "090267": "Kuda Bank",
+  "100033": "Palmpay",
+  "090328": "Moniepoint",
+  "070": "Fidelity Bank",
+};
+
 const Profile = () => {
   const { data: profile, isLoading } = useProfile();
   const updateProfile = useUpdateProfile();
@@ -97,7 +132,7 @@ const Profile = () => {
       bank_account_verified: profile.bank_account_verified || false,
     });
     setSecurityForm({
-      transaction_pin: profile.transaction_pin || "",
+      transaction_pin: "", // never pre-fill the PIN field
     });
     setShopForm({
       shop_name: profile.shop_name || "",
@@ -148,11 +183,14 @@ const Profile = () => {
         }
       }
 
-      await updateProfile.mutateAsync({
-        ...profileForm,
-        social_links: profileForm.social_links,
-        security_locked_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24hr cool-off
-      } as any);
+      const bankChanged =
+        profileForm.account_number !== profile?.account_number ||
+        profileForm.bank_code !== profile?.bank_code;
+      const payload: any = { ...profileForm, social_links: profileForm.social_links };
+      if (bankChanged) {
+        payload.security_locked_until = new Date(Date.now() + 86400000).toISOString();
+      }
+      await updateProfile.mutateAsync(payload as any);
       toast.success("Profile saved!");
     } catch (err: any) { 
       toast.error(err.message || "Failed to save"); 
@@ -170,8 +208,12 @@ const Profile = () => {
   };
 
   const handleSaveSecurity = async () => {
-    if (securityForm.transaction_pin && securityForm.transaction_pin.length !== 4) {
-      toast.error("Transaction PIN must be exactly 4 digits");
+    if (!securityForm.transaction_pin) {
+      toast.error("Please enter a 4-digit PIN");
+      return;
+    }
+    if (!/^d{4}$/.test(securityForm.transaction_pin)) {
+      toast.error("PIN must be exactly 4 digits");
       return;
     }
 
@@ -443,9 +485,11 @@ const Profile = () => {
               
               <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2"><CreditCard className="h-3 w-3 text-muted-foreground" /> Bank Name</label>
-                <Select value={profileForm.bank_code} onValueChange={(val) => {
-                    setProfileForm({ ...profileForm, bank_code: val, bank_name: "Selected Bank" /* Ideally fetch bank list from API, hardcoded for now or let users input name directly if ignoring strict select */})
-                }}>
+                <Select value={profileForm.bank_code} onValueChange={(val) => setProfileForm(prev => ({
+                  ...prev,
+                  bank_code: val,
+                  bank_name: BANK_NAMES[val] ?? val,
+                }))}>
                     <SelectTrigger className="bg-secondary border-border">
                         <SelectValue placeholder="Select or type Bank Name" />
                     </SelectTrigger>
