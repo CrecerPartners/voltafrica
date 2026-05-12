@@ -44,11 +44,15 @@ export function AuthProvider({ children, signOutRedirect }: { children: ReactNod
       // When the token expires / refresh fails, Supabase fires SIGNED_OUT.
       // Redirect to /login so the user isn't left on a broken/404 screen.
       // Skip if the signout was intentional (e.g. during the login OTP flow).
-      if (event === "SIGNED_OUT" && !intentionalSignOut.current) {
-        if (Capacitor.isNativePlatform()) {
-          window.location.replace("/login");
-        } else {
-          window.location.replace(resolvedSignOutUrl);
+      if (event === "SIGNED_OUT") {
+        const wasIntentional = intentionalSignOut.current;
+        intentionalSignOut.current = false;
+        if (!wasIntentional) {
+          if (Capacitor.isNativePlatform()) {
+            window.location.replace("/login");
+          } else {
+            window.location.replace(resolvedSignOutUrl);
+          }
         }
       }
     });
@@ -78,7 +82,6 @@ export function AuthProvider({ children, signOutRedirect }: { children: ReactNod
       intentionalSignOut.current = true;
     }
     await supabase.auth.signOut();
-    intentionalSignOut.current = false;
     if (!options?.skipRedirect) {
       if (Capacitor.isNativePlatform()) {
         window.location.href = "/";
