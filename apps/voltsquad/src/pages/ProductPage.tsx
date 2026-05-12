@@ -152,6 +152,11 @@ const ProductPage = () => {
             conversion_status: "clicked",
           } as any);
       }
+      if (!user && refCode) {
+        supabase.functions.invoke("log-lead-click", {
+          body: { product_id: product.id, ref_code: refCode }
+        }).catch(() => {});
+      }
       const separator = fulfillmentUrl.includes("?") ? "&" : "?";
       const trackedUrl = `${fulfillmentUrl}${separator}ref=${userRefCode}`;
       window.open(trackedUrl, "_blank");
