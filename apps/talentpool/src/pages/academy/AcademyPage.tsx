@@ -104,7 +104,7 @@ function CourseCard({ course }: { course: TalentCourse }) {
         </div>
         <div className="p-6">
           <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-wider">
-            <span className="flex items-center gap-1.5"><Play size={12} /> {course.modules.length} Modules</span>
+            <span className="flex items-center gap-1.5"><Play size={12} /> {(course.modules ?? []).length} Modules</span>
             <span className="h-1 w-1 rounded-full bg-gray-300"></span>
             <span className="flex items-center gap-1.5"><Clock size={12} /> 4.5 hrs</span>
           </div>

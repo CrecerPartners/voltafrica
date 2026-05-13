@@ -93,10 +93,10 @@ export default function CourseDetailPage() {
                <div className="rounded-xl bg-white border border-gray-200 p-8 shadow-sm">
                   <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-6">
                     <h2 className="text-xl font-bold text-slate-900">Module Content</h2>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{course.modules.length} Modules Total</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{(course.modules ?? []).length} Modules Total</span>
                   </div>
                   <div className="space-y-2">
-                    {course.modules.map((mod, idx) => (
+                    {(course.modules ?? []).map((mod, idx) => (
                       <ModuleItem
                         key={idx}
                         title={mod.title}
