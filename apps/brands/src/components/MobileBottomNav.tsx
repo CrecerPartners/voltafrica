@@ -69,7 +69,7 @@ export function MobileBottomNav() {
                 }`}
               >
                 <tab.icon className={`h-5 w-5 transition-all duration-150 ${active ? "stroke-[2.5]" : "stroke-[1.5]"}`} />
-                <span className={`text-[10px] leading-tight ${active ? "font-semibold" : "font-medium"}`}>{tab.label}</span>
+                <span className={`text-[10px] leading-tight ${active ? "font-normal" : "font-medium"}`}>{tab.label}</span>
                 {active && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-primary" />}
               </button>
             );
@@ -82,7 +82,7 @@ export function MobileBottomNav() {
             }`}
           >
             <MoreHorizontal className={`h-5 w-5 ${isMoreActive ? "stroke-[2.5]" : "stroke-[1.5]"}`} />
-            <span className={`text-[10px] leading-tight ${isMoreActive ? "font-semibold" : "font-medium"}`}>More</span>
+            <span className={`text-[10px] leading-tight ${isMoreActive ? "font-normal" : "font-medium"}`}>More</span>
             {isMoreActive && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-primary" />}
           </button>
         </div>
@@ -93,7 +93,7 @@ export function MobileBottomNav() {
           <DrawerHeader className="pb-2">
             <DrawerTitle className="flex items-center gap-2 justify-center">
               <img src="/assets/logo-color.png" alt="DigiHire" className="h-6 w-auto object-contain" />
-              <span className="font-bold">More</span>
+              <span className="font-normal">More</span>
             </DrawerTitle>
           </DrawerHeader>
           <div className="px-4 pb-4 grid grid-cols-4 gap-3 text-center">

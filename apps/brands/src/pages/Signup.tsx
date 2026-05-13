@@ -63,24 +63,24 @@ export default function Signup() {
         <div className="bg-sidebar-background p-10 flex flex-col justify-between border-r border-border/50">
           <div>
             <img src="/assets/logo-color.png" alt="DigiHire" className="h-8 w-auto object-contain mb-10" />
-            <h2 className="text-2xl font-bold leading-tight text-foreground">Elite Sales Talent for your Brand</h2>
+            <h2 className="text-2xl font-normal leading-tight text-foreground">Elite Sales Talent for your Brand</h2>
             <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
               Create a brand account and start hiring the top 1% of sales experts for your growth.
             </p>
           </div>
           <div className="mt-10 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-full border border-primary/30 flex items-center justify-center text-[10px] font-bold text-primary">01</div>
+              <div className="h-8 w-8 rounded-full border border-primary/30 flex items-center justify-center text-[10px] font-normal text-primary">01</div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Step 01</p>
-                <p className="text-xs font-semibold text-foreground">Brand Registration</p>
+                <p className="text-[10px] font-normal uppercase tracking-widest text-primary">Step 01</p>
+                <p className="text-xs font-normal text-foreground">Brand Registration</p>
               </div>
             </div>
             <div className="flex items-center gap-3 opacity-40">
-              <div className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-[10px] font-bold text-muted-foreground">02</div>
+              <div className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-[10px] font-normal text-muted-foreground">02</div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Step 02</p>
-                <p className="text-xs font-semibold text-foreground">Brand Setup</p>
+                <p className="text-[10px] font-normal uppercase tracking-widest text-muted-foreground">Step 02</p>
+                <p className="text-xs font-normal text-foreground">Brand Setup</p>
               </div>
             </div>
           </div>

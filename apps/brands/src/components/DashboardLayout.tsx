@@ -33,13 +33,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex flex-col items-end">
-              <span className="text-xs font-semibold text-foreground">
+              <span className="text-xs font-normal text-foreground">
                 {user?.user_metadata?.name || user?.email}
               </span>
-              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">brand</span>
+              <span className="text-[10px] text-muted-foreground font-normal uppercase tracking-widest">brand</span>
             </div>
             <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-primary/20 text-sm font-semibold text-primary">
+              <AvatarFallback className="bg-primary/20 text-sm font-normal text-primary">
                 {initials}
               </AvatarFallback>
             </Avatar>

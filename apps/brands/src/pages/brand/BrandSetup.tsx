@@ -48,7 +48,7 @@ export default function BrandSetup() {
   return (
     <div className="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
       <div className="border-b border-gray-100 bg-gray-50/50 p-6">
-        <h2 className="text-xl font-bold text-[#1a1a1a]">Company Onboarding</h2>
+        <h2 className="text-xl font-normal text-[#1a1a1a]">Company Onboarding</h2>
         <p className="text-sm text-[#8e8e8e]">Tell us about your brand so we can match the best talent.</p>
       </div>
 
@@ -60,7 +60,7 @@ export default function BrandSetup() {
           <Input label="Industry" name="industry" value={formData.industry} onChange={handleChange} placeholder="e.g. SaaS, E-commerce, Fintech" />
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold uppercase text-gray-500">Company Size</label>
+            <label className="block text-xs font-normal uppercase text-gray-500">Company Size</label>
             <select name="company_size" value={formData.company_size || ''} onChange={handleChange} className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:outline-none">
               <option value="">Select Size</option>
               <option value="1-10">1-10 employees</option>
@@ -72,7 +72,7 @@ export default function BrandSetup() {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold uppercase text-gray-500">Primary Goal</label>
+            <label className="block text-xs font-normal uppercase text-gray-500">Primary Goal</label>
             <select name="primary_goal" value={formData.primary_goal || ''} onChange={handleChange} className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:outline-none">
               <option value="">Select Goal</option>
               <option value="campaigns">Sales Campaigns</option>
@@ -89,7 +89,7 @@ export default function BrandSetup() {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 rounded-xl bg-[#2563eb] px-8 py-3 text-sm font-bold text-white hover:bg-[#1d4ed8] transition-all shadow-lg shadow-blue-100"
+            className="flex items-center gap-2 rounded-xl bg-[#2563eb] px-8 py-3 text-sm font-normal text-white hover:bg-[#1d4ed8] transition-all shadow-lg shadow-blue-100"
           >
             {saving ? 'Updating...' : 'Save Company Details'}
             <Save size={18} />
@@ -103,7 +103,7 @@ export default function BrandSetup() {
 function Input({ label, name, type = "text", value, onChange, placeholder, icon }: any) {
   return (
     <div className="space-y-1">
-      <label className="block text-xs font-semibold uppercase text-gray-500">{label}</label>
+      <label className="block text-xs font-normal uppercase text-gray-500">{label}</label>
       <div className="relative">
         {icon && <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">{icon}</div>}
         <input

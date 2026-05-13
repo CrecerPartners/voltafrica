@@ -30,10 +30,10 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-4">
               <div className="hidden sm:flex flex-col items-end">
-                <span className="text-xs font-bold text-slate-800">{displayName}</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">brand</span>
+                <span className="text-xs font-normal text-slate-800">{displayName}</span>
+                <span className="text-[10px] text-slate-400 font-normal uppercase tracking-widest">brand</span>
               </div>
-              <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
+              <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-normal text-xs uppercase">
                 {displayName.charAt(0) || '?'}
               </div>
               <Link to="/brand/setup" aria-label="Company settings" className="p-2 text-slate-400 hover:text-sky-600 transition-all border border-transparent hover:border-sky-100 hover:bg-sky-50 rounded-lg">

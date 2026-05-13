@@ -16,7 +16,7 @@ export default function CampaignList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-[#1a1a1a]">VoltSquad Campaigns</h2>
+          <h2 className="text-xl font-normal text-[#1a1a1a]">VoltSquad Campaigns</h2>
           <p className="text-sm text-gray-400">Track all your active and past campaigns.</p>
         </div>
         <div className="flex gap-2">
@@ -36,7 +36,7 @@ export default function CampaignList() {
           <div className="h-12 w-12 rounded-full bg-blue-50 text-[#2563eb] flex items-center justify-center mx-auto mb-4">
             <Megaphone size={24} />
           </div>
-          <h3 className="font-bold text-[#1a1a1a] mb-1">No campaigns yet</h3>
+          <h3 className="font-normal text-[#1a1a1a] mb-1">No campaigns yet</h3>
           <p className="text-sm text-gray-400 mb-6">Launch your first campaign to start reaching VoltSquad sellers.</p>
           <Link to="/brand/campaigns/new" className="inline-flex items-center gap-2 rounded-xl bg-[#2563eb] px-6 py-2.5 text-sm font-normal text-white hover:bg-[#1d4ed8] transition-all">
             <Plus size={16} /> Launch Campaign
@@ -51,7 +51,7 @@ export default function CampaignList() {
                   <Megaphone size={18} />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-bold text-[#1a1a1a] truncate group-hover:text-[#2563eb] transition-colors">{c.campaign_name}</p>
+                  <p className="font-normal text-[#1a1a1a] truncate group-hover:text-[#2563eb] transition-colors">{c.campaign_name}</p>
                   <p className="text-xs text-gray-400">{c.campaign_goal ?? 'No goal set'} · Created {new Date(c.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
@@ -60,7 +60,7 @@ export default function CampaignList() {
                   <span className="flex items-center gap-1"><Users size={13} /> {c.total_sellers}</span>
                   <span className="flex items-center gap-1"><TrendingUp size={13} /> {c.total_conversions}</span>
                 </div>
-                <span className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${STATUS_COLOR[c.status] ?? STATUS_COLOR.pending}`}>
+                <span className={`px-2.5 py-1 rounded-lg border text-[10px] font-normal uppercase tracking-wider ${STATUS_COLOR[c.status] ?? STATUS_COLOR.pending}`}>
                   {c.status}
                 </span>
               </div>

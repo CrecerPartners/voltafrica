@@ -55,7 +55,7 @@ export default function BrandHome() {
     <div className="space-y-8">
       {/* Welcome */}
       <div className="rounded-3xl bg-gradient-to-tr from-[#1a1a1a] to-[#2d2d2d] p-8 text-white shadow-xl">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Brand Portal</p>
+        <p className="text-[10px] font-normal uppercase tracking-widest text-gray-400 mb-1">Brand Portal</p>
         <h2 className="text-2xl font-extrabold mb-2">{profile?.company_name ?? 'Welcome back'}</h2>
         <p className="text-gray-400 text-sm">Select an action below to get started.</p>
       </div>
@@ -83,9 +83,9 @@ export default function BrandHome() {
               <div className={`h-11 w-11 rounded-xl border flex items-center justify-center mb-4 ${card.color}`}>
                 <card.icon size={20} />
               </div>
-              <h3 className="font-bold text-[#1a1a1a] mb-1">{card.title}</h3>
+              <h3 className="font-normal text-[#1a1a1a] mb-1">{card.title}</h3>
               <p className="text-xs text-gray-500 flex-1 leading-relaxed">{card.desc}</p>
-              <div className={`mt-5 inline-flex items-center gap-1.5 self-start rounded-lg px-4 py-2 text-xs font-bold transition-all ${card.btn} group-hover:opacity-90`}>
+              <div className={`mt-5 inline-flex items-center gap-1.5 self-start rounded-lg px-4 py-2 text-xs font-normal transition-all ${card.btn} group-hover:opacity-90`}>
                 Get Started <ArrowRight size={13} />
               </div>
             </Link>
@@ -100,7 +100,7 @@ function Stat({ label, value, to }: { label: string; value: number; to: string }
   return (
     <Link to={to} className="rounded-2xl bg-white border border-gray-100 p-4 shadow-sm hover:border-[#2563eb]/30 transition-all text-center">
       <p className="text-2xl font-extrabold text-[#1a1a1a]">{value}</p>
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mt-0.5">{label}</p>
+      <p className="text-[10px] font-normal uppercase tracking-wider text-gray-400 mt-0.5">{label}</p>
     </Link>
   );
 }

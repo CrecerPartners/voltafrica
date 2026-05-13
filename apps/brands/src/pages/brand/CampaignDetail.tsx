@@ -44,10 +44,10 @@ export default function CampaignDetail() {
           <ArrowLeft size={18} />
         </button>
         <div className="flex-1 min-w-0">
-          <h2 className="text-xl font-bold text-[#1a1a1a] truncate">{campaign.campaign_name}</h2>
+          <h2 className="text-xl font-normal text-[#1a1a1a] truncate">{campaign.campaign_name}</h2>
           <p className="text-sm text-gray-400">{campaign.campaign_goal} · {campaign.product_name}</p>
         </div>
-        <span className={`px-3 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${STATUS_COLOR[campaign.status] ?? STATUS_COLOR.pending}`}>
+        <span className={`px-3 py-1 rounded-lg border text-[10px] font-normal uppercase tracking-wider ${STATUS_COLOR[campaign.status] ?? STATUS_COLOR.pending}`}>
           {campaign.status}
         </span>
       </div>
@@ -62,7 +62,7 @@ export default function CampaignDetail() {
       {/* Tracking Code */}
       {campaign.tracking_code && (
         <div className="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Tracking Code</p>
+          <p className="text-xs font-normal uppercase tracking-wider text-gray-400 mb-3">Tracking Code</p>
           <div className="flex items-center gap-3 rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
             <code className="flex-1 text-sm font-mono text-[#1a1a1a] truncate">
               https://digihire.io/c/{campaign.tracking_code}
@@ -76,7 +76,7 @@ export default function CampaignDetail() {
 
       {/* Campaign Details */}
       <div className="rounded-2xl bg-white border border-gray-100 p-6 shadow-sm">
-        <h3 className="font-bold text-[#1a1a1a] mb-4">Campaign Details</h3>
+        <h3 className="font-normal text-[#1a1a1a] mb-4">Campaign Details</h3>
         <div className="grid grid-cols-2 gap-y-4 gap-x-8">
           <Detail label="Brand" value={campaign.brand_name} />
           <Detail label="Product" value={campaign.product_name} />
@@ -89,7 +89,7 @@ export default function CampaignDetail() {
         </div>
         {campaign.notes && (
           <div className="mt-4 pt-4 border-t border-gray-50">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Notes</p>
+            <p className="text-xs font-normal uppercase tracking-wider text-gray-400 mb-2">Notes</p>
             <p className="text-sm text-gray-600 leading-relaxed">{campaign.notes}</p>
           </div>
         )}
@@ -103,7 +103,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
     <div className="rounded-2xl bg-white border border-gray-100 p-5 shadow-sm text-center">
       <div className="h-10 w-10 rounded-xl bg-blue-50 text-[#2563eb] flex items-center justify-center mx-auto mb-3">{icon}</div>
       <p className="text-2xl font-extrabold text-[#1a1a1a]">{value}</p>
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mt-0.5">{label}</p>
+      <p className="text-[10px] font-normal uppercase tracking-wider text-gray-400 mt-0.5">{label}</p>
     </div>
   );
 }
@@ -111,8 +111,8 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 function Detail({ label, value }: { label: string; value: string | undefined }) {
   return (
     <div>
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">{label}</p>
-      <p className="text-sm font-semibold text-[#1a1a1a] mt-0.5">{value || '—'}</p>
+      <p className="text-[10px] font-normal uppercase tracking-wider text-gray-400">{label}</p>
+      <p className="text-sm font-normal text-[#1a1a1a] mt-0.5">{value || '—'}</p>
     </div>
   );
 }

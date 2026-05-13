@@ -51,10 +51,10 @@ export default function VerifyEmail() {
               <Mail className="h-8 w-8 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Verify your email</h1>
+              <h1 className="text-2xl font-normal text-foreground">Verify your email</h1>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                 We've sent a verification link to{' '}
-                <span className="font-semibold text-foreground">{user?.email}</span>.
+                <span className="font-normal text-foreground">{user?.email}</span>.
                 <span className="block mt-1 text-xs italic">Check your Spam folder if you don't see it.</span>
               </p>
             </div>

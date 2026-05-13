@@ -69,7 +69,7 @@ export default function CampaignLaunch() {
         <div className="h-16 w-16 rounded-full bg-blue-50 text-[#2563eb] flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 size={32} />
         </div>
-        <h3 className="text-xl font-bold text-[#1a1a1a] mb-2">Campaign Request Submitted!</h3>
+        <h3 className="text-xl font-normal text-[#1a1a1a] mb-2">Campaign Request Submitted!</h3>
         <p className="text-sm text-gray-500 mb-8">Our team will review and activate your campaign within 24–48 hours.</p>
         <div className="flex gap-3 justify-center">
           <button onClick={() => navigate('/brand/campaigns')} className="rounded-xl bg-[#2563eb] text-white px-6 py-2.5 text-sm font-normal hover:bg-[#1d4ed8] transition-all">
@@ -90,7 +90,7 @@ export default function CampaignLaunch() {
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h2 className="text-xl font-bold text-[#1a1a1a]">Launch a VoltSquad Campaign</h2>
+          <h2 className="text-xl font-normal text-[#1a1a1a]">Launch a VoltSquad Campaign</h2>
           <p className="text-sm text-gray-400">Fill in the details and our team will activate your campaign.</p>
         </div>
       </div>
@@ -226,7 +226,7 @@ const inputCls = 'w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 
 function Field({ label, children, className = '' }: { label: string; children: React.ReactNode; className?: string; required?: boolean }) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">{label}</label>
+      <label className="block text-xs font-normal uppercase tracking-wider text-gray-400">{label}</label>
       {children}
     </div>
   );
@@ -236,7 +236,7 @@ function SectionLabel({ n, title }: { n: string; title: string }) {
   return (
     <div className="flex items-center gap-3">
       <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#2563eb]/10 text-[#2563eb] text-xs font-black">{n}</span>
-      <h3 className="font-bold text-[#1a1a1a]">{title}</h3>
+      <h3 className="font-normal text-[#1a1a1a]">{title}</h3>
     </div>
   );
 }

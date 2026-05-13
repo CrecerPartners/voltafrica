@@ -80,7 +80,7 @@ export default function ActivationRequest() {
         <div className="h-16 w-16 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 size={32} />
         </div>
-        <h3 className="text-xl font-bold text-[#1a1a1a] mb-2">
+        <h3 className="text-xl font-normal text-[#1a1a1a] mb-2">
           {mode === 'form' ? 'Activation Request Submitted!' : 'Meeting Booked!'}
         </h3>
         <p className="text-sm text-gray-500 mb-8">
@@ -99,11 +99,11 @@ export default function ActivationRequest() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-[#1a1a1a]">Activations & Field Marketing</h2>
+          <h2 className="text-xl font-normal text-[#1a1a1a]">Activations & Field Marketing</h2>
           <p className="text-sm text-gray-400">Request field marketing support or book a strategy call.</p>
         </div>
         {pendingCount > 0 && (
-          <span className="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-100 text-xs font-bold text-amber-600">
+          <span className="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-100 text-xs font-normal text-amber-600">
             {pendingCount} pending
           </span>
         )}
@@ -113,13 +113,13 @@ export default function ActivationRequest() {
       <div className="flex rounded-2xl bg-white border border-gray-100 p-1.5 shadow-sm w-fit gap-1">
         <button
           onClick={() => setMode('form')}
-          className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${mode === 'form' ? 'bg-[#1a1a1a] text-white shadow-sm' : 'text-gray-400 hover:text-[#1a1a1a]'}`}
+          className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-normal transition-all ${mode === 'form' ? 'bg-[#1a1a1a] text-white shadow-sm' : 'text-gray-400 hover:text-[#1a1a1a]'}`}
         >
           <FileText size={15} /> Submit Request
         </button>
         <button
           onClick={() => setMode('book')}
-          className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${mode === 'book' ? 'bg-[#1a1a1a] text-white shadow-sm' : 'text-gray-400 hover:text-[#1a1a1a]'}`}
+          className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-normal transition-all ${mode === 'book' ? 'bg-[#1a1a1a] text-white shadow-sm' : 'text-gray-400 hover:text-[#1a1a1a]'}`}
         >
           <Calendar size={15} /> Book a Meeting
         </button>
@@ -182,14 +182,14 @@ export default function ActivationRequest() {
             <>
               <div className="h-px bg-gray-100" />
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Select Available Slot (WAT)</p>
+                <p className="text-xs font-normal uppercase tracking-wider text-gray-400 mb-3">Select Available Slot (WAT)</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {MEETING_SLOTS.map(slot => (
                     <button
                       key={slot}
                       type="button"
                       onClick={() => setSelectedSlot(slot)}
-                      className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all ${
+                      className={`rounded-xl border px-3 py-2.5 text-sm font-normal transition-all ${
                         selectedSlot === slot
                           ? 'bg-[#2563eb] border-[#2563eb] text-white shadow-sm'
                           : 'bg-gray-50 border-gray-200 text-[#4a4a4a] hover:border-[#2563eb]/40 hover:bg-blue-50'
@@ -216,14 +216,14 @@ export default function ActivationRequest() {
       {/* Past requests */}
       {requests.length > 0 && (
         <div className="space-y-3">
-          <h3 className="font-bold text-[#1a1a1a] text-sm">Past Requests</h3>
+          <h3 className="font-normal text-[#1a1a1a] text-sm">Past Requests</h3>
           {requests.map(r => (
             <div key={r.id} className="flex items-center justify-between rounded-2xl bg-white border border-gray-100 p-4 shadow-sm text-sm">
               <div>
-                <p className="font-semibold text-[#1a1a1a]">{r.activation_type || (r.booking_type === 'meeting' ? `Meeting: ${r.meeting_slot}` : 'Activation Request')}</p>
+                <p className="font-normal text-[#1a1a1a]">{r.activation_type || (r.booking_type === 'meeting' ? `Meeting: ${r.meeting_slot}` : 'Activation Request')}</p>
                 <p className="text-xs text-gray-400">{r.location} · {new Date(r.created_at).toLocaleDateString()}</p>
               </div>
-              <span className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${r.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-100' : r.status === 'confirmed' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'}`}>
+              <span className={`px-2.5 py-1 rounded-lg border text-[10px] font-normal uppercase tracking-wider ${r.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-100' : r.status === 'confirmed' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-gray-50 text-gray-500 border-gray-100'}`}>
                 {r.status}
               </span>
             </div>
@@ -237,7 +237,7 @@ export default function ActivationRequest() {
 function Field({ label, children, className = '' }: { label: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">{label}</label>
+      <label className="block text-xs font-normal uppercase tracking-wider text-gray-400">{label}</label>
       {children}
     </div>
   );

@@ -104,7 +104,7 @@ export default function RecruitmentRequest() {
         <div className="h-16 w-16 rounded-full bg-violet-50 text-violet-600 flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 size={32} />
         </div>
-        <h3 className="text-xl font-bold text-[#1a1a1a] mb-2">Recruitment Request Submitted!</h3>
+        <h3 className="text-xl font-normal text-[#1a1a1a] mb-2">Recruitment Request Submitted!</h3>
         <p className="text-sm text-gray-500 mb-8">Our talent team will review your request and be in touch within 48 hours.</p>
         <div className="flex gap-3 justify-center">
           <button onClick={() => navigate('/brand/recruitment')} className="rounded-xl bg-violet-600 text-white px-6 py-2.5 text-sm font-normal hover:bg-violet-700 transition-all">
@@ -126,7 +126,7 @@ export default function RecruitmentRequest() {
             {step === 1 ? <ArrowLeft size={18} /> : <ChevronLeft size={18} />}
           </button>
           <div>
-            <h2 className="text-xl font-bold text-[#1a1a1a]">Sales Recruitment Request</h2>
+            <h2 className="text-xl font-normal text-[#1a1a1a]">Sales Recruitment Request</h2>
             <p className="text-sm text-gray-400">Step {step} of 2 — {step === 1 ? 'Company Details' : 'Talent Requirements'}</p>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function RecruitmentRequest() {
 
       {step === 1 ? (
         <form onSubmit={handleNext} className="p-8 space-y-6">
-          <h3 className="font-bold text-[#1a1a1a]">Step 1: Company Details</h3>
+          <h3 className="font-normal text-[#1a1a1a]">Step 1: Company Details</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <Field label="Contact Person *">
               <input required value={form.contact_person ?? ''} onChange={set('contact_person')} placeholder="Full name" className={inputCls} />
@@ -170,7 +170,7 @@ export default function RecruitmentRequest() {
         </form>
       ) : (
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          <h3 className="font-bold text-[#1a1a1a]">Step 2: Talent Requirements</h3>
+          <h3 className="font-normal text-[#1a1a1a]">Step 2: Talent Requirements</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <Field label="Job Title *">
               <input required value={form.job_title} onChange={set('job_title')} placeholder="e.g. B2B Sales Executive" className={inputCls} />
@@ -231,7 +231,7 @@ export default function RecruitmentRequest() {
               {(form.required_skills ?? []).length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {(form.required_skills ?? []).map(skill => (
-                    <span key={skill} className="flex items-center gap-1.5 rounded-lg bg-violet-50 border border-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">
+                    <span key={skill} className="flex items-center gap-1.5 rounded-lg bg-violet-50 border border-violet-100 px-3 py-1 text-xs font-normal text-violet-700">
                       {skill}
                       <button type="button" onClick={() => removeSkill(skill)} className="text-violet-400 hover:text-violet-700 transition-colors">×</button>
                     </span>
@@ -264,7 +264,7 @@ export default function RecruitmentRequest() {
 function Field({ label, children, className = '' }: { label: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">{label}</label>
+      <label className="block text-xs font-normal uppercase tracking-wider text-gray-400">{label}</label>
       {children}
     </div>
   );
