@@ -3,7 +3,7 @@ import { TalentCourse } from '../../types';
 import { useTalentCourses } from '../../hooks/useTalentCourses';
 import { useTalentWebinars } from '../../hooks/useTalentWebinars';
 import { motion } from 'motion/react';
-import { GraduationCap, Play, Clock, Star, BookOpen, Search, ArrowRight, Calendar, Wifi, ArrowLeft } from 'lucide-react';
+import { GraduationCap, Play, Clock, Star, BookOpen, Search, ArrowRight, Calendar, Wifi, ArrowLeft, Gift } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function AcademyPage() {
@@ -136,29 +136,52 @@ export default function AcademyPage() {
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-8">Sales Role Tracks</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <TrackCard 
-              title="SDR / BDR" 
-              count={8} 
-              color="bg-orange-50 text-orange-600" 
+            <TrackCard
+              title="SDR / BDR"
+              count={8}
+              color="bg-orange-50 text-orange-600"
               onClick={() => setFilter('sales process')}
             />
-            <TrackCard 
-              title="Account Executive" 
-              count={12} 
-              color="bg-blue-50 text-blue-600" 
+            <TrackCard
+              title="Account Executive"
+              count={12}
+              color="bg-blue-50 text-blue-600"
               onClick={() => setFilter('b2b strategy')}
             />
-            <TrackCard 
-              title="SaaS Sales Pro" 
-              count={15} 
-              color="bg-purple-50 text-purple-600" 
+            <TrackCard
+              title="SaaS Sales Pro"
+              count={15}
+              color="bg-purple-50 text-purple-600"
               onClick={() => setFilter('saas sales')}
             />
-            <TrackCard 
-              title="Sales Management" 
-              count={6} 
-              color="bg-green-50 text-green-600" 
+            <TrackCard
+              title="Sales Management"
+              count={6}
+              color="bg-green-50 text-green-600"
               onClick={() => setFilter('soft skills')}
+            />
+          </div>
+        </div>
+
+        {/* Free Resources */}
+        <div className="mt-20">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest">
+              <Gift size={13} /> Free Resources
+            </div>
+          </div>
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Sales Training Library</h2>
+              <p className="text-slate-500 text-sm mt-1">Watch recordings from our live training sessions — free for all talent.</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ResourceCard
+              title="Sales Training Session"
+              date="Apr 30, 2025"
+              description="Live sales training covering key techniques for closing deals and managing the sales process effectively."
+              driveFileId="1fV-fozDtss0HQNLVOzXXxruA1DRhOEDa"
             />
           </div>
         </div>
@@ -223,6 +246,35 @@ function TrackCard({ title, count, color, onClick }: { title: string; count: num
         </div>
       </div>
     </motion.button>
+  );
+}
+
+function ResourceCard({ title, date, description, driveFileId }: {
+  title: string;
+  date: string;
+  description: string;
+  driveFileId: string;
+}) {
+  return (
+    <motion.div whileHover={{ y: -4 }} className="rounded-2xl bg-white border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-all">
+      <div className="aspect-video w-full bg-slate-100 relative">
+        <iframe
+          src={`https://drive.google.com/file/d/${driveFileId}/preview`}
+          className="w-full h-full"
+          allow="autoplay"
+          allowFullScreen
+          title={title}
+        />
+      </div>
+      <div className="p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-widest">Free</span>
+          <span className="text-[11px] text-slate-400">{date}</span>
+        </div>
+        <h3 className="text-base font-bold text-slate-900 mb-1">{title}</h3>
+        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">{description}</p>
+      </div>
+    </motion.div>
   );
 }
 
