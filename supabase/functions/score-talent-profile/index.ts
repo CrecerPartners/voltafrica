@@ -112,7 +112,7 @@ Profile Completion: ${profile.profile_completion ?? 0}%
     `.trim();
 
     // Call AI — provider-agnostic
-    const provider = Deno.env.get("AI_PROVIDER") ?? "anthropic";
+    const provider = Deno.env.get("AI_PROVIDER") ?? "openai";
     const apiKey = Deno.env.get("AI_API_KEY") ?? "";
 
     let aiResult: Record<string, unknown>;
