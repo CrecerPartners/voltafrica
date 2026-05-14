@@ -224,7 +224,6 @@ export default function AdminWebinars() {
                 placeholder="Duration (minutes)"
                 value={form.duration_minutes}
                 onChange={(e: any) => set("duration_minutes", +e.target.value)}
-                label="Duration (min)"
               />
             </div>
 
