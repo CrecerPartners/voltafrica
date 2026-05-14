@@ -111,7 +111,7 @@ export default function VerifyEmail() {
                   value={digit}
                   onChange={e => handleChange(i, e.target.value)}
                   onKeyDown={e => handleKeyDown(i, e)}
-                  className="h-12 w-10 rounded-lg border border-border bg-secondary text-center text-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                  className="h-12 w-10 rounded-lg border-2 border-border bg-background text-center text-lg text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
                 />
               ))}
             </div>
