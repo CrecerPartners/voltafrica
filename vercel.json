@@ -1,6 +1,4 @@
 {
-  "buildCommand": "npm run build:landing",
-  "outputDirectory": "apps/landing/dist",
   "rewrites": [
     { "source": "/:path*", "destination": "/index.html" }
   ]
