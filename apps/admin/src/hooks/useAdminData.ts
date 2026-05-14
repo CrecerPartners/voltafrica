@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase as _supabase } from "@digihire/shared";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const supabase = _supabase as any;
 
 // ── Queries ──
 
 export function useAdminUsers() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-users"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -20,7 +20,7 @@ export function useAdminUsers() {
 }
 
 export function useAdminSales() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-sales"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -42,7 +42,7 @@ export function useAdminSales() {
 }
 
 export function useAdminPayouts() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-payouts"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -63,7 +63,7 @@ export function useAdminPayouts() {
 }
 
 export function useAdminProducts() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-products"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -77,7 +77,7 @@ export function useAdminProducts() {
 }
 
 export function useAdminCourses() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-courses"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -91,7 +91,7 @@ export function useAdminCourses() {
 }
 
 export function useAdminTalentCourses() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-talent-courses"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -105,7 +105,7 @@ export function useAdminTalentCourses() {
 }
 
 export function useAdminTransactions() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-transactions"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -119,7 +119,7 @@ export function useAdminTransactions() {
 }
 
 export function useAdminReferrals() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-referrals"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -140,7 +140,7 @@ export function useAdminReferrals() {
 }
 
 export function useAdminLeaderboard() {
-  return useQuery({
+  return useQuery<any[]>({
     queryKey: ["admin-leaderboard"],
     queryFn: async () => {
       const { data, error } = await supabase
