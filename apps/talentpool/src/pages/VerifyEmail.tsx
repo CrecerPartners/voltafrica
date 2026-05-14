@@ -1,27 +1,67 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, supabase } from '@digihire/shared';
 import { motion } from 'motion/react';
-import { Mail, CheckCircle, RefreshCw, LogOut } from 'lucide-react';
+import { Mail, RefreshCw, LogOut, ArrowRight } from 'lucide-react';
 import { Button, Card, CardContent } from '@digihire/shared';
 
 export default function VerifyEmail() {
   const { user, signOut } = useAuth();
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [verifying, setVerifying] = useState(false);
   const [sending, setSending] = useState(false);
-  const [checking, setChecking] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
 
-  // Auto-redirect when Supabase fires SIGNED_IN after the user clicks the email link
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user?.email_confirmed_at) {
-        navigate('/talent');
-      }
+    inputRefs.current[0]?.focus();
+  }, []);
+
+  const handleChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    const next = [...otp];
+    next[index] = value.slice(-1);
+    setOtp(next);
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length === 6) {
+      setOtp(pasted.split(''));
+      inputRefs.current[5]?.focus();
+    }
+  };
+
+  const handleVerify = async () => {
+    const token = otp.join('');
+    if (token.length < 6) return setError('Enter the full 6-digit code.');
+    if (!user?.email) return setError('Session expired. Please sign up again.');
+    setVerifying(true);
+    setError('');
+    const { error: err } = await supabase.auth.verifyOtp({
+      email: user.email,
+      token,
+      type: 'signup',
     });
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+    if (err) {
+      setError('Invalid or expired code. Try resending.');
+      setOtp(['', '', '', '', '', '']);
+      inputRefs.current[0]?.focus();
+    } else {
+      setSuccess('Email verified! Redirecting...');
+      setTimeout(() => navigate('/talent'), 1000);
+    }
+    setVerifying(false);
+  };
 
   const handleResend = async () => {
     if (!user?.email) return;
@@ -30,22 +70,8 @@ export default function VerifyEmail() {
     setSuccess('');
     const { error: err } = await supabase.auth.resend({ type: 'signup', email: user.email });
     if (err) setError(err.message);
-    else setSuccess('Verification email sent! Check your inbox.');
+    else setSuccess('New code sent! Check your inbox.');
     setSending(false);
-  };
-
-  const handleCheckStatus = async () => {
-    setChecking(true);
-    setError('');
-    setSuccess('');
-    const { data: { user: freshUser } } = await supabase.auth.getUser();
-    if (freshUser?.email_confirmed_at) {
-      setSuccess('Email verified! Redirecting...');
-      setTimeout(() => navigate('/talent'), 1500);
-    } else {
-      setError('Email not yet verified. Click the link in your email and try again.');
-    }
-    setChecking(false);
   };
 
   return (
@@ -60,11 +86,12 @@ export default function VerifyEmail() {
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
               <Mail className="h-8 w-8 text-primary" />
             </div>
+
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Verify your email</h1>
+              <h1 className="text-2xl text-foreground">Check your email</h1>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                We've sent a verification link to{' '}
-                <span className="font-semibold text-foreground">{user?.email}</span>.
+                We sent a 6-digit code to{' '}
+                <span className="text-foreground">{user?.email}</span>.
                 <span className="block mt-1 text-xs italic">Check your Spam folder if you don't see it.</span>
               </p>
             </div>
@@ -72,14 +99,31 @@ export default function VerifyEmail() {
             {error && <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">{error}</div>}
             {success && <div className="rounded-lg bg-success/10 p-3 text-sm text-success border border-success/20">{success}</div>}
 
+            {/* OTP boxes */}
+            <div className="flex items-center justify-center gap-2" onPaste={handlePaste}>
+              {otp.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={el => { inputRefs.current[i] = el; }}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={e => handleChange(i, e.target.value)}
+                  onKeyDown={e => handleKeyDown(i, e)}
+                  className="h-12 w-10 rounded-lg border border-border bg-secondary text-center text-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                />
+              ))}
+            </div>
+
             <div className="space-y-3">
-              <Button onClick={handleCheckStatus} disabled={checking} className="w-full gap-2">
-                {checking ? <RefreshCw className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
-                I've Verified My Email
+              <Button onClick={handleVerify} disabled={verifying || otp.join('').length < 6} className="w-full gap-2">
+                {verifying ? <RefreshCw className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                {verifying ? 'Verifying...' : 'Confirm Email'}
               </Button>
               <Button variant="outline" onClick={handleResend} disabled={sending} className="w-full gap-2">
                 {sending ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-                Resend Email
+                {sending ? 'Sending...' : 'Resend Code'}
               </Button>
             </div>
 
