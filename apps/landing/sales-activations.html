@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Activations & Field Marketing — Digihire</title>
+  <meta name="description" content="Digihire plans, deploys, and supports on-ground sales activations and field marketing campaigns across malls, campuses, neighborhoods, and high-traffic areas." />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <style>
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanThin.ttf') format('truetype'); font-weight: 100; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanLight.ttf') format('truetype'); font-weight: 300; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanRegular.ttf') format('truetype'); font-weight: 400; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanSemiBold.ttf') format('truetype'); font-weight: 600; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBold.ttf') format('truetype'); font-weight: 700; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanExtraBold.ttf') format('truetype'); font-weight: 800; }
+    @font-face { font-family: 'CenturyGothic'; src: url('fonts/CenturyGothicPaneuropeanBlack.ttf') format('truetype'); font-weight: 900; }
+  </style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #06111F;
+      --navy-1:      #0B1D33;
+      --navy-2:      #0F2544;
+      --navy-3:      #162E52;
+      --navy-4:      #1D3A64;
+      --cyan:        #00C2FF;
+      --cyan-dim:    #0096C7;
+      --cyan-soft:   #33CFFF;
+      --cyan-border: rgba(0,194,255,0.18);
+      --white:       #FFFFFF;
+      --gray-2:      #7A9CC5;
+      --gray-bg:     #F4F8FF;
+      --border:      rgba(0,194,255,0.12);
+      --radius-lg:   18px;
+      --radius-xl:   28px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'CenturyGothic', sans-serif; background: var(--white); color: #111827; line-height: 1.6; overflow-x: hidden; }
+
+    .lucide { display: inline-block; vertical-align: middle; flex-shrink: 0; stroke: currentColor; }
+    .ic-sm { width: 14px; height: 14px; }
+    .ic-md { width: 18px; height: 18px; }
+    .ic-lg { width: 22px; height: 22px; }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px; border-radius: 8px; cursor: pointer;
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 700;
+      border: none; text-decoration: none; transition: all 0.22s ease;
+      white-space: nowrap;
+    }
+    .btn-cyan { background: var(--cyan); color: var(--navy); box-shadow: 0 4px 20px rgba(0,194,255,0.35); }
+    .btn-cyan:hover { background: var(--cyan-soft); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,194,255,0.5); }
+    .btn-outline-white { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,0.35); }
+    .btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+    .btn-outline-navy { background: transparent; color: var(--navy); border: 1.5px solid rgba(0,0,0,0.18); }
+    .btn-outline-navy:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 10px; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    .stagger-grid > * { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .stagger-grid.in > *:nth-child(1) { opacity:1;transform:none;transition-delay:0s }
+    .stagger-grid.in > *:nth-child(2) { opacity:1;transform:none;transition-delay:.08s }
+    .stagger-grid.in > *:nth-child(3) { opacity:1;transform:none;transition-delay:.16s }
+    .stagger-grid.in > *:nth-child(4) { opacity:1;transform:none;transition-delay:.24s }
+    .stagger-grid.in > *:nth-child(5) { opacity:1;transform:none;transition-delay:.32s }
+    .stagger-grid.in > *:nth-child(6) { opacity:1;transform:none;transition-delay:.4s }
+    .stagger-grid.in > *:nth-child(7) { opacity:1;transform:none;transition-delay:.48s }
+    .stagger-grid.in > *:nth-child(8) { opacity:1;transform:none;transition-delay:.56s }
+
+    /* ── NAVBAR ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: transparent; border-bottom: 1px solid transparent;
+      transition: top 0.45s cubic-bezier(0.34,1.56,0.64,1), left 0.45s cubic-bezier(0.34,1.56,0.64,1),
+                  right 0.45s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease,
+                  border-radius 0.45s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    #navbar.scrolled {
+      top: 14px; left: 20%; right: 20%;
+      background: rgba(255,255,255,0.78); backdrop-filter: blur(22px);
+      border-radius: 999px; border-bottom: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px; max-width: 1340px; width: 100%; margin: 0 auto; padding: 0 28px;
+      transition: height 0.3s ease, padding 0.3s ease;
+    }
+    #navbar.scrolled .nav-inner { height: 54px; padding: 0 24px; }
+    .nav-left { display: flex; align-items: center; }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; margin-right: 32px; }
+    .nav-logo-wrap-img { position: relative; display: flex; align-items: center; }
+    .nav-logo-img { height: 36px; width: auto; display: block; transition: opacity 0.3s; }
+    .nav-logo-img.logo-white { opacity: 1; }
+    .nav-logo-img.logo-color { opacity: 0; position: absolute; }
+    #navbar.scrolled .nav-logo-img.logo-white { opacity: 0; }
+    #navbar.scrolled .nav-logo-img.logo-color { opacity: 1; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a {
+      font-size: 14px; color: rgba(255,255,255,0.82); text-decoration: none;
+      font-weight: 500; padding: 6px 14px; border-radius: 6px; transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    #navbar.scrolled .nav-links a { color: #1E3A5F; }
+    #navbar.scrolled .nav-links a:hover { color: var(--navy); background: rgba(0,0,0,0.04); }
+    .nav-links a.active-page { color: var(--cyan); font-weight: 700; }
+    #navbar.scrolled .nav-links a.active-page { color: var(--cyan-dim); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .btn-get-started {
+      font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.88);
+      border: 1.5px solid rgba(255,255,255,0.3); border-radius: 8px;
+      padding: 7px 18px; background: transparent; cursor: pointer;
+      text-decoration: none; transition: all 0.2s; white-space: nowrap; font-family: 'CenturyGothic', sans-serif;
+    }
+    .btn-get-started:hover { border-color: var(--white); color: var(--white); }
+    #navbar.scrolled .btn-get-started { color: var(--navy); border-color: rgba(0,0,0,0.18); }
+    #navbar.scrolled .btn-get-started:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-launch-campaign {
+      font-size: 14px; font-weight: 700; background: var(--cyan); color: var(--navy);
+      border: none; border-radius: 8px; padding: 9px 20px; cursor: pointer;
+      text-decoration: none; transition: all 0.22s; white-space: nowrap; font-family: 'CenturyGothic', sans-serif;
+      box-shadow: 0 3px 12px rgba(0,194,255,0.35);
+    }
+    .btn-launch-campaign:hover { background: var(--cyan-soft); transform: translateY(-1px); }
+
+    /* ── SECTION LABELS ── */
+    .section-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--cyan-dim); margin-bottom: 12px;
+    }
+    .section-heading {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 800; color: var(--navy); line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .section-sub { font-size: 16px; color: #6B849E; max-width: 620px; line-height: 1.7; }
+
+    /* ════════════════════════════════
+       HERO
+    ════════════════════════════════ */
+    .sa-hero {
+      background: var(--navy);
+      padding: 160px 0 90px;
+      position: relative; overflow: hidden;
+    }
+    .sa-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 10%, rgba(0,194,255,0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 10% 90%, rgba(0,194,255,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .sa-hero-inner {
+      position: relative;
+      display: grid; grid-template-columns: 1.05fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .sa-hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(0,194,255,0.85);
+      padding: 7px 14px; border-radius: 999px;
+      background: rgba(0,194,255,0.10); border: 1px solid rgba(0,194,255,0.22);
+      margin-bottom: 22px;
+    }
+    .sa-hero-title {
+      font-family: 'CenturyGothic', sans-serif;
+      font-size: clamp(34px, 5vw, 58px);
+      font-weight: 800; color: var(--white); line-height: 1.06;
+      letter-spacing: -0.025em; margin-bottom: 22px;
+    }
+    .sa-hero-title em { color: var(--cyan); font-style: normal; }
+    .sa-hero-sub {
+      font-size: clamp(15px, 1.4vw, 17px); color: rgba(255,255,255,0.65);
+      line-height: 1.7; margin-bottom: 36px; max-width: 540px;
+    }
+    .sa-hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Hero collage */
+    .sa-hero-collage {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(6, 60px);
+      gap: 12px;
+    }
+    .sa-hero-img {
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(0,194,255,0.18);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    .sa-hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sa-hero-img.i1 { grid-column: 1 / span 4; grid-row: 1 / span 4; }
+    .sa-hero-img.i2 { grid-column: 5 / span 2; grid-row: 1 / span 3; }
+    .sa-hero-img.i3 { grid-column: 5 / span 2; grid-row: 4 / span 3; }
+    .sa-hero-img.i4 { grid-column: 1 / span 4; grid-row: 5 / span 2; }
+    .sa-hero-collage::after {
+      content: ''; position: absolute;
+      top: -24px; right: -24px; width: 110px; height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,194,255,0.35) 0%, transparent 70%);
+      filter: blur(8px); z-index: -1;
+    }
+
+    /* Floating stat badge on hero */
+    .sa-hero-badge {
+      position: absolute;
+      bottom: -22px; left: -16px;
+      background: var(--cyan); color: var(--navy);
+      padding: 14px 18px; border-radius: 14px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 12px 36px rgba(0,194,255,0.45);
+      max-width: 250px;
+      font-family: 'CenturyGothic', sans-serif;
+    }
+    .sa-hero-badge-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--navy); color: var(--cyan); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sa-hero-badge-text { font-size: 13px; font-weight: 700; line-height: 1.3; }
+
+    /* ════════════════════════════════
+       LOGO STRIP
+    ════════════════════════════════ */
+    .sa-logos { background: var(--white); padding: 48px 0 56px; border-bottom: 1px solid #EEF3FA; }
+    .sa-logos-label {
+      text-align: center; font-size: 11px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #9AAFC7;
+      margin-bottom: 26px;
+    }
+    .sa-logos-track {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 32px 56px;
+    }
+    .sa-logo-img {
+      height: 38px; width: auto; max-width: 150px;
+      object-fit: contain; display: block;
+      filter: grayscale(100%); opacity: 0.55;
+      transition: filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+    }
+    .sa-logo-img:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.04); }
+
+    /* ════════════════════════════════
+       INTRO
+    ════════════════════════════════ */
+    .sa-intro { padding: 100px 0; background: var(--white); }
+    .sa-intro-inner {
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center;
+    }
+    .sa-intro-text p { font-size: 15px; color: #5B7A9E; line-height: 1.8; margin-top: 18px; }
+    .sa-intro-img {
+      border-radius: var(--radius-xl); overflow: hidden; aspect-ratio: 4/5;
+      box-shadow: 0 24px 56px rgba(6,17,31,0.18);
+    }
+    .sa-intro-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ════════════════════════════════
+       WHAT WE DO
+    ════════════════════════════════ */
+    .sa-what { padding: 100px 0; background: var(--gray-bg); position: relative; }
+    .sa-what::before {
+      content: ''; position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%); width: 80%; max-width: 600px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,194,255,0.4), transparent);
+    }
+    .sa-what-header { text-align: center; margin-bottom: 56px; }
+    .sa-what-header .section-sub { margin: 0 auto; }
+    .sa-what-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .sa-what-card {
+      background: var(--white); border: 1px solid #E2EBF5;
+      border-radius: var(--radius-lg); padding: 32px 28px;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .sa-what-card::after {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--cyan-dim));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .sa-what-card:hover { transform: translateY(-4px); border-color: rgba(0,194,255,0.3); box-shadow: 0 18px 40px rgba(6,17,31,0.08); }
+    .sa-what-card:hover::after { transform: scaleX(1); }
+    .sa-what-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(0,194,255,0.12), rgba(0,194,255,0.04));
+      border: 1px solid rgba(0,194,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cyan-dim); margin-bottom: 20px;
+    }
+    .sa-what-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: 18px; font-weight: 800;
+      color: var(--navy); margin-bottom: 10px; letter-spacing: -0.01em;
+    }
+    .sa-what-desc { font-size: 14px; color: #6B849E; line-height: 1.65; }
+
+    /* ════════════════════════════════
+       HOW IT WORKS
+    ════════════════════════════════ */
+    .sa-how { padding: 100px 0; background: var(--white); }
+    .sa-how-header { text-align: center; margin-bottom: 64px; }
+    .sa-how-steps {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+      position: relative;
+    }
+    .sa-how-steps::before {
+      content: ''; position: absolute;
+      top: 38px; left: 12%; right: 12%; height: 1px;
+      background: repeating-linear-gradient(90deg, rgba(0,194,255,0.35) 0 6px, transparent 6px 12px);
+      z-index: 0;
+    }
+    .sa-how-step {
+      position: relative; z-index: 1;
+      text-align: center;
+    }
+    .sa-how-num {
+      width: 76px; height: 76px; border-radius: 50%;
+      background: var(--white); border: 2px solid var(--cyan-border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-family: 'CenturyGothic', sans-serif; font-size: 26px; font-weight: 900;
+      color: var(--cyan-dim); letter-spacing: -0.02em;
+      box-shadow: 0 6px 20px rgba(0,194,255,0.12);
+      transition: transform 0.25s, background 0.25s, color 0.25s;
+    }
+    .sa-how-step:hover .sa-how-num { transform: scale(1.05); background: var(--cyan); color: var(--navy); border-color: var(--cyan); }
+    .sa-how-step h4 {
+      font-family: 'CenturyGothic', sans-serif; font-size: 16px; font-weight: 800;
+      color: var(--navy); margin-bottom: 8px;
+    }
+    .sa-how-step p { font-size: 13.5px; color: #6B849E; line-height: 1.65; max-width: 220px; margin: 0 auto; }
+
+    /* ════════════════════════════════
+       WHY BRANDS CHOOSE DIGIHIRE
+    ════════════════════════════════ */
+    .sa-why { padding: 100px 0; background: var(--navy); position: relative; overflow: hidden; }
+    .sa-why::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,194,255,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .sa-why-inner { position: relative; display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; align-items: center; }
+    .sa-why-text .section-label { color: rgba(0,194,255,0.7); }
+    .sa-why-text .section-heading { color: var(--white); }
+    .sa-why-text .section-sub { color: rgba(255,255,255,0.55); margin-top: 16px; }
+    .sa-why-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .sa-why-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(0,194,255,0.12);
+      border-radius: 12px; padding: 16px 18px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .sa-why-item:hover { background: rgba(0,194,255,0.06); border-color: rgba(0,194,255,0.3); }
+    .sa-why-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(0,194,255,0.18); color: var(--cyan);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .sa-why-item p { font-size: 14px; color: rgba(255,255,255,0.82); line-height: 1.5; }
+
+    /* ════════════════════════════════
+       USE CASES
+    ════════════════════════════════ */
+    .sa-cases { padding: 100px 0; background: var(--gray-bg); }
+    .sa-cases-header { text-align: center; margin-bottom: 56px; }
+    .sa-cases-header .section-sub { margin: 0 auto; }
+    .sa-cases-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .sa-case-chip {
+      background: var(--white); border: 1px solid #E2EBF5;
+      border-radius: 14px; padding: 22px 20px;
+      display: flex; align-items: center; gap: 12px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .sa-case-chip:hover { transform: translateY(-3px); border-color: rgba(0,194,255,0.3); box-shadow: 0 12px 28px rgba(6,17,31,0.06); }
+    .sa-case-chip-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(0,194,255,0.10); color: var(--cyan-dim);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sa-case-chip-text {
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 700;
+      color: var(--navy); line-height: 1.35;
+    }
+
+    /* ════════════════════════════════
+       VISUAL PROOF GALLERY
+    ════════════════════════════════ */
+    .sa-gallery { padding: 100px 0; background: var(--white); }
+    .sa-gallery-header { text-align: center; margin-bottom: 56px; }
+    .sa-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-rows: 140px;
+      gap: 14px;
+    }
+    .sa-gallery-item {
+      border-radius: 16px; overflow: hidden;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .sa-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .sa-gallery-item:hover { transform: scale(1.015); }
+    .sa-gallery-item:hover img { transform: scale(1.06); }
+    .sa-gallery-item.g1 { grid-column: span 3; grid-row: span 2; }
+    .sa-gallery-item.g2 { grid-column: span 3; grid-row: span 2; }
+    .sa-gallery-item.g3 { grid-column: span 2; grid-row: span 2; }
+    .sa-gallery-item.g4 { grid-column: span 2; grid-row: span 2; }
+    .sa-gallery-item.g5 { grid-column: span 2; grid-row: span 2; }
+
+    /* ════════════════════════════════
+       FINAL CTA
+    ════════════════════════════════ */
+    .sa-cta { background: var(--navy); padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
+    .sa-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 30%, rgba(0,194,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .sa-cta-inner { position: relative; }
+    .sa-cta-title {
+      font-family: 'CenturyGothic', sans-serif; font-size: clamp(28px, 4.5vw, 48px);
+      font-weight: 800; color: var(--white); letter-spacing: -0.025em;
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .sa-cta-sub { font-size: 16px; color: rgba(255,255,255,0.6); max-width: 580px; margin: 0 auto 36px; line-height: 1.7; }
+    .sa-cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
+    footer { background: var(--navy); border-top: 1px solid rgba(0,194,255,0.1); padding: 56px 0 28px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-logo-wrap { margin-bottom: 16px; }
+    .footer-tagline { font-size: 13px; color: var(--gray-2); line-height: 1.65; max-width: 220px; margin-bottom: 20px; }
+    .footer-socials { display: flex; gap: 8px; }
+    .footer-social {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--gray-2); display: flex; align-items: center; justify-content: center;
+      font-size: 13px; text-decoration: none; transition: all 0.2s;
+    }
+    .footer-social:hover { border-color: rgba(0,194,255,0.4); color: var(--cyan); }
+    .footer-col-title { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+    .footer-col-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col-links a { font-size: 14px; color: var(--gray-2); text-decoration: none; transition: color 0.2s; }
+    .footer-col-links a:hover { color: var(--white); }
+    .footer-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .footer-locations { display: flex; flex-wrap: wrap; gap: 20px; }
+    .footer-location-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1000px) {
+      .sa-hero-inner { grid-template-columns: 1fr; gap: 56px; }
+      .sa-intro-inner { grid-template-columns: 1fr; gap: 48px; }
+      .sa-intro-img { aspect-ratio: 16/10; max-height: 420px; }
+      .sa-why-inner { grid-template-columns: 1fr; gap: 48px; }
+      .sa-what-grid { grid-template-columns: 1fr 1fr; }
+      .sa-cases-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 960px) {
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .footer-grid > :first-child { grid-column: 1 / -1; }
+      .sa-how-steps { grid-template-columns: 1fr 1fr; gap: 36px 20px; }
+      .sa-how-steps::before { display: none; }
+      .sa-why-list { grid-template-columns: 1fr; }
+      .sa-gallery-grid { grid-auto-rows: 120px; }
+    }
+    @media (max-width: 600px) {
+      .sa-hero { padding: 120px 0 64px; }
+      .sa-intro, .sa-what, .sa-how, .sa-why, .sa-cases, .sa-gallery, .sa-cta { padding: 64px 0; }
+      .sa-what-grid { grid-template-columns: 1fr; }
+      .sa-cases-grid { grid-template-columns: 1fr; }
+      .sa-how-steps { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .container { padding: 0 20px; }
+      .sa-hero-collage { grid-template-rows: repeat(6, 48px); }
+      .sa-hero-badge { left: 50%; transform: translateX(-50%); bottom: -28px; }
+      .sa-gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 160px; }
+      .sa-gallery-item.g1, .sa-gallery-item.g2 { grid-column: span 2; }
+      .sa-gallery-item.g3, .sa-gallery-item.g4, .sa-gallery-item.g5 { grid-column: span 1; grid-row: span 1; }
+    }
+
+    /* ── MOBILE NAV (hamburger + slide-in overlay) ── */
+    .nav-hamburger {
+      display: none; background: transparent; border: none; cursor: pointer;
+      padding: 6px; border-radius: 6px; line-height: 0;
+      color: rgba(255,255,255,0.9); transition: color 0.2s, background 0.2s;
+    }
+    #navbar.scrolled .nav-hamburger { color: #1E3A5F; }
+    .nav-hamburger:hover { background: rgba(255,255,255,0.1); }
+    #navbar.scrolled .nav-hamburger:hover { background: rgba(0,0,0,0.05); }
+    @media (max-width: 960px) {
+      .nav-links { display: none; }
+      .nav-right { display: none; }
+      .nav-hamburger { display: flex; align-items: center; justify-content: center; }
+    }
+    .nav-mobile-overlay {
+      position: fixed; inset: 0; z-index: 198; background: #06111F;
+      transform: translateX(100%); transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .nav-mobile-overlay.nm-open { transform: translateX(0); }
+    .nm-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 68px; flex-shrink: 0; border-bottom: 1px solid rgba(0,194,255,0.1);
+    }
+    .nm-close-btn {
+      background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.65);
+      padding: 6px; border-radius: 6px; display: flex; transition: color 0.2s, background 0.2s;
+    }
+    .nm-close-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .nm-body { flex: 1; overflow-y: auto; padding: 8px 24px 32px; display: flex; flex-direction: column; }
+    .nm-section { border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .nm-trigger {
+      display: flex; align-items: center; justify-content: space-between; width: 100%;
+      background: transparent; border: none; cursor: pointer; padding: 18px 0; text-align: left;
+      font-family: 'CenturyGothic', sans-serif; font-size: 17px; font-weight: 700;
+      color: rgba(255,255,255,0.85); transition: color 0.2s;
+    }
+    .nm-trigger:hover { color: #00C2FF; }
+    .nm-trigger svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.25s; }
+    .nm-trigger.nm-active { color: #00C2FF; }
+    .nm-trigger.nm-active svg { transform: rotate(180deg); }
+    .nm-submenu { max-height: 0; overflow: hidden; transition: max-height 0.32s ease, padding-bottom 0.32s ease; padding-bottom: 0; }
+    .nm-submenu.nm-open { max-height: 400px; padding-bottom: 10px; }
+    .nm-sub-item {
+      display: block; padding: 10px 14px; margin: 3px 0;
+      font-family: 'CenturyGothic', sans-serif; font-size: 14px; font-weight: 500;
+      color: rgba(255,255,255,0.55); text-decoration: none;
+      border-left: 2px solid rgba(0,194,255,0.18); border-radius: 0 6px 6px 0;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .nm-sub-item:hover { color: #00C2FF; border-left-color: #00C2FF; background: rgba(0,194,255,0.06); }
+    .nm-actions { margin-top: auto; padding-top: 28px; display: flex; flex-direction: column; gap: 12px; }
+    .nm-btn-outline {
+      display: flex; align-items: center; justify-content: center; padding: 14px; border-radius: 10px;
+      text-decoration: none; font-family: 'CenturyGothic', sans-serif; font-size: 15px; font-weight: 700;
+      border: 1.5px solid rgba(255,255,255,0.25); background: transparent; color: rgba(255,255,255,0.85); transition: all 0.2s;
+    }
+    .nm-btn-outline:hover { border-color: #00C2FF; color: #00C2FF; }
+    .nm-btn-cyan {
+      display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: 10px;
+      text-decoration: none; font-family: 'CenturyGothic', sans-serif; font-size: 15px; font-weight: 800;
+      background: #00C2FF; color: #06111F; border: none; transition: background 0.22s;
+    }
+    .nm-btn-cyan:hover { background: #33CFFF; }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAVBAR ════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-wrap-img">
+          <img src="assets/logo-white.png" alt="DigiHire" class="nav-logo-img logo-white" />
+          <img src="assets/logo-color.png" alt="DigiHire" class="nav-logo-img logo-color" />
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Why DigiHire?</a></li>
+        <li><a href="/">Brands</a></li>
+        <li><a href="/">For Talents</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/sales-activations" class="active-page">Activations</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <a href="/contact" class="btn-get-started">Talk to Sales</a>
+      <a href="https://brands.digihire.io/login" class="btn-launch-campaign">Book a Strategy Call →</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger-btn" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ════ HERO ══════════════════════════════════════ -->
+<section class="sa-hero">
+  <div class="container">
+    <div class="sa-hero-inner">
+      <div class="reveal">
+        <span class="sa-hero-label">
+          <i data-lucide="map-pin" class="lucide" style="width:12px;height:12px"></i>
+          Sales Activations & Field Marketing
+        </span>
+        <h1 class="sa-hero-title">Launch on-ground campaigns that drive <em>visibility, engagement,</em> and sales</h1>
+        <p class="sa-hero-sub">Digihire helps brands execute sales activations and field marketing campaigns across malls, campuses, neighborhoods, and high-traffic areas using trained merchandisers, field marketers, and activation teams built for real traction.</p>
+        <div class="sa-hero-actions">
+          <a href="https://brands.digihire.io/login" class="btn btn-cyan btn-lg">Book a Strategy Call</a>
+          <a href="/contact" class="btn btn-outline-white btn-lg">Talk to Sales</a>
+        </div>
+      </div>
+
+      <div class="sa-hero-collage reveal">
+        <div class="sa-hero-img i1">
+          <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=900&h=700&fit=crop&q=80" alt="Field marketing team member" />
+        </div>
+        <div class="sa-hero-img i2">
+          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&h=400&fit=crop&q=80" alt="Brand activation specialist" />
+        </div>
+        <div class="sa-hero-img i3">
+          <img src="https://images.unsplash.com/photo-1605647540924-852290f6b0d5?w=500&h=400&fit=crop&q=80" alt="Activation team planning session" />
+        </div>
+        <div class="sa-hero-img i4">
+          <img src="https://images.unsplash.com/photo-1521119989659-a83eee488004?w=900&h=400&fit=crop&q=80" alt="On-ground engagement" />
+        </div>
+
+        <div class="sa-hero-badge">
+          <div class="sa-hero-badge-icon"><i data-lucide="zap" class="lucide ic-md"></i></div>
+          <div class="sa-hero-badge-text">Boots-on-ground campaigns built for real traction</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ LOGO STRIP ════════════════════════════════ -->
+<section class="sa-logos">
+  <div class="container">
+    <p class="sa-logos-label">Brands We've Worked With</p>
+    <div class="sa-logos-track">
+      <img class="sa-logo-img" src="logos/jumia.png" alt="Jumia" />
+      <img class="sa-logo-img" src="logos/konga.png" alt="Konga" />
+      <img class="sa-logo-img" src="logos/sabi.png" alt="Sabi" />
+      <img class="sa-logo-img" src="logos/9mobile.png" alt="9mobile" />
+      <img class="sa-logo-img" src="logos/betking.png" alt="BetKing" />
+      <img class="sa-logo-img" src="logos/cardtonic.png" alt="Cardtonic" />
+      <img class="sa-logo-img" src="logos/hp.png" alt="HP" />
+      <img class="sa-logo-img" src="logos/british-council.png" alt="British Council" />
+    </div>
+  </div>
+</section>
+
+<!-- ════ INTRO ═════════════════════════════════════ -->
+<section class="sa-intro">
+  <div class="container">
+    <div class="sa-intro-inner reveal">
+      <div class="sa-intro-text">
+        <p class="section-label">The Digihire Field Engine</p>
+        <h2 class="section-heading">Field execution built for brands that want real market presence</h2>
+        <p>From product launches to sampling drives, roadshows, campus activations, and neighborhood outreach, Digihire helps brands take campaigns into real-world spaces where people can see, engage with, and act on them.</p>
+        <p>We do not just place people on the ground. We plan, deploy, and support activation teams built to create awareness, drive signups, generate leads, and move products.</p>
+      </div>
+      <div class="sa-intro-img">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=700&h=900&fit=crop&q=80" alt="Field marketing lead" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ WHAT WE DO ════════════════════════════════ -->
+<section class="sa-what">
+  <div class="container">
+    <div class="sa-what-header reveal">
+      <p class="section-label">What We Do</p>
+      <h2 class="section-heading">Sales activations and field marketing built for real traction</h2>
+      <p class="section-sub">Six ways Digihire helps brands take campaigns into the physical world and convert real attention into measurable outcomes.</p>
+    </div>
+    <div class="sa-what-grid stagger-grid">
+      <div class="sa-what-card">
+        <div class="sa-what-icon"><i data-lucide="shopping-bag" class="lucide ic-lg"></i></div>
+        <h3 class="sa-what-title">Mall Activations</h3>
+        <p class="sa-what-desc">Take your product into high-footfall retail environments where visibility, demonstrations, and live engagement can drive awareness and conversions.</p>
+      </div>
+      <div class="sa-what-card">
+        <div class="sa-what-icon"><i data-lucide="graduation-cap" class="lucide ic-lg"></i></div>
+        <h3 class="sa-what-title">Campus Activations</h3>
+        <p class="sa-what-desc">Reach student communities directly through on-ground campaigns designed for discovery, signups, trials, and product spread.</p>
+      </div>
+      <div class="sa-what-card">
+        <div class="sa-what-icon"><i data-lucide="map-pin" class="lucide ic-lg"></i></div>
+        <h3 class="sa-what-title">High-Traffic Area Campaigns</h3>
+        <p class="sa-what-desc">Launch in neighborhoods, transport corridors, urban hotspots, and busy public spaces where real audience attention can be captured.</p>
+      </div>
+      <div class="sa-what-card">
+        <div class="sa-what-icon"><i data-lucide="users" class="lucide ic-lg"></i></div>
+        <h3 class="sa-what-title">Merchandiser & Field Team Deployment</h3>
+        <p class="sa-what-desc">Deploy trained merchandisers, promoters, and field marketers to support activations, product visibility, and campaign execution.</p>
+      </div>
+      <div class="sa-what-card">
+        <div class="sa-what-icon"><i data-lucide="rocket" class="lucide ic-lg"></i></div>
+        <h3 class="sa-what-title">Product Launch Support</h3>
+        <p class="sa-what-desc">Use field teams and structured activation plans to introduce new products into target markets with stronger presence and reach.</p>
+      </div>
+      <div class="sa-what-card">
+        <div class="sa-what-icon"><i data-lucide="map" class="lucide ic-lg"></i></div>
+        <h3 class="sa-what-title">City-by-City Rollout</h3>
+        <p class="sa-what-desc">Execute structured campaigns across selected cities with localized teams and on-ground support built for market entry and traction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ HOW IT WORKS ══════════════════════════════ -->
+<section class="sa-how">
+  <div class="container">
+    <div class="sa-how-header reveal">
+      <p class="section-label">How It Works</p>
+      <h2 class="section-heading">How Digihire activations work</h2>
+    </div>
+    <div class="sa-how-steps stagger-grid">
+      <div class="sa-how-step">
+        <div class="sa-how-num">01</div>
+        <h4>We define the campaign goal</h4>
+        <p>Awareness, lead generation, signups, product launch, retail push, or direct sales.</p>
+      </div>
+      <div class="sa-how-step">
+        <div class="sa-how-num">02</div>
+        <h4>We plan the activation</h4>
+        <p>We map the right locations, audience, staffing, and execution model.</p>
+      </div>
+      <div class="sa-how-step">
+        <div class="sa-how-num">03</div>
+        <h4>We deploy the team</h4>
+        <p>Field marketers, merchandisers, and activation staff go live across target locations.</p>
+      </div>
+      <div class="sa-how-step">
+        <div class="sa-how-num">04</div>
+        <h4>We track execution</h4>
+        <p>You get updates on coverage, activity, turnout, and campaign progress.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ WHY BRANDS CHOOSE DIGIHIRE ════════════════ -->
+<section class="sa-why">
+  <div class="container">
+    <div class="sa-why-inner reveal">
+      <div class="sa-why-text">
+        <p class="section-label">Why Digihire</p>
+        <h2 class="section-heading">Why brands choose Digihire for field activations</h2>
+        <p class="section-sub">Built for visibility, traction, and measurable activity, our field engine is structured to give brands real presence in the markets that matter to them.</p>
+      </div>
+      <div class="sa-why-list stagger-grid">
+        <div class="sa-why-item">
+          <div class="sa-why-check"><i data-lucide="check" class="lucide" style="width:13px;height:13px"></i></div>
+          <p>Stronger physical market presence</p>
+        </div>
+        <div class="sa-why-item">
+          <div class="sa-why-check"><i data-lucide="check" class="lucide" style="width:13px;height:13px"></i></div>
+          <p>More direct engagement than passive advertising</p>
+        </div>
+        <div class="sa-why-item">
+          <div class="sa-why-check"><i data-lucide="check" class="lucide" style="width:13px;height:13px"></i></div>
+          <p>Flexible deployment across cities and locations</p>
+        </div>
+        <div class="sa-why-item">
+          <div class="sa-why-check"><i data-lucide="check" class="lucide" style="width:13px;height:13px"></i></div>
+          <p>Trained merchandisers and field marketers</p>
+        </div>
+        <div class="sa-why-item">
+          <div class="sa-why-check"><i data-lucide="check" class="lucide" style="width:13px;height:13px"></i></div>
+          <p>Better support for product launches and local campaigns</p>
+        </div>
+        <div class="sa-why-item">
+          <div class="sa-why-check"><i data-lucide="check" class="lucide" style="width:13px;height:13px"></i></div>
+          <p>Built for visibility, traction, and measurable activity</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ USE CASES ═════════════════════════════════ -->
+<section class="sa-cases">
+  <div class="container">
+    <div class="sa-cases-header reveal">
+      <p class="section-label">Built For</p>
+      <h2 class="section-heading">When brands need boots on the ground</h2>
+      <p class="section-sub">From a single product launch to a multi-city rollout, here is where Digihire activations consistently deliver.</p>
+    </div>
+    <div class="sa-cases-grid stagger-grid">
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="rocket" class="lucide ic-md"></i></div><span class="sa-case-chip-text">Product launches</span></div>
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="map" class="lucide ic-md"></i></div><span class="sa-case-chip-text">New city rollouts</span></div>
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="graduation-cap" class="lucide ic-md"></i></div><span class="sa-case-chip-text">Campus awareness campaigns</span></div>
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="shopping-bag" class="lucide ic-md"></i></div><span class="sa-case-chip-text">Retail and mall presence</span></div>
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="user-plus" class="lucide ic-md"></i></div><span class="sa-case-chip-text">Lead generation drives</span></div>
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="gift" class="lucide ic-md"></i></div><span class="sa-case-chip-text">Sampling and demo campaigns</span></div>
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="map-pin" class="lucide ic-md"></i></div><span class="sa-case-chip-text">Neighborhood market coverage</span></div>
+      <div class="sa-case-chip"><div class="sa-case-chip-icon"><i data-lucide="clipboard-list" class="lucide ic-md"></i></div><span class="sa-case-chip-text">Temporary merchandising support</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ VISUAL PROOF GALLERY ══════════════════════ -->
+<section class="sa-gallery">
+  <div class="container">
+    <div class="sa-gallery-header reveal">
+      <p class="section-label">Field Work</p>
+      <h2 class="section-heading">See our activations in action</h2>
+    </div>
+    <div class="sa-gallery-grid reveal">
+      <div class="sa-gallery-item g1">
+        <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=900&h=600&fit=crop&q=80" alt="Activation team in the field" />
+      </div>
+      <div class="sa-gallery-item g2">
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=900&h=600&fit=crop&q=80" alt="Brand representative at activation" />
+      </div>
+      <div class="sa-gallery-item g3">
+        <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&h=600&fit=crop&q=80" alt="Field marketer portrait" />
+      </div>
+      <div class="sa-gallery-item g4">
+        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=600&h=600&fit=crop&q=80" alt="On-ground engagement" />
+      </div>
+      <div class="sa-gallery-item g5">
+        <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=600&h=600&fit=crop&q=80" alt="Activation lead in the field" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FINAL CTA ═════════════════════════════════ -->
+<section class="sa-cta">
+  <div class="container">
+    <div class="sa-cta-inner reveal">
+      <h2 class="sa-cta-title">Ready to take your brand to the field?</h2>
+      <p class="sa-cta-sub">Talk to Digihire about your next activation, product launch, or field campaign and let's build the right on-ground strategy for your goals.</p>
+      <div class="sa-cta-actions">
+        <a href="https://brands.digihire.io/login" class="btn btn-cyan btn-lg">Book a Strategy Call</a>
+        <a href="/contact" class="btn btn-outline-white btn-lg">Talk to Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-wrap">
+          <a href="/">
+            <img src="assets/logo-white.png" alt="DigiHire" style="height:32px;width:auto;" />
+          </a>
+        </div>
+        <p class="footer-tagline">Africa's premier sales ecosystem connecting brands, talent, and opportunity.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social">𝕏</a>
+          <a href="#" class="footer-social">in</a>
+          <a href="#" class="footer-social">f</a>
+          <a href="#" class="footer-social">ig</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <ul class="footer-col-links">
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/events">Events</a></li>
+          <li><a href="/blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Solutions</p>
+        <ul class="footer-col-links">
+          <li><a href="https://voltsquad.digihire.io">VoltSquad</a></li>
+          <li><a href="https://brands.digihire.io">Sales Recruitment</a></li>
+          <li><a href="/sales-activations">Activations &amp; Field Marketing</a></li>
+          <li><a href="https://talents.digihire.io/academy">Sales Academy</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Talent</p>
+        <ul class="footer-col-links">
+          <li><a href="https://talents.digihire.io">Join the Talent Pool</a></li>
+          <li><a href="https://talents.digihire.io/academy">Sales Academy</a></li>
+          <li><a href="https://voltsquad.digihire.io">VoltSquad</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Brands</p>
+        <ul class="footer-col-links">
+          <li><a href="https://voltsquad.digihire.io">VoltSquad</a></li>
+          <li><a href="https://brands.digihire.io">Sales Recruitment</a></li>
+          <li><a href="/sales-activations">Activations &amp; Field Marketing</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 DigiHire Africa Ltd. All rights reserved.</p>
+      <div class="footer-locations">
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Lagos, Nigeria</span></div>
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Accra, Ghana</span></div>
+        <div class="footer-location-item"><i data-lucide="map-pin" class="lucide ic-sm"></i> <span>Nairobi, Kenya</span></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* Navbar scroll behaviour */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* Scroll reveal */
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal, .stagger-grid').forEach(el => revealObs.observe(el));
+
+  lucide.createIcons();
+
+  /* Mobile menu */
+  (function () {
+    var overlay = document.getElementById('nav-mobile-overlay');
+    var openBtn = document.getElementById('nav-hamburger-btn');
+    var closeBtn = document.getElementById('nm-close-btn');
+    if (!overlay || !openBtn) return;
+    function open() { overlay.classList.add('nm-open'); overlay.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; }
+    function close() { overlay.classList.remove('nm-open'); overlay.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+    openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    overlay.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', close); });
+    overlay.querySelectorAll('.nm-trigger[data-nm-target]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var sm = document.getElementById(btn.getAttribute('data-nm-target'));
+        var isOpen = sm && sm.classList.contains('nm-open');
+        overlay.querySelectorAll('.nm-submenu.nm-open').forEach(function (el) { el.classList.remove('nm-open'); });
+        overlay.querySelectorAll('.nm-trigger.nm-active').forEach(function (el) { el.classList.remove('nm-active'); });
+        if (!isOpen && sm) { sm.classList.add('nm-open'); btn.classList.add('nm-active'); }
+      });
+    });
+  })();
+</script>
+
+<!-- ════ MOBILE MENU OVERLAY ═══════════════════════ -->
+<div class="nav-mobile-overlay" id="nav-mobile-overlay" aria-hidden="true">
+  <div class="nm-top">
+    <a href="/" style="display:flex;align-items:center;line-height:0;">
+      <img src="assets/logo-white.png" alt="DigiHire" style="height:30px;width:auto;" />
+    </a>
+    <button class="nm-close-btn" id="nm-close-btn" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="nm-body">
+    <div class="nm-section">
+      <button class="nm-trigger" data-nm-target="nm-why">Why DigiHire?
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <div class="nm-submenu" id="nm-why">
+        <a href="/about" class="nm-sub-item">About Us</a>
+        <a href="/blog" class="nm-sub-item">Blog</a>
+        <a href="/events" class="nm-sub-item">Events</a>
+        <a href="/contact" class="nm-sub-item">Contact</a>
+      </div>
+    </div>
+    <div class="nm-section">
+      <button class="nm-trigger" data-nm-target="nm-brands">Brands
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <div class="nm-submenu" id="nm-brands">
+        <a href="https://voltsquad.digihire.io" class="nm-sub-item">VoltSquad</a>
+        <a href="https://brands.digihire.io" class="nm-sub-item">Sales Recruitment</a>
+        <a href="/sales-activations" class="nm-sub-item">Activations &amp; Field Marketing</a>
+      </div>
+    </div>
+    <div class="nm-section">
+      <button class="nm-trigger" data-nm-target="nm-talents">For Talents
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <div class="nm-submenu" id="nm-talents">
+        <a href="https://voltsquad.digihire.io/join-now" class="nm-sub-item">Join VoltSquad</a>
+        <a href="https://talents.digihire.io" class="nm-sub-item">Talent Pool</a>
+        <a href="https://talents.digihire.io/academy" class="nm-sub-item">Sales Academy</a>
+      </div>
+    </div>
+    <div class="nm-actions">
+      <a href="/contact" class="nm-btn-outline">Talk to Sales</a>
+      <a href="https://brands.digihire.io/login" class="nm-btn-cyan">Book a Strategy Call
+        <svg viewBox="0 0 16 16" fill="none" width="14" height="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

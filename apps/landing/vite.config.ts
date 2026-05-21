@@ -15,6 +15,7 @@ export default defineConfig({
         contact:   path.resolve(__dirname, "contact.html"),
         events:    path.resolve(__dirname, "events.html"),
         voltsquad: path.resolve(__dirname, "voltsquad.html"),
+        salesActivations: path.resolve(__dirname, "sales-activations.html"),
       },
     },
   },
