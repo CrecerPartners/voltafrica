@@ -9,7 +9,7 @@
     { "source": "/events", "destination": "/events.html" },
     { "source": "/voltsquad", "destination": "/voltsquad.html" },
     { "source": "/sales-activations", "destination": "/sales-activations.html" },
-    { "source": "/admin/:path*", "destination": "${ADMIN_VERCEL_URL}/admin/:path*" }
+    { "source": "/admin/:path*", "destination": "https://digihire-admin.vercel.app/admin/:path*" }
   ],
   "redirects": [
     { "source": "/login", "destination": "https://talents.digihire.io/login", "permanent": false },
