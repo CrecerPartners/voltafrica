@@ -346,6 +346,7 @@ export default function Signup() {
   const [formData, setFormData] = useState({ companyName: '', contactName: '', email: '', phoneNumber: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [accountExists, setAccountExists] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -353,9 +354,10 @@ export default function Signup() {
     if (formData.password !== formData.confirmPassword) return setError('Passwords do not match');
     setLoading(true);
     setError('');
+    setAccountExists(false);
     try {
       const activeModules = service ? [service] : [];
-      const { error: signUpErr } = await supabase.auth.signUp({
+      const { data, error: signUpErr } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -363,7 +365,17 @@ export default function Signup() {
           data: { account_types: ['brand'], active_modules: activeModules, full_name: formData.contactName, company_name: formData.companyName, phone: formData.phoneNumber },
         },
       });
-      if (signUpErr) throw signUpErr;
+      if (signUpErr) {
+        if (signUpErr.message?.toLowerCase().includes('already registered') || signUpErr.message?.toLowerCase().includes('already exists')) {
+          setAccountExists(true);
+          return;
+        }
+        throw signUpErr;
+      }
+      if (data.user?.identities?.length === 0) {
+        setAccountExists(true);
+        return;
+      }
       sessionStorage.setItem('pending_verify_email', formData.email);
       if (service) sessionStorage.setItem('pending_service', service);
       navigate('/verify-email');
@@ -402,7 +414,20 @@ export default function Signup() {
             <p className="text-sm text-muted-foreground mb-6">Fill in your details to get started.</p>
 
             <form className="space-y-4" onSubmit={handleSignup}>
-              {error && <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">{error}</div>}
+              {accountExists && (
+                <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-4">
+                  <p className="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-1">Account already exists</p>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    An account is already registered with <span className="font-medium text-foreground">{formData.email}</span>. Please log in instead.
+                  </p>
+                  <Link to="/login" className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-md transition-colors">
+                    Log in to your account <ArrowRight size={12} />
+                  </Link>
+                </div>
+              )}
+              {error && !accountExists && (
+                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">{error}</div>
+              )}
               <div className="space-y-3">
                 <Field label="Company Name" name="companyName" type="text" placeholder="Acme Inc" icon={<Building2 size={14} />} value={formData.companyName} onChange={handleChange} />
                 <Field label="Contact Name" name="contactName" type="text" placeholder="John Smith" icon={<User size={14} />} value={formData.contactName} onChange={handleChange} />

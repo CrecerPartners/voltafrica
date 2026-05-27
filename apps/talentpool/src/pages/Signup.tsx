@@ -322,6 +322,7 @@ export default function Signup() {
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [accountExists, setAccountExists] = useState(false);
   const cvInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -330,8 +331,9 @@ export default function Signup() {
     if (formData.password !== formData.confirmPassword) return setError('Passwords do not match');
     setLoading(true);
     setError('');
+    setAccountExists(false);
     try {
-      const { error: signUpErr } = await supabase.auth.signUp({
+      const { data, error: signUpErr } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -339,7 +341,17 @@ export default function Signup() {
           data: { account_types: ['talent'], active_modules: [module], full_name: formData.fullName, phone: formData.phoneNumber },
         },
       });
-      if (signUpErr) throw signUpErr;
+      if (signUpErr) {
+        if (signUpErr.message?.toLowerCase().includes('already registered') || signUpErr.message?.toLowerCase().includes('already exists')) {
+          setAccountExists(true);
+          return;
+        }
+        throw signUpErr;
+      }
+      if (data.user?.identities?.length === 0) {
+        setAccountExists(true);
+        return;
+      }
 
       if (config.showLinkedin && formData.linkedinUrl.trim()) sessionStorage.setItem(LINKEDIN_SESSION_KEY, formData.linkedinUrl.trim());
       if (config.showCv && cvFile) {
@@ -394,7 +406,20 @@ export default function Signup() {
             <h2 className="text-lg font-bold text-foreground mb-6">Create your account</h2>
 
             <form className="space-y-4" onSubmit={handleSignup}>
-              {error && <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">{error}</div>}
+              {accountExists && (
+                <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-4">
+                  <p className="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-1">Account already exists</p>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    An account is already registered with <span className="font-medium text-foreground">{formData.email}</span>. Please log in instead.
+                  </p>
+                  <Link to="/login" className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-md transition-colors">
+                    Log in to your account <ArrowRight size={12} />
+                  </Link>
+                </div>
+              )}
+              {error && !accountExists && (
+                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">{error}</div>
+              )}
 
               <div className="space-y-3">
                 <Field label="Full Name" name="fullName" type="text" placeholder="John Doe" icon={<User size={14} />} value={formData.fullName} onChange={handleChange} />
