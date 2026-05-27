@@ -9,6 +9,7 @@
     { "source": "/events", "destination": "/events.html" },
     { "source": "/voltsquad", "destination": "/voltsquad.html" },
     { "source": "/sales-activations", "destination": "/sales-activations.html" },
+    { "source": "/jobs", "destination": "/jobs.html" },
     { "source": "/admin/:path*", "destination": "https://digihire-admin.vercel.app/admin/:path*" }
   ],
   "redirects": [

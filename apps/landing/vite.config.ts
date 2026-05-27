@@ -24,6 +24,7 @@ export default defineConfig({
         "blog-performance-campaign": path.resolve(__dirname, "blog-performance-campaign.html"),
         "blog-remote-hiring": path.resolve(__dirname, "blog-remote-hiring.html"),
         "blog-tech-sales": path.resolve(__dirname, "blog-tech-sales.html"),
+        jobs: path.resolve(__dirname, "jobs.html"),
       },
     },
   },
