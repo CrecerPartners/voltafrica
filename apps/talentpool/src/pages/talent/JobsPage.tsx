@@ -37,6 +37,7 @@ interface JobListing {
   slots?: number;
   deadline?: string;
   featured?: boolean;
+  anonymous?: boolean;
   created_at: string;
 }
 
@@ -300,7 +301,9 @@ export default function JobsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <DialogTitle className="text-lg leading-tight">{selectedJob.title}</DialogTitle>
-                  <p className="text-sm text-muted-foreground mt-0.5">{selectedJob.company_name}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    {selectedJob.anonymous ? 'Anonymous Employer' : selectedJob.company_name}
+                  </p>
                 </div>
               </div>
             </DialogHeader>
@@ -338,12 +341,14 @@ export default function JobsPage() {
 
                 <div>
                   <h3 className="text-base font-semibold text-foreground mb-1">Apply for {selectedJob.title}</h3>
-                  <p className="text-xs text-muted-foreground">{selectedJob.company_name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedJob.anonymous ? 'Anonymous Employer' : selectedJob.company_name}
+                  </p>
                 </div>
 
                 {/* Auto-filled applicant info */}
                 <div className="rounded-xl bg-secondary/50 border border-border/50 p-4 space-y-3">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Your Details (from profile)</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Your Details</p>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
                       <p className="text-xs text-muted-foreground">Name</p>
@@ -368,12 +373,21 @@ export default function JobsPage() {
                       </div>
                     )}
                   </div>
-                  <button
-                    onClick={() => navigate('/talent/profile/setup')}
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Edit profile →
-                  </button>
+                  {profileComplete ? (
+                    <button
+                      onClick={() => { setSelectedJob(null); navigate('/talent/profile/setup'); }}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Edit profile →
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => { setSelectedJob(null); navigate('/talent/profile/setup'); }}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Create a profile to strengthen your application →
+                    </button>
+                  )}
                 </div>
 
                 {/* CV Selection */}
@@ -477,7 +491,7 @@ export default function JobsPage() {
                   <Button
                     className="flex-1 gap-2"
                     onClick={handleApply}
-                    disabled={submitting || (!useStoredCv && !newCvFile && !profile?.cv_url)}
+                    disabled={submitting}
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                     {submitting ? 'Submitting…' : 'Submit Application'}
@@ -581,21 +595,15 @@ export default function JobsPage() {
                         </button>
                       </div>
                     </div>
-                  ) : !profileComplete ? (
-                    <div>
-                      <p className="text-sm font-semibold text-foreground mb-1">Complete your profile to apply</p>
-                      <p className="text-xs text-muted-foreground mb-3">
-                        Add at least your name, phone, and a few skills to apply for this role.
-                      </p>
-                      <Button size="sm" onClick={() => navigate('/talent/profile/setup')}>
-                        Complete Profile
-                      </Button>
-                    </div>
                   ) : (
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <p className="text-sm font-semibold text-foreground">Interested in this role?</p>
-                        <p className="text-xs text-muted-foreground">Your profile details will be used to auto-fill your application.</p>
+                        <p className="text-xs text-muted-foreground">
+                          {profileComplete
+                            ? 'Your profile details will be used to auto-fill your application.'
+                            : 'Apply now — add a profile anytime to strengthen future applications.'}
+                        </p>
                       </div>
                       <Button size="sm" onClick={() => setApplyView(true)} className="shrink-0 gap-2">
                         <Send className="h-4 w-4" /> Apply Now
@@ -636,7 +644,9 @@ function JobCard({ job, onOpen, applied, featured }: { job: JobListing; onOpen: 
                   </span>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">{job.company_name}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {job.anonymous ? 'Anonymous Employer' : job.company_name}
+              </p>
               <div className="flex flex-wrap gap-1.5 mt-2">
                 <Badge variant="outline" className={`text-[11px] py-0 ${JOB_TYPE_COLORS[job.job_type] || ''}`}>
                   {JOB_TYPE_LABELS[job.job_type] || job.job_type}

@@ -12,7 +12,6 @@ import {
   Phone,
   ShieldCheck,
   Clock,
-  Building2,
   UserCheck,
   ClipboardList,
   Settings,
@@ -293,16 +292,6 @@ export default function LandingPage() {
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,194,255,0.14) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 28px", position: "relative" }}>
           <div className="reveal">
-            <span style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase",
-              color: V.cyan, background: V.cyanBg,
-              border: `1px solid rgba(0,194,255,0.22)`, borderRadius: 999,
-              padding: "8px 16px", marginBottom: 24,
-            }}>
-              <Building2 size={14} /> brands.digihire.io
-            </span>
-
             <h1 style={{
               fontFamily: "Instrument Sans, sans-serif",
               fontSize: "clamp(34px, 5.5vw, 64px)",
@@ -389,7 +378,7 @@ export default function LandingPage() {
                       <p className="text-sm text-muted-foreground leading-relaxed mb-6">{s.desc}</p>
                     </div>
                   </div>
-                  <Link to={s.link} className={`inline-flex items-center justify-center gap-1.5 w-full py-3 px-4 rounded-xl border font-semibold text-sm transition-all duration-200 ${s.hoverBg}`} style={{ borderColor: s.border, color: V.navy }}>
+                  <Link to={s.link} className={`inline-flex items-center justify-center gap-1.5 w-full py-3 px-4 rounded-xl border font-semibold text-sm transition-all duration-200 ${s.hoverBg}`} style={{ borderColor: s.border, color: s.color }}>
                     {s.cta} <ArrowRight size={14} />
                   </Link>
                 </div>

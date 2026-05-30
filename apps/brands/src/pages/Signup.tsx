@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import {
   Building2, Mail, Lock, User, Phone, ArrowRight, CheckCircle,
   Zap, Users, TrendingUp, Briefcase, MapPin, Star, Target, BarChart3,
+  Eye, EyeOff,
 } from 'lucide-react';
 import { Button, Input } from '@digihire/shared';
 
@@ -479,12 +480,33 @@ function Field({ label, name, type, placeholder, icon, value, onChange }: {
   label: string; name: string; type: string; placeholder: string;
   icon: React.ReactNode; value: string; onChange: React.ChangeEventHandler<HTMLInputElement>;
 }) {
+  const [show, setShow] = useState(false);
+  const isPassword = type === 'password';
+  const inputType = isPassword ? (show ? 'text' : 'password') : type;
+
   return (
     <div className="space-y-1.5">
       <label className="text-xs font-medium text-muted-foreground">{label}</label>
       <div className="relative">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground/60">{icon}</div>
-        <Input name={name} type={type} required placeholder={placeholder} value={value} onChange={onChange} className="pl-9 bg-secondary border-border" />
+        <Input
+          name={name}
+          type={inputType}
+          required
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          className={`pl-9 bg-secondary border-border ${isPassword ? 'pr-10' : ''}`}
+        />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShow(s => !s)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        )}
       </div>
     </div>
   );
