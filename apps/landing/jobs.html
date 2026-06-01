@@ -235,6 +235,10 @@ var focusedJob = null;
 var TYPE_LABELS = { full_time:'Full-Time', part_time:'Part-Time', contract:'Contract', gig:'Gig', internship:'Internship' };
 var EXP_LABELS = { any:'Any level', entry:'Entry level', mid:'Mid level', senior:'Senior level' };
 
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 function fmtSalary(min, max, pt) {
   if (!min && !max) return null;
   function f(n) { return n >= 1000 ? '₦' + (n/1000).toFixed(0) + 'k' : '₦' + n; }
@@ -303,26 +307,26 @@ function renderJobs() {
 
   list.innerHTML = '<div class="jobs-list">' + ordered.map(function(j) {
     var sal = fmtSalary(j.salary_min, j.salary_max, j.pay_type);
-    var modeTag = j.work_mode ? '<span class="badge badge-'+j.work_mode+'">'+j.work_mode+'</span>' : '';
-    var skillsHtml = (j.skills && j.skills.length) ? '<div class="skills-row">'+j.skills.slice(0,4).map(function(s){return '<span class="skill-chip">'+s+'</span>';}).join('')+(j.skills.length>4?'<span class="skill-chip">+'+( j.skills.length-4)+' more</span>':'')+' </div>' : '';
+    var modeTag = j.work_mode ? '<span class="badge badge-'+esc(j.work_mode)+'">'+esc(j.work_mode)+'</span>' : '';
+    var skillsHtml = (j.skills && j.skills.length) ? '<div class="skills-row">'+j.skills.slice(0,4).map(function(s){return '<span class="skill-chip">'+esc(s)+'</span>';}).join('')+(j.skills.length>4?'<span class="skill-chip">+'+(j.skills.length-4)+' more</span>':'')+' </div>' : '';
     return '<div class="job-card'+(j.featured?' featured':'')+'" onclick="openDetail(\''+j.id+'\')">'
       + '<div class="job-card-top">'
       + '<div class="job-icon"><svg width="20" height="20" fill="none" stroke="#00C2FF" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>'
       + '<div style="flex:1;min-width:0;">'
       + '<div style="display:flex;align-items:center;gap:6px;">'
-      + '<div class="job-title">'+j.title+'</div>'
+      + '<div class="job-title">'+esc(j.title)+'</div>'
       + (j.featured?'<svg width="13" height="13" fill="#f59e0b" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>':'')
       + '</div>'
-      + '<div class="job-company">'+(j.anonymous ? 'Anonymous Employer' : j.company_name)+'</div>'
+      + '<div class="job-company">'+(j.anonymous ? 'Anonymous Employer' : esc(j.company_name))+'</div>'
       + '</div></div>'
       + '<div class="job-meta">'
-      + '<span class="badge badge-'+j.job_type+'">'+( TYPE_LABELS[j.job_type]||j.job_type)+'</span>'
+      + '<span class="badge badge-'+esc(j.job_type)+'">'+esc(TYPE_LABELS[j.job_type]||j.job_type)+'</span>'
       + modeTag
-      + (j.experience_level && j.experience_level!=='any' ? '<span class="badge" style="background:#f1f5f9;color:#475569;border-color:#e2e8f0;">'+EXP_LABELS[j.experience_level]+'</span>' : '')
+      + (j.experience_level && j.experience_level!=='any' ? '<span class="badge" style="background:#f1f5f9;color:#475569;border-color:#e2e8f0;">'+esc(EXP_LABELS[j.experience_level]||j.experience_level)+'</span>' : '')
       + '</div>'
       + '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;">'
-      + (j.location?'<span class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'+j.location+'</span>':'')
-      + (sal?'<span class="meta-item">'+sal+'</span>':'')
+      + (j.location?'<span class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'+esc(j.location)+'</span>':'')
+      + (sal?'<span class="meta-item">'+esc(sal)+'</span>':'')
       + (j.slots&&j.slots>1?'<span class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'+j.slots+' slots</span>':'')
       + '<span class="meta-item">'+timeAgo(j.created_at)+'</span>'
       + '</div>'
@@ -336,36 +340,36 @@ function openDetail(id) {
   if (!job) return;
   focusedJob = job;
   var sal = fmtSalary(job.salary_min, job.salary_max, job.pay_type);
-  var modeTag = job.work_mode ? '<span class="badge badge-'+job.work_mode+'" style="margin-right:6px;">'+job.work_mode+'</span>' : '';
+  var modeTag = job.work_mode ? '<span class="badge badge-'+esc(job.work_mode)+'" style="margin-right:6px;">'+esc(job.work_mode)+'</span>' : '';
   var html = '<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">'
     + '<div class="job-icon"><svg width="22" height="22" fill="none" stroke="#00C2FF" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>'
-    + '<div><h2 style="font-size:20px;font-weight:800;color:var(--navy);">'+job.title+'</h2>'
-    + '<p style="font-size:14px;color:var(--gray-2);margin-top:2px;">'+(job.anonymous ? 'Anonymous Employer' : job.company_name)+'</p></div>'
+    + '<div><h2 style="font-size:20px;font-weight:800;color:var(--navy);">'+esc(job.title)+'</h2>'
+    + '<p style="font-size:14px;color:var(--gray-2);margin-top:2px;">'+(job.anonymous ? 'Anonymous Employer' : esc(job.company_name))+'</p></div>'
     + '</div>'
     + '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">'
-    + '<span class="badge badge-'+job.job_type+'">'+( TYPE_LABELS[job.job_type]||job.job_type)+'</span>'
+    + '<span class="badge badge-'+esc(job.job_type)+'">'+esc(TYPE_LABELS[job.job_type]||job.job_type)+'</span>'
     + modeTag
-    + (job.experience_level && job.experience_level!=='any' ? '<span class="badge" style="background:#f1f5f9;color:#475569;border-color:#e2e8f0;">'+EXP_LABELS[job.experience_level]+'</span>' : '')
-    + (job.category ? '<span class="badge" style="background:var(--cyan-ghost);color:#0369a1;border-color:var(--cyan-border);">'+job.category+'</span>' : '')
+    + (job.experience_level && job.experience_level!=='any' ? '<span class="badge" style="background:#f1f5f9;color:#475569;border-color:#e2e8f0;">'+esc(EXP_LABELS[job.experience_level]||job.experience_level)+'</span>' : '')
+    + (job.category ? '<span class="badge" style="background:var(--cyan-ghost);color:#0369a1;border-color:var(--cyan-border);">'+esc(job.category)+'</span>' : '')
     + '</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">'
-    + (job.location ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'+job.location+'</div>' : '')
-    + (sal ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'+sal+'</div>' : '')
-    + (job.slots ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+job.slots+' position'+(job.slots!==1?'s':'')+' available</div>' : '')
-    + (job.deadline ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Apply by '+new Date(job.deadline).toLocaleDateString('en-NG',{dateStyle:'long'})+'</div>' : '')
-    + (job.duration ? '<div style="font-size:13px;color:var(--gray-2);">Duration: '+job.duration+'</div>' : '')
+    + (job.location ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'+esc(job.location)+'</div>' : '')
+    + (sal ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'+esc(sal)+'</div>' : '')
+    + (job.slots ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'+esc(String(job.slots))+' position'+(job.slots!==1?'s':'')+' available</div>' : '')
+    + (job.deadline ? '<div style="font-size:13px;color:var(--gray-2);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Apply by '+esc(new Date(job.deadline).toLocaleDateString('en-NG',{dateStyle:'long'}))+'</div>' : '')
+    + (job.duration ? '<div style="font-size:13px;color:var(--gray-2);">Duration: '+esc(job.duration)+'</div>' : '')
     + '</div>';
 
   if (job.skills && job.skills.length) {
     html += '<div style="margin-bottom:20px;"><div class="detail-section-title">Skills</div><div class="skills-row">'
-      + job.skills.map(function(s){return '<span class="skill-chip">'+s+'</span>';}).join('')
+      + job.skills.map(function(s){return '<span class="skill-chip">'+esc(s)+'</span>';}).join('')
       + '</div></div>';
   }
   if (job.description) {
-    html += '<div style="margin-bottom:20px;"><div class="detail-section-title">About the Role</div><p class="detail-body">'+job.description+'</p></div>';
+    html += '<div style="margin-bottom:20px;"><div class="detail-section-title">About the Role</div><p class="detail-body">'+esc(job.description)+'</p></div>';
   }
   if (job.requirements) {
-    html += '<div style="margin-bottom:20px;"><div class="detail-section-title">Requirements</div><p class="detail-body">'+job.requirements+'</p></div>';
+    html += '<div style="margin-bottom:20px;"><div class="detail-section-title">Requirements</div><p class="detail-body">'+esc(job.requirements)+'</p></div>';
   }
   html += '<div class="cta-box">'
     + '<h4>Interested in this role?</h4>'
