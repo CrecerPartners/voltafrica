@@ -2527,8 +2527,8 @@
     </div>
 
     <!-- Filter bar -->
-    <div id="jobs-filters" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px;align-items:center;">
-      <div style="position:relative;flex:1;min-width:200px;max-width:320px;">
+    <div id="jobs-filters" style="display:flex;flex-wrap:wrap;gap:12px;margin:0 auto 32px;align-items:center;max-width:860px;">
+      <div style="position:relative;flex:1;min-width:200px;">
         <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#7A9CC5;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input id="jobs-search" type="text" placeholder="Search jobs..." style="width:100%;height:40px;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);padding:0 12px 0 36px;font-family:inherit;font-size:14px;color:#111827;outline:none;" />
       </div>
@@ -2549,10 +2549,12 @@
     </div>
 
     <!-- Jobs grid -->
-    <div id="jobs-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">
-      <!-- Loading state -->
-      <div id="jobs-loading" style="grid-column:1/-1;display:flex;justify-content:center;padding:40px 0;">
-        <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.7s linear infinite;"></div>
+    <div style="max-width:860px;margin:0 auto;">
+      <div id="jobs-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+        <!-- Loading state -->
+        <div id="jobs-loading" style="grid-column:1/-1;display:flex;justify-content:center;padding:40px 0;">
+          <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.7s linear infinite;"></div>
+        </div>
       </div>
     </div>
 
