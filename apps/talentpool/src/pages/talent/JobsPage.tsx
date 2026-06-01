@@ -596,7 +596,7 @@ export default function JobsPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="space-y-3">
                       <div>
                         <p className="text-sm font-semibold text-foreground">Interested in this role?</p>
                         <p className="text-xs text-muted-foreground">
@@ -605,9 +605,19 @@ export default function JobsPage() {
                             : 'Apply now — add a profile anytime to strengthen future applications.'}
                         </p>
                       </div>
-                      <Button size="sm" onClick={() => setApplyView(true)} className="shrink-0 gap-2">
-                        <Send className="h-4 w-4" /> Apply Now
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 gap-2"
+                          onClick={() => { setSelectedJob(null); navigate('/talent/profile/setup'); }}
+                        >
+                          {profileComplete ? 'Edit Profile' : 'Create Profile'}
+                        </Button>
+                        <Button size="sm" onClick={() => setApplyView(true)} className="flex-1 gap-2">
+                          <Send className="h-4 w-4" /> Apply for Job
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
